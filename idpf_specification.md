@@ -58,39 +58,39 @@ Abstracted SW Elements:
 
 ![Figure 2: Descriptor Queue Overview](Diagrams/descriptor_queue_overview.svg)
 
-* **Mailbox**:This is an Out-of-band communication mechanism that may be implemented in HW or SW. A typical implementation uses a specific agreed-upon pair of Descriptor queues to pass back and forth Commands from the driver to the Control-plane of the Device and responses and event notifications from the Device control-plane to the driver (see drawing 1). This control/monitoring side-band is called a Mailbox.
-The Mailbox is used for:
+* **Mailbox**:This is an out-of-band communication mechanism that may be implemented in HW or SW. A typical implementation uses a specific agreed-upon pair of descriptor queues to pass back and forth commands from the driver to the control-plane of the device and responses and event notifications from the device control-plane to the driver (see drawing 1). This control/monitoring side-band is called a mailbox.
+The mailbox is used for:
 
-  * To learn about the Device capabilities.
-  * To configure, enable or disable device capabilities
-  * To receive Events from the Device
+  * To learn about the device capabilities.
+  * To configure, enable, or disable device capabilities
+  * To receive events from the device
 
   Typically, this out-of-band communication is assumed to be not very chatty and can be implemented as a low throughput mechanism. 
 
-* **virtchannel**: The device driver communicates with the Control Plane Agent over a mailbox in order to  request configuration and learn about capabilities etc. Virtchannel is a negotiation protocol with the Control plane and also for both sides to send asynchronous events as mentioned in the Mailbox description.
+* **virtchannel**: The device driver communicates with the **Control Plane Agent**over a mailbox in order to request configuration and learn about capabilities etc. Virtchannel is a negotiation protocol with the control plane and also for both sides to send asynchronous events as mentioned in the mailbox description.
 
-  Virtchannel as it is a sideband communication protocol with CP, the driver negotiates a protocol version first with CP and then follows the rules of the protocol for learning about capabilities and setting up Configs and offloads etc.
-Each virtchannel message and the capabilities for which they are used and the flow with CP is described in detail as part of the Negotiation, Mailbox flows and offload Capabilities Sections.
+  Virtchannel as it is a sideband communication protocol with CP, the driver negotiates a protocol version first with CP and then follows the rules of the protocol for learning about capabilities and setting up configs and offloads etc.
+Each virtchannel message and the capabilities for which they are used and the flow with CP is described in detail as part of the negotiation, mailbox flows, and offload capabilities sections.
 
   A driver using a feature without negotiation will be marked as a malicious activity by the driver on the CP side and it can result in the driver going through reset and failing to load.
-* **Control Plane Agent (CP)**:This is a SW/FW/HW entity that is part of the device which communicates with the SW driver over the Mailbox using virtchannel in order for the SW Driver to learn about the capabilities, configure the device etc.
-* **Tx & RX Process, and Completion Descriptors**: The general pattern of communication between host-side Software and the device is that Software posts request Descriptors in the Host-to-Device Descriptor queue, and the Device posts responses and events in the associated Device-to-Host Descriptor queue. In particular for the reception (RX) and transmission (TX) of packets the process is as follows (note this is the general case, some nuances and optimizations are described in the relevant section)
+* **Control Plane Agent (CP)**:This is a SW/FW/HW entity that is part of the device which communicates with the SW driver over the mailbox using virtchannel in order for the SW Driver to learn about the capabilities, configure the device, and etc.
+* **Tx & RX Process, and Completion Descriptors**: The general pattern of communication between host-side software and the device is that software posts request descriptors in the Host-to-Device Descriptor queue, and the device posts responses and events in the associated Device-to-Host descriptor queue. In particular for the reception (RX) and transmission (TX) of packets the process is as follows (note this is the general case, some nuances and optimizations are described in the relevant section)
 
-  1. **RX Process Overview**: Software prepares empty buffers in Host Memory (perhaps in VM’s Memory space if a VM is involved) to hold the data and headers of the frames when they are received.
+  1. **RX Process Overview**: Software prepares empty buffers in host memory (perhaps in VM’s memory space if a VM is involved) to hold the data and headers of the frames when they are received.
 
-      Software Builds “RX Request” descriptors that point to these buffers and places them on a Host-to-device Descriptor queue called “RX Queue”.
+      Software Builds “RX Request” descriptors that point to these buffers and places them on a Host-to-device descriptor queue called “RX Queue”.
     
-      When a packet is received by the Device’s data path, it reads the next Descriptor from the RX queue, and using DMA places the data received into the buffers pointed to by the Descriptor.
+      When a packet is received by the device’s data path, it reads the next descriptor from the RX queue, and using DMA places the data received into the buffers pointed to by the descriptor.
     
       The device then indicates to the SW that data has been received and placed in host memory that the SW should process. It does that by writing a “RX Completion Descriptor” that points to the data received, and holds additional meta-data describing relevant attributes for the data received (e.g. that its CRC was verified by the device, and the SW does not need to repeat this check).
     
-      This completion Descriptor is typically placed in the Device-to-Host descriptor queue paired with the RX descriptor used by the relevant vPort, this queue is called the “RX Completion Queue". 
+      This completion descriptor is typically placed in the Device-to-Host descriptor queue paired with the RX descriptor used by the relevant vPort, this queue is called the “RX Completion Queue". 
 
   2. **TX Process Overview**: Software prepares buffers in host memory containing the data to be transmitted.
 
       Software builds “TX request Descriptors” that point to these buffers, and places them on a Host-to-Device descriptor queue called “TX Descriptor queue”.
     
-      The device’s Data-path reads the next TX request Descriptor from this queue and uses its content to read the data to be transmitted from the buffers, and processes them into one or more outgoing packets sent to the destination.
+      The device’s data-path reads the next TX request descriptor from this queue and uses its content to read the data to be transmitted from the buffers, and processes them into one or more outgoing packets sent to the destination.
     
       The device then indicates to the SW that the data has been transmitted by building “TX Completion Descriptors” and placing them in a “TX Completion queue” which is the Device-to-Host  part of the queue-pair used for this vPort.
 
@@ -108,13 +108,13 @@ The IDPF interface does not make any assumption about how the device is composed
 
 ## Live Migration
 
-The Host interface Specification is designed to support Live migration assisted by the device, although there is no assumption that the driver needs to do anything special for Live Migration of the VM; the design concepts such as abstraction of device resources etc.  keep live migratability in mind.
+The Host interface Specification is designed to support live migration assisted by the device, although there is no assumption that the driver needs to do anything special for live migration of the VM; the design concepts such as abstraction of device resources and etc. keeps live migratability in mind.
 
 ## Adaptability and Elasticity
 
-IDPF allows for adding or removing any of the offloads and capabilities based on what the device can support or not. Also, the Capability Negotiation Protocol allows for extending capabilities in the future.
+IDPF allows for adding or removing any of the offloads and capabilities based on what the device can support or not. Also, the **Capability Negotiation Protocol** allows for extending capabilities in the future.
 
-IDPF allows for supporting more than one vPort through the same PCIE device interface to provide dedicated resources and control for a Software network interface that can be tied to individual applications, namespaces, containers etc.
+IDPF allows for supporting more than one vPort through the same PCIE device interface to provide dedicated resources and control for a software network interface that can be tied to individual applications, namespaces, containers, and etc.
 
 ## Negotiation
 
@@ -122,17 +122,17 @@ All device capabilities and offloads are negotiable; this allows for running the
 
 ## Profiling
 
-Since the capabilities are negotiated with the device, this allows the Device Control Plane to enforce SLAs by creating templates of capabilities and offloads to expose to the Interface.
+Since the capabilities are negotiated with the device, this allows the **Device Control Plane** to enforce SLAs by creating templates of capabilities and offloads to expose to the Interface.
 
 # PCIE Host Interface
 
-## Device identification 
+## Device Identification 
 
 The IDPF will use the following Programming Interface under PCIE class : Network Controller (02h),subclass : Ethernet Controller (00h) as Programming Interface :  Ethernet Controller with IDPF compliant Interface (01h). 
 
-This will allow the driver to be loaded just based on Programming Interface identification, and we wouldn't need a generic Vendor ID for this device that Every vendor needs to put in their HW. An Emulated IDPF device will still have a Vendor ID such as "Redhat"
+This will allow the driver to be loaded just based on Programming Interface identification, and we wouldn't need a generic Vendor ID for this device that every vendor needs to put in their HW. An emulated IDPF device will still have a Vendor ID such as "Redhat"
 
-If  a Vendor chooses to add a Vendor ID + Device ID identification tuple in the IDPF driver, they can still do that for reasons such as Quirks/workarounds or any other reason.
+If a Vendor chooses to add a Vendor ID + Device ID identification tuple in the IDPF driver, they can still do that for reasons such as Quirks/workarounds or any other reason.
 
 ## BARs
 
