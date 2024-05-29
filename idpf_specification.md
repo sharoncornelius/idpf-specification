@@ -128,11 +128,11 @@ Since the capabilities are negotiated with the device, this allows the **Device 
 
 ## Device Identification 
 
-The IDPF will use the following Programming Interface under PCIE class : Network Controller (02h),subclass : Ethernet Controller (00h) as Programming Interface :  Ethernet Controller with IDPF compliant Interface (01h). 
+The IDPF will use the following Programming Interface under PCIE class : Network Controller (02h),subclass : Ethernet Controller (00h) as Programming Interface :  Ethernet Controller with IDPF compliant interface (01h). 
 
 This will allow the driver to be loaded just based on Programming Interface identification, and we wouldn't need a generic Vendor ID for this device that every vendor needs to put in their HW. An emulated IDPF device will still have a Vendor ID such as "Redhat"
 
-If a Vendor chooses to add a Vendor ID + Device ID identification tuple in the IDPF driver, they can still do that for reasons such as Quirks/workarounds or any other reason.
+If a vendor chooses to add a Vendor ID + Device ID identification tuple in the IDPF driver, they can still do that for reasons such as quirks/workarounds or any other reason.
 
 ## BARs
 
@@ -142,12 +142,12 @@ IDPF functions shall expose two BARs:
 
 * BAR2 (32 bits) or BAR2-3 (64 bits) that includes the MSI-X vectors. The location of the vectors and the PBA bits shall be pointed by the standard MSI-X capability registers. The IMS vectors may be mapped in the BAR also.
 
-## PCIe capabilities
+## PCIe Capabilities
 
 The following capabilities shall be part of an IDPF function configuration space:
 
 * Power Management
-* MSI-X. MSI support is optional.
+* MSI-X. MSI support is optional
 * PCI Express
 
 The following capabilities shall be part of an IDPF function that exposes SR-IOV functions:
@@ -157,25 +157,25 @@ The following capabilities shall be part of an IDPF function that exposes SR-IOV
 
 Other capabilities like ATS, VPD, serial number and others are optional and may be exposed based on the specific hardware capabilities. 
 
-## PCIE MMIO (Memory Mapped IO) map  
+## PCIE MMIO (Memory Mapped IO) Map  
 
 ### Registers
 
-Fixed: Mailbox registers, Control and status Registers. . See register Register Section
+Fixed: Mailbox registers, Control, and status registers. See register section
 
-Flexible: Queue and Interrupt registers. See Register section.
+Flexible: Queue and Interrupt registers. See register section.
 
-Note : When the driver writes a device register and then reads that same register the device might return the old register value (value before the register write) unless the driver keeps 2 ms latency between the write access and the read accesses.
+**_Note:_** When the driver writes a device register and then reads that same register the device might return the old register value (value before the register write) unless the driver keeps 2 ms latency between the write access and the read accesses.
  
 # Versioning (Device, Driver, virtchannel version)
 
-## Device versioning
+## Device Versioning
 
-As mentioned in the Device identification, a Device ID and Subdev ID defines the Device version. A base Device ID for PF and VF Device is defined and a subdev ID of zero as a default for the device. The Device ID and subdev ID can be used to have separate register offsets for the fixed portions of register space such as the mailbox. 
+As mentioned in the device identification, a Device ID and Subdev ID defines the device version. A base device ID for PF and VF Device is defined and a subdev ID of zero as a default for the device. The device ID and subdev ID can be used to have separate register offsets for the fixed portions of register space such as the mailbox. 
 
-## Virtchannel: Mailbox protocol versioning
+## Virtchannel: Mailbox Protocol Versioning
 
-The Driver shall start the Mailbox communication with the Control plane by first negotiating the mailbox protocol version that both can support. The information is passed in the mailbox buffer pointed to by the mailbox command descriptor.
+The driver shall start the mailbox communication with the control plane by first negotiating the mailbox protocol version that both can support. The information is passed in the mailbox buffer pointed to by the mailbox command descriptor.
 
 VF/PF posts its highest supported version number to the CP (Control Plane Agent). CP responds with its virtchannel version number in the same format, along with a return code. Reply from CP has CP’s virtchannel major/minor versions.
 
@@ -186,7 +186,7 @@ If there is a major version mismatch, then the VF/PF goes to the lowest version 
 	    u32 minor;
     };
 ```
-## Driver versioning
+## Driver Versioning
 
 The spec does not define a driver version, and this is maintained strictly to identify the revisions of driver codes and features.
 
@@ -196,7 +196,7 @@ For multiple generations of devices to support this interface, there is a small 
 
 # Virtchannel and Mailbox Queue
 
-Virtchannel is a SW protocol defined on top of a Device supported mailbox in case of a passthrough sideband going directly to Device. Device as mentioned previously can be a HW or a SW Device.
+Virtchannel is a SW protocol defined on top of a device supported mailbox in case of a passthrough sideband going directly to device. Device as mentioned previously can be a HW or a SW device.
 
 ## Virtchannel Descriptor Structure
 ```C
@@ -218,34 +218,34 @@ Virtchannel is a SW protocol defined on top of a Device supported mailbox in cas
     __le32 addr_low;
     };
 ```
-## Mailbox queues (Device Backed or SW emulated)
+## Mailbox Queues (Device Backed or SW Emulated)
 
 The driver holds a transmit and receive mailbox queue pair for communication with the CP.
 
 For both RX and TX queues the interface is like the “In order, single queue model” (see RX In order single queue model and TX In order single queue model) LAN (Local Area Network) queue with the following exceptions:
 
 * TX mailbox:
-  * The Maximum packet size is 4KB.
+  * The maximum packet size is 4KB.
   * Packet is pointed by a single 32B descriptor. Packet data resides in a single buffer.
   * Packet can be a zero-byte packet (in that case, the descriptor does not point to a data buffer).
-  * Device reports completion (descriptor write back) for every mailbox packet/descriptor, which will be received into the RX Mailbox queue.
+  * Device reports completion (descriptor write back) for every mailbox packet/descriptor, which will be received into the RX mailbox queue.
 * RX mailbox:
   * SW fills the RX queue with 32B descriptors that point to 4KB buffers.
-  * The Maximum packet size is 4KB. RX packet data resides in a single buffer.
+  * The maximum packet size is 4KB. RX packet data resides in a single buffer.
   * Packet can be a zero-byte packet (in that case, data buffer remains empty).
   * RX mailbox is set by device as fast drop in absence of sufficient RX descriptors/buffers posted by the driver, in order to avoid DDoS and blocking of the pipe.
 
 The mailbox queues CSRs (Control Status Registers) are in fixed addresses and are described in Appendix Section [- PF/VF- Mailbox Queues]().
 
-## Mailbox descriptor formats
+## Mailbox Descriptor Formats
 
 Both queues use the same descriptor structure for command posting (TX descriptor format) and command completion (RX descriptor format). 
 All descriptors and commands are defined using little endian notation with 32-bit words. Drivers using other conventions should take care to do the proper conversions.
 
 Mailbox commands are
-* Indirect – commands, which in addition to Descriptor info, can carry an additional payload buffer of up to 4KB (pointed by “Data address high/low”).
+* Indirect – commands, which in addition to descriptor info, can carry an additional payload buffer of up to 4KB (pointed by “Data address high/low”).
 
-### Generic Descriptor fields description
+### Generic Descriptor Fields Description
 
 | Name | Bytes.Bits | Description | 
 | ---- | ---------- | ----------- |
@@ -259,18 +259,18 @@ Mailbox commands are
 | Message Infrastructure Type | 2-3| TX Side:<br />0x0801 – “Send to CP” opcode.<br />The driver may use this command to send a mailbox message to its CP.<br />Other opcodes will be rejected and not sent to the destination.<br /><br />RX side: 0x0804– “Send to Peer IDPF Driver” opcode.<br />The driver will receive this opcode inside descriptors coming from CP.|
 | Message Data Length | 4-5 | Attached buffer length in bytes (this field is set to 0 when buffer is not attached). Up to 4KB. Used only when Flag.BUFF and optionally Flag.RD(TX case) are set.|
 | Hardware Return Value | 6-7 | Hardware Return value, which indicates that Descriptor was processed by Hardware successfully. Relevant when Flag.DD and CMP are set for descriptor.|
-| VirtChnl Message Opcode | 8-11.3 | Includes VirtChnl opcode value,. i.e. VIRTCHNL2_OP_GET_CAPS = 500.<br />Opcodes 0x0000 - 0x7FFF are in use.<br />Codes 0x8000-0xFFFF - are reserved.<br />Note: The upper 4 bits in byte 11 are reserved for the VirtChnl descriptor Format.
+| VirtChnl Message Opcode | 8-11.3 | Includes VirtChnl opcode value,. i.e. VIRTCHNL2_OP_GET_CAPS = 500.<br />Opcodes 0x0000 - 0x7FFF are in use.<br />Codes 0x8000-0xFFFF - are reserved.<br />**_Note:_** The upper 4 bits in byte 11 are reserved for the virtchnl descriptor format.
 | VirtChnl Descriptor Type | 11.4-11.7 | v_dtype, default value is 0 but can be used in future to enhance the VirtChnl descriptor format.<br />Values 1-7 are reserved for future expansion. Values 8-15 are reserved for OEM descriptor formats.|
-| VirtChnl Message Return Value | 12-15 | VirtChnl Command return value sent by CP will be received here. Not relevant for TX.|
+| VirtChnl Message Return Value | 12-15 | VirtChnl command return value sent by CP will be received here. Not relevant for TX.|
 | Message Parameter 0 | 16-19 | Can be used to include message parameter|
 | SW Cookie | 20-21 | Used for cookies to be delivered to the receiver.|
-| VirtChnl Flags | 22-23 | When a Flags capability is negotiated, it can be used to give more direction to CP whether a response is required etc.|
+| VirtChnl Flags | 22-23 | When a flags capability is negotiated, it can be used to give more direction to CP whether a response is required etc.|
 | Data Address high / Message Parameter 2 | 24-27 | When RD and BUF are set, describe the attached buffer address.<br />Else, used as a third general use as additional parameter.|
 | Data Address low / Message Parameter 3 | 28-31 | When RD and BUF are set, describe the attached buffer address.<br />Else, used as a fourth general use additional parameter.|
 
-### TX descriptor Command Submit format
+### TX Descriptor Command Submit Format
 
-The table below describes the descriptor structure fields, which are expected to be filled by the driver before incrementing Mailbox TX Queue Tail.
+The table below describes the descriptor structure fields, which are expected to be filled by the driver before incrementing mailbox TX Queue Tail.
 All fields inside the TX descriptor, which are not provided by the sender, but are expected to be filled by the responder (output fields) should be set to 0 by the sender.
 
 | Name | Bytes.Bits | Description | 
@@ -285,18 +285,18 @@ All fields inside the TX descriptor, which are not provided by the sender, but a
 | Message Infrastructure Type | 2-3| 0x0801 – “Send to CP” opcode.<br />The driver uses this command opcode only to send a mailbox message to its CP.<br />Other opcodes will be rejected and not sent to the destination.|
 | Message Data Length | 4-5 | Attached buffer length in bytes (this field is set to 0 when buffer is not attached). Up to 4KB.|
 | Hardware Return Value | 6-7 |Should be set to 0. |
-| VirtChnl Message Opcode | 8-11.3 | Includes VirtChnl opcode value,. i.e. VIRTCHNL2_OP_GET_CAPS = 500.<br />Opcodes 0x0000 - 0x7FFF are in use.<br />Codes 0x8000-0xFFFF - are reserved.<br />Note: The upper 4 bits in byte 11 are reserved for the VirtChnl descriptor Format.|
+| VirtChnl Message Opcode | 8-11.3 | Includes VirtChnl opcode value,. i.e. VIRTCHNL2_OP_GET_CAPS = 500.<br />Opcodes 0x0000 - 0x7FFF are in use.<br />Codes 0x8000-0xFFFF - are reserved.<br />**_Note:_** The upper 4 bits in byte 11 are reserved for the virtchnl descriptor format.|
 | VirtChnl Descriptor Type | 11.4-11.7 | v_dtype, default value is 0 but can be used in future to enhance the VirtChnl descriptor format.<br />Values 1-7 are reserved for future expansion. Values 8-15 are reserved for OEM descriptor formats.|
 | VirtChnl Message Return Value | 12-15 | Should be set to 0.|
 | Message Parameter 0 | 16-19 | Can be used to include message parameter|
 | SW Cookie | 20-21 | Used for cookies to be delivered to the receiver.|
 | VirtChnl Flags | 22-23 | When a Flags capability is negotiated, it can be used to give more direction to CP whether a response is required etc.|
-| Data Address high / Message Parameter 2 | 24-27 | When RD and BUF are set, describe the attached buffer address.<br />Else, used as a third general use parameter. Copied to the RX packet descriptor of the receiver.|
-| Data Address low / Message Parameter 3 | 28-31 | When RD and BUF are set, describe the attached buffer address.<br />Else, used as a fourth general use parameter Copied to the RX packet descriptor of the receiver.|
+| Data Address high / Message Parameter 2 | 24-27 | When RD and BUF are set, describe the attached buffer address.<br />Else, used as a third general use parameter, copied to the RX packet descriptor of the receiver.|
+| Data Address low / Message Parameter 3 | 28-31 | When RD and BUF are set, describe the attached buffer address.<br />Else, used as a fourth general use parameter, copied to the RX packet descriptor of the receiver.|
 
-### TX descriptor command Completed format
+### TX Descriptor Command Completed Format
 
-This is the TX descriptor view, after it was processed and sent by the Device, while Flag.DD = 1 indicated this. This is an indication for the sender driver that the current TX descriptor and its buffer are completed by hardware and can be reused for a new command. Command’s response will be then received asynchronously into the RX Mailbox queue.
+This is the TX descriptor view, after it was processed and sent by the device, while Flag.DD = 1 indicated this. This is an indication for the sender driver that the current TX descriptor and its buffer are completed by hardware and can be reused for a new command. Command’s response will be then received asynchronously into the RX mailbox queue.
 
 | Name | Bytes.Bits | Description | 
 | ---- | ---------- | ----------- |
