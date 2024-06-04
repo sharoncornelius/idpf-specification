@@ -372,7 +372,7 @@ When a mailbox command arrives from the device to Driver RX Mailbox Queue, it wi
 
 ## Mailbox Flows
 
-### Mailbox Initialization flow
+### Mailbox Initialization Flow
 
 Most of the Mailbox queues initialization is done by default by CP, while the IDPF driver needs to provide rings’ description and enable the queues using MMIO registers access. Here are the configuration to be performed by driver:
 
@@ -381,7 +381,7 @@ Most of the Mailbox queues initialization is done by default by CP, while the ID
 3. The driver set the PF/VF_MBX_ARQLEN/PF/VF_MBX_ATQLEN.Length and “Enable” field to 1 to signal that its mailbox is now enabled.
 
 Driver must follow this exact sequence of operations in order to initialize the mailbox queue context.
-After this Driver writes the first message to TX mailbox and waits for 20 msec for response, if no response it tries at least 10 times with a gap of 20 msec before it fails to load the driver.
+After this, the driver writes the first message to TX mailbox and waits for 20 msec for response, if no response it tries at least 10 times with a gap of 20 msec before it fails to load the driver.
 
 ### Mailbox Queues Disable
 
@@ -403,16 +403,16 @@ There several Mailbox specific operations to be done by IDPF for Mailbox queues,
 
 TX direction:
 
-* IDPF reads the PF/VF_MBX_ATQLEN.Enable field to check if value is 1 before posting packets/buffers to the TX/RX queue. This in order to verify that the queue is enabled and commands can be posted. If the queue is found disabled, this means that the queue was disabled by CP and IDPF is expected to be under FLR and need to perform Function Level Reset flow as described in chapter below Function Level reset.
-* IDPF fills buffer with Command data, IDPF fills descriptor structure with proper information.
-* IDPF increases Tail (PF/VF_MBX_ATQT) by 1 to send commands to the device.
-* The device transmits the TX packet and overrides the TX descriptor  of the transmitted packet in the descriptor queue.
+* IDPF reads the PF/VF_MBX_ATQLEN.Enable field to check if value is 1 before posting packets/buffers to the TX/RX queue. This in order to verify that the queue is enabled and commands can be posted. If the queue is found disabled, this means that the queue was disabled by CP and IDPF is expected to be under FLR and need to perform Function Level Reset flow as described in the chapter below Function Level reset.
+* IDPF fills buffer with command data, IDPF fills descriptor structure with proper information.
+* IDPF increases tail (PF/VF_MBX_ATQT) by 1 to send commands to the device.
+* The device transmits the TX packet and overrides the TX descriptor of the transmitted packet in the descriptor queue.
 * IDPF polls the TX descriptor queue for completed descriptors (or waits for interrupt to be launched).
 * The descriptor that belongs to completed packets are ones with the DD flag set.
 
 RX direction:
 
-* IDPF adds descriptors to the RX queue pointing to empty buffers and then sends the Tail point to notify the device that buffers are available.
+* IDPF adds descriptors to the RX queue pointing to empty buffers and then sends the tail point to notify the device that buffers are available.
 * The device receives the RX packet, writes it to the host memory and then overrides the RX descriptor of the received packet in the descriptor queue.
 * IDPF polls the RX descriptor queue for completed descriptors (or waits for interrupt to be launched).
 * The descriptor that belongs to completed packets are ones with the DD flag set.
@@ -421,16 +421,16 @@ IDPF reads the additional buffer (“Data Address low/high”), which arrives to
 
 # Data Queues
 
-TX and RX queue types are valid in single as well as split queue models. With Split Queue model, 2 additional types are introduced - TX_COMPLETION and RX_BUFFER. In split queue model, RX corresponds to the queue where Device posts completions.
+TX and RX queue types are valid in single as well as split queue models. With split queue model, 2 additional types are introduced - TX_COMPLETION and RX_BUFFER. In split queue model, RX corresponds to the queue where device posts completions.
 
-## LAN RX queues
+## LAN RX Queues
 
 A receive descriptor queue is made of a list of descriptors that point to memory buffers in host memory for storing received packet data of a particular queue.
 
 Each queue is a cyclic ring made of a sequence of receive descriptors in contiguous memory. 
 A packet may be stored in a single receive descriptor or spread across multiple receive descriptors, depending on the size of the buffers associated with the receive descriptor and the size of the received packet.
 
-This section describes the different RX queue modes supported by this specification, describes how SW posts new RX descriptors for Device, and describes how Device indicates to SW that it can reuse the buffers and descriptors for new packets.
+This section describes the different RX queue modes supported by this specification, describes how SW posts new RX descriptors for device, and describes how device indicates to SW that it can reuse the buffers and descriptors for new packets.
 The mode of operation is a per queue configuration. Each queue can be configured to work in a different model:
 
 * In order single queue model. 
@@ -441,76 +441,76 @@ The mode of operation is a per queue configuration. Each queue can be configured
 The device must negotiate at least one of the features above.
 
 The minimal and maximal buffers sizes that are supported by Device are negotiable Device capabilities.
-The possible values and default values (in the absence of negotiation) of those capabilities are described in the RX packet/buffer sub-section under the Device capabilities section.
+The possible values and default values (in the absence of negotiation) of those capabilities are described in the RX packet/buffer sub-section under the device capabilities section.
 
 Note that the device is not obligated to check the maximal packet length of a packet delivered to driver.
 
-### In order single queue model
+### In order Single Queue Model
 
-In the single queue model, the same descriptor queue is used by SW to post descriptors to Device and used by Device to report completed descriptors to SW.
+In the single queue model, the same descriptor queue is used by SW to post descriptors to device and used by device to report completed descriptors to SW.
 
 SW writes the packet descriptors to the queue and updates the QRX_TAIL register to point to the descriptor after the last descriptor written by SW (points to the first descriptor owned by SW).
 Tail pointer should be updated in 8 descriptors granularity. 
 
-After Device writes the packet to the data buffers (pointed by the fetched descriptors) it reports a completion of a received packet by overriding the packet descriptors in ring with the write format descriptor (as described in LAN Receive Descriptor Write Back Formats).
+After the device writes the packet to the data buffers (pointed by the fetched descriptors) it reports a completion of a received packet by overriding the packet descriptors in ring with the write format descriptor (as described in LAN Receive Descriptor Write Back Formats).
 
 In this model, completions are reported “in order” - according to the packet placement order in the queue.
 
-The diagram below illustrates the descriptors’ Device/SW ownership based on the Tail pointer:
+The diagram below illustrates the descriptors’ Device/SW ownership based on the tail pointer:
 
 * TAIL pointer represents the following descriptor after last descriptor written to the ring by SW.
-* HEAD pointer represents the following descriptor after last descriptor written by Device.
-* White descriptors (owned by Device) are waiting to be processed by Device or currently processed by Device.
-* Blue descriptors (owned by SW) were already processed by Device and can be reused again by SW.
-* Zero descriptor are owned by Device when TAIL == HEAD
+* HEAD pointer represents the following descriptor after last descriptor written by the device.
+* White descriptors (owned by device) are waiting to be processed by the device or currently processed by the device.
+* Blue descriptors (owned by SW) were already processed by the device and can be reused again by SW.
+* Zero descriptor are owned by the device when TAIL == HEAD
 * The SW should never set the TAIL to a value above the HEAD minus 1.
 
 ![Descriptor](Diagrams/descriptor.PNG)
 
-### Out of order split queue model
+### Out of order Split Queue Model
 
-In the split queue model, "Rx Buffer Queues" are used to pass descriptor
-buffers from SW to Device while Rx Queues are used only to pass the
+In the split queue model, "RX Buffer Queues" are used to pass descriptor
+buffers from SW to device while RX queues are used only to pass the
 descriptor completions (descriptors that point to completed buffers)
-from Device to SW (as opposed to the single queue model in which
-Rx Queues are used  for both purposes).
+from the device to SW (as opposed to the single queue model in which
+RX queues are used for both purposes).
 
 In this model, descriptor completions can be reported “out of order” -
 not according to the descriptor placement order in the buffer queue.
 
 To enable SW to associate a buffer with a completion, SW writes a unique
 buffer identifier to each descriptor written to the RX buffer queue
-while Device writes back this buffer identifier to the completed
+while the device writes back this buffer identifier to the completed
 descriptor later written to the RX queue.  
-Device supports an asymmetric ratio of Rx Buffer queues to RX queues.
+The device supports an asymmetric ratio of RX buffer queues to RX queues.
 
-For the Split-queue model RX buffer Queues can be used in groups where
-each group contains two RX buffer Queues, one with small buffers and one
+For the split-queue model RX buffer queues can be used in groups where
+each group contains two RX buffer queues, one with small buffers and one
 with big buffers. In case the received packet length is smaller than the
-small buffer , the whole packet is copied to a small buffer and in case
-the packet is bigger then small buffer the whole packet is copied to 1
+small buffer, the whole packet is copied to a small buffer and in case
+the packet is bigger then the small buffer the whole packet is copied to 1
 or more big buffers.
 
 In case header split offload is activated and the packet header is
-copied to a separate, dedicated buffer , the decision if to copy the
+copied to a separate, dedicated buffer, if the decision is to copy the
 packet payload to a small buffer or to 1 or more big buffers is based on
 the packet payload length and not on the whole packet length (header and
 payload).
 
 RX queue to RX buffer queue/s association details :
 
-- Each Rx Queue is associated to a single Rx Buffer Queue Group and in the usual case, Rx Buffer Queue Group will feed a set of Rx queues.
-- Rx Buffer Queue Group consists of one or two Rx Buffer Queues. On a given Rx Buffer queue, every buffer (or buffer pair, when header split is supported for the queue) points to a buffer (or buffer pair) of the same size.
-- When the Rx Buffer Queue Group consists of 2 Rx Buffer Queues, each one of the queues points to buffers of a distinct size.
-- The association between an RX queue and Buffer queue group is defined in RX queue context.
+- Each RX queue is associated to a single RX Buffer Queue Group and in the usual case, Rx Buffer Queue Group will feed a set of RX queues.
+- RX Buffer Queue Group consists of one or two RX Buffer Queues. On a given RX buffer queue, every buffer (or buffer pair, when header split is supported for the queue) points to a buffer (or buffer pair) of the same size.
+- When the RX Buffer Queue Group consists of 2 RX Buffer Queues, each one of the queues points to buffers of a distinct size.
+- The association between an RX queue and buffer queue group is defined in RX queue context.
 
 The number of buffer queues in the group can be 1 or 2 as defined by the
-*num_buf_queues_per_rx* Device capability. The possible values and default
-value (in the absence of negotiation) are described in the [<u>Device
+*num_buf_queues_per_rx* device capability. The possible values and default
+value (in the absence of negotiation) is described in the [<u>Device
 capabilities
 section.</u>](#device-capabilities-default-values-assumed-by-the-idpf-driver)
 
-### RX Buffer queues
+### RX Buffer Queues
 
 As with the single queue model, when posting buffer to the buffer queue,
 SW writes the receive descriptors and updates the TAIL pointer in the
