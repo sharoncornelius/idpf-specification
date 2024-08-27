@@ -222,18 +222,18 @@ Virtchannel is a SW protocol defined on top of a device supported mailbox in cas
 
 The driver holds a transmit and receive mailbox queue pair for communication with the CP.
 
-For both RX and TX queues the interface is like the “In order, single queue model” (see RX In order single queue model and TX In order single queue model) LAN (Local Area Network) queue with the following exceptions:
+For both RX and TX queues the interface is like the “In order single queue model” (see RX In order single queue model and TX In order single queue model) LAN (Local Area Network) queue with the following exceptions:
 
 * TX mailbox:
-  * The maximum packet size is 4KB.
-  * Packet is pointed by a single 32B descriptor. Packet data resides in a single buffer.
-  * Packet can be a zero-byte packet (in that case, the descriptor does not point to a data buffer).
-  * Device reports completion (descriptor write back) for every mailbox packet/descriptor, which will be received into the RX mailbox queue.
+  - The maximum packet size is 4KB.
+  - Packet is pointed by a single 32B descriptor. Packet data resides in a single buffer.
+  - Packet can be a zero-byte packet (in that case, the descriptor does not point to a data buffer).
+  - Device reports completion (descriptor write back) for every mailbox packet/descriptor, which will be received into the RX mailbox queue.
 * RX mailbox:
-  * SW fills the RX queue with 32B descriptors that point to 4KB buffers.
-  * The maximum packet size is 4KB. RX packet data resides in a single buffer.
-  * Packet can be a zero-byte packet (in that case, data buffer remains empty).
-  * RX mailbox is set by device as fast drop in absence of sufficient RX descriptors/buffers posted by the driver, in order to avoid DDoS and blocking of the pipe.
+  - SW fills the RX queue with 32B descriptors that point to 4KB buffers.
+  - The maximum packet size is 4KB. RX packet data resides in a single buffer.
+  - Packet can be a zero-byte packet (in that case, data buffer remains empty).
+  - RX mailbox is set by device as fast drop in absence of sufficient RX descriptors/buffers posted by the driver, in order to avoid DDoS and blocking of the pipe.
 
 The mailbox queues CSRs (Control Status Registers) are in fixed addresses and are described in Appendix Section [- PF/VF- Mailbox Queues]().
 
@@ -433,9 +433,9 @@ A packet may be stored in a single receive descriptor or spread across multiple 
 This section describes the different RX queue modes supported by this specification, describes how SW posts new RX descriptors for device, and describes how device indicates to SW that it can reuse the buffers and descriptors for new packets.
 The mode of operation is a per queue configuration. Each queue can be configured to work in a different model:
 
-* In order single queue model. 
+* In order single queue model 
   This option is supported only when VIRTCHNL2_CAP_RXQ_MODEL_SINGLE feature is negotiated. 
-* Out of order split queue model.
+* Out of order split queue model
   This option is supported only when VIRTCHNL2_CAP_RXQ_MODEL_SPLIT feature is negotiated. 
 
 The device must negotiate at least one of the features above.
@@ -738,11 +738,11 @@ The Base RXDID values are 0 and 1:
 Any other RXDID value indicates that the write descriptor format is
 flex.
 
-### RX descriptor read formats
+### RX Descriptor Read Formats
 
 #### 16B RX descriptors read format for single Q model
 
-This is the read descriptor used when a queue operates in “In order,
+This is the read descriptor used when a queue operates in “In order
 single queue model.”  
 Descriptor length is 16B.
 
@@ -750,15 +750,15 @@ Descriptor length is 16B.
 
 Descriptor fields layout:
 
-- **Packet Buffer Address (64b)**  
+* **Packet Buffer Address (64b)**  
   The physical address of the packet buffer defined in byte units. The packet buffer size is defined in the receive queue context. 
 
-- **Header Buffer Address (64b)**  
+* **Header Buffer Address (64b)**  
   The physical address of the header buffer defined in byte units. The header address should be set by the software to an even number (word aligned address). The Header Buffer Address is meaningful only for Header Split queues and Split Always queues as defined by the DTYPE (descriptor type) field in the receive queue context. If a received packet spans across multiple buffers, only the first descriptor's header buffer is used. The header buffer size is defined in the receive queue context. The header buffer address is an even number to keep bit0 of the address set to zero (regardless of header split enablement). This bit is used as a place holder to the Descriptor Done ('DD') indication to the software reported on the as part of the descriptor write back format.
 
-#### 32B RX descriptors read format for single Q model
+#### 32B RX Descriptors Read Format for Single Q Model
 
-This is the read descriptor used when the queue operates in “In order,
+This is the read descriptor used when the queue operates in “In order
 single queue model.”  
 Descriptor length is 32B.
 
@@ -769,7 +769,7 @@ Descriptor fields layout:
 The fields in the first 16 Bytes are Identical to the 16 Byte
 descriptors described above.
 
-#### 16B RX descriptors read format for split Q model
+#### 16B RX Descriptors Read Format for Split Q Model
 
 This is the read descriptor used when queue operates in “Out of order,
 split queue model.”  
@@ -779,12 +779,12 @@ Descriptor fields layout:
 
 ![16B RX Descriptor Read format for Split Queue Model](Diagrams/rx_desc_read_split_q_16B.png)
 
-- **Buffer identifier (16): **The unique buffer identifier used by SW to associate the packet buffer addressed by this descriptor with the completion queue descriptor.
-- **Packet Buffer Address (64b)**: The physical address of the packet buffer defined in byte units. The packet buffer size is defined in the negotiated receive queue context. 
+* **Buffer identifier (16): **The unique buffer identifier used by SW to associate the packet buffer addressed by this descriptor with the completion queue descriptor.
+* **Packet Buffer Address (64b)**: The physical address of the packet buffer defined in byte units. The packet buffer size is defined in the negotiated receive queue context. 
 
-#### 32B RX descriptors read format for split Q model
+#### 32B RX Descriptors Read Format for Split Q Model
 
-This is the read descriptor used when queue operates in “Out of order,
+This is the read descriptor used when queue operates in “Out of order
 split queue model.”  
 Descriptor length is 32B.
 
@@ -792,14 +792,14 @@ Descriptor length is 32B.
 
 Descriptor fields layout:
 
-- **Buffer identifier (16)**  
+* **Buffer identifier (16)**  
   The unique buffer identifier used by SW to associate the header buffer and packet buffer addressed by this descriptor with the completion queue descriptor.
-- **Packet Buffer Address (64)**  
+* **Packet Buffer Address (64)**  
   Identical to the definition described above.
-- **Header Buffer Address (64)**  
+* **Header Buffer Address (64)**  
   Identical to the definition described above.
 
-### RX descriptor write formats
+### RX Descriptor Write Formats
 
 A single packet might span a single buffer or multiple buffers reported
 by their matched descriptors. If a packet is described by a single
@@ -827,9 +827,9 @@ descriptors:
 3.  All other fields are valid only in the last descriptor of a packet.
 
 
-#### 16B RX descriptors write format Base
+#### 16B RX Descriptors Write Format Base
 
-This is the write descriptor used when the queue operates in “In order,
+This is the write descriptor used when the queue operates in “In order
 single queue model.”  
 Descriptor length is 16B.
 
@@ -1215,9 +1215,9 @@ capabilities.</p></th>
 </tbody>
 </table>
 
-#### 32B RX descriptors write format Base
+#### 32B RX Descriptors Write Format Base
 
-This is the write descriptor used when the queue operates in “In order,
+This is the write descriptor used when the queue operates in “In order
 single queue model.”  
 Descriptor length is 32B.
 
@@ -1334,12 +1334,12 @@ is cleared.</p></th>
 </tbody>
 </table>
 
-#### Flex RX descriptors write format
+#### Flex RX Descriptors Write Format
 
-The "Flex" write back formats are used in the “In order, single queue
-model" and for "Out of order, split queue model".
+The "Flex" write back formats are used in the “In order single queue
+model" and for "Out of order split queue model".
 
-#### 16B RX descriptors write format Flex
+#### 16B RX Descriptors Write Format Flex
 
 ![16B RX Descriptor Write Back format flex](Diagrams/16B_rx_desc_wb_flex.png)
 
@@ -1560,7 +1560,7 @@ length of the first RSC segment.</p></th>
 </tbody>
 </table>
 
-#### 32B RX descriptors write format Flex
+#### 32B RX Descriptors Write Format Flex
 
 ![32B RX Descriptor Write Back format flex](Diagrams/32B_rx_desc_wb_flex.png)
 
@@ -2107,20 +2107,20 @@ format.</p></th>
 
 ##### 
 
-#### Flex RX descriptors notes
+#### Flex RX Descriptors Notes
 
 The differences in the usage of flex descriptor formats between the
-single queue and split queue models are as follows :
+single queue and split queue models are as follows:
 
 - The split status field is valid only for the "split queue model" (In the single queue model this field is irrelevant and ignored by software.
 - RSC is enabled only for "split queue model" queue and therefore RSC related fields (RSC flag and RscSegLen) are valid only for this queue model.
 - Field FlexiMD.0/BufferID in the first 16B of the descriptor holds the FlexiMD.0 field when "single queue model" and holds BufferID when “split queue model”.
 
 Regardless of queue model, the following fields in the descriptor can
-hold different values depending on the negotiated queue context : 
+hold different values depending on the negotiated queue context: 
 
 1.  Depending on negotiated queue context, the "Hash [23:16]/MirrorID/FlexiFlags1" field in the first 16B of the descriptor holds the MirrorID field or the Hash [23:16] or the FlexiFlags1 field.
-2.  Depending on negotiated queue context ,the “FlexiMD.1/Raw_CS/L2TAG1/RSCPayLen” field in the first 16B of the descriptor holds one of the following values :
+2.  Depending on negotiated queue context ,the “FlexiMD.1/Raw_CS/L2TAG1/RSCPayLen” field in the first 16B of the descriptor holds one of the following values:
     1.  Holds the RSCPayLen for an RSC packet or the Raw csum for a non RSC packet.
     2.  Holds the L2TAG1 field in case the tag is present in the RX descriptor (L2TAG1P flag is set) or holds the FlexiMD.1 field.
     3.  Always holds the FlexiMD.1 field.
@@ -2131,7 +2131,7 @@ Field "L2TAG2/FlexMD2" in the second 16B of the descriptor holds L2TAG2
 if L2TAG2P is set,  
 Else , field holds FlexMD2.
 
-## TX queues
+## TX Queues
 
 A transmit descriptor queue is a cyclic ring made of a list of
 descriptors that points to memory buffers in host memory for the TX
@@ -2150,15 +2150,15 @@ and descriptors for new packets.
 The mode of operation is a per queue configuration. each queue can be
 configured to work in a different model:
 
-- In order , single queue model. This option is supported only when VIRTCHNL2_TXQ_MODEL_IN_ORDER_SINGLE feature is negotiated.
-- In order , split queue model. This option is supported only when VIRTCHNL2_TXQ_MODEL_IN_ORDER_SPLIT feature is negotiated.
-- Out of order , split queue model. This option is supported only when VIRTCHNL2_TXQ_MODEL_OUT_OF_ORDER_SPLIT feature is negotiated.
+* In order single queue model. This option is supported only when VIRTCHNL2_TXQ_MODEL_IN_ORDER_SINGLE feature is negotiated.
+* In order split queue model. This option is supported only when VIRTCHNL2_TXQ_MODEL_IN_ORDER_SPLIT feature is negotiated.
+* Out of order split queue model. This option is supported only when VIRTCHNL2_TXQ_MODEL_OUT_OF_ORDER_SPLIT feature is negotiated.
 
 The device must negotiate at least
 VIRTCHNL2_TXQ_MODEL_OUT_OF_ORDER_SPLIT or
 VIRTCHNL2_TXQ_MODEL_IN_ORDER_SINGLE features.
 
-### In order single queue model
+### In Order Single Queue Model
 
 In this model completions are reported “in order” - according to the
 packet placement order in the queue.
@@ -2184,8 +2184,8 @@ which descriptor Device should report completion to SW.
 
 The following rules apply to RS bit setting :
 
-- SW must keep a minimal gap of IECM_TX_RS_MIN_GAP descriptors between 2 descriptors that have their RS flag set.
-- The RS flag can be set only on the last Transmit Data Descriptor of a packet (single sent packet or TSO).
+* SW must keep a minimal gap of IECM_TX_RS_MIN_GAP descriptors between 2 descriptors that have their RS flag set.
+* The RS flag can be set only on the last Transmit Data Descriptor of a packet (single sent packet or TSO).
 
 In addition to reporting completions for descriptors marked as such by
 SW (RS bit setting), occasionally (based on a periodic timer), Device
@@ -2198,20 +2198,20 @@ descriptors regardless of RS bit setting.
 The diagram below illustrates the descriptors Device/SW ownership based
 the Tail pointer:
 
-- TAIL pointer represents the Descriptor following the last descriptor
+* TAIL pointer represents the Descriptor following the last descriptor
   written to the ring by SW.
-- HEAD pointer represents the Descriptor following the last descriptor
+* HEAD pointer represents the Descriptor following the last descriptor
   written by Device.
-- White descriptors (owned by Device) are waiting to be processed by
+* White descriptors (owned by Device) are waiting to be processed by
   Device or currently processed by Device.
-- Blue descriptors (owned by SW) were already processed by Device and
+* Blue descriptors (owned by SW) were already processed by Device and
   can be reused again by SW.
-- Zero descriptor are owned by Device when TAIL == HEAD
-- The SW should never set the TAIL to a value above the HEAD minus 1.
+* Zero descriptor are owned by Device when TAIL == HEAD
+* The SW should never set the TAIL to a value above the HEAD minus 1.
 
 ![Descriptors Device/SW ownership](Diagrams/descriptor_Device_SW_ownership.png)
 
-### In order , split queue model
+### In Order Split Queue Model
 
 In this model completions are reported “in order” - according to the
 packet placement order in the queue.
@@ -2244,17 +2244,17 @@ already reported to this descriptor due to RS bit setting).
 For this model , the “TX head” field in PCE holds the TX queue offset of
 the descriptor that follows the RS marked descriptor.
 
-### Out of order split queue model
+### Out of Order Split Queue Model
 
 In this model completion can be reported “out of order” - not according
 to the packet descriptors placement order in the TX queue.
 
-As in the “In order , single queue model” , also in this model:
+As in the “In order single queue model”, also in this model:
 
-- "TX Queues" are used to pass buffers from SW to Device while "Tx Completion Queues" are used to pass descriptor completions from Device to SW (also called PCE- packet completion element).
-- Single Device supports an asymmetric ratio of Tx queues to TX Completion queues. Each TX queue is associated to a single TX completion Queue and in the usual case, TX completion Queue will be fed by a set of Tx queues. The association between a TX queue and the completion queue is defined in the TX queue context.
+* "TX Queues" are used to pass buffers from SW to Device while "Tx Completion Queues" are used to pass descriptor completions from Device to SW (also called PCE- packet completion element).
+* Single Device supports an asymmetric ratio of Tx queues to TX Completion queues. Each TX queue is associated to a single TX completion Queue and in the usual case, TX completion Queue will be fed by a set of Tx queues. The association between a TX queue and the completion queue is defined in the TX queue context.
 
-In contrast to the “In order , single queue model” where PCE can be
+In contrast to the “In order single queue model” where PCE can be
 written to the completion queue once in a few packets (controlled RS bit
 setting ) for this model PCE is written to the completion queue for
 every packet.
@@ -2270,20 +2270,20 @@ By setting the RE bit in the TX read descriptor, SW indicates to the
 Device on which descriptors Device should report a “descriptor fetch”
 PCE to SW.
 
-For this model ,the “TX head” field in “descriptor fetch” PCE holds the
+For this model, the “TX head” field in “descriptor fetch” PCE holds the
 TX queue offset of the descriptor that follows the RE marked
 descriptor.  
   
 The following rules apply to RE bit setting :
 
-- SW must keep a minimal gap of IECM_TX_SPLITQ_RE_MIN_GAP descriptors between 2 descriptors that have their RE flag set.
-- The RE flag can be set only on the last Transmit Data Descriptor of a packet (single sent packet or TSO).
+* SW must keep a minimal gap of IECM_TX_SPLITQ_RE_MIN_GAP descriptors between 2 descriptors that have their RE flag set.
+* The RE flag can be set only on the last Transmit Data Descriptor of a packet (single sent packet or TSO).
 
 Note that the descriptor fetch completion functionality
 enables software to reuse the descriptor queue slots before data was
 fetched from host memory.
 
-### TX completion queues
+### TX Completion Queues
 
 TX completion queues are used in the split queue models.  
 For the Tx Completion Queue, SW tracks the number of potential
@@ -2310,7 +2310,7 @@ SW uses this bit to identify newly written completions by Device versus
 ones which have already been processed by SW. The bit polarity is
 flipped every ring wraparound.
 
-### TX descriptor formats
+### TX Descriptor Formats
 
 The text below describes the TX read descriptor formats and TX write
 descriptor formats.  
@@ -2325,12 +2325,12 @@ descriptor also holds the unique packet identifier (sent as is to packet
 completion) used for SW to associate the submitted packet with the
 completed packet.
 
-### TX descriptor read formats
+### TX Descriptor Read Formats
 
 There are two basic types of descriptors: Data and Context.
 
-- Data descriptors point to packet buffers at host memory.
-- Context descriptors and data descriptors hold offload parameters (such as TSO, checksum offload, etc.) and metadata passed to downstream blocks.
+* Data descriptors point to packet buffers at host memory.
+* Context descriptors and data descriptors hold offload parameters (such as TSO, checksum offload, etc.) and metadata passed to downstream blocks.
 
 All TX descriptors have a DTYPE field that represents the descriptor
 type.  
@@ -2358,13 +2358,13 @@ Standardization.
 
 Note:
 
-6 are already defined in Current Spec, 13 Free for future , 3 WIP, 10 “Reserved for OEM”.  
+6 are already defined in Current Spec, 13 Free for future, 3 WIP, 10 “Reserved for OEM”.  
 2 DTYPEs out of the 13 free DTYPs are “reserved for OEM” for In-order
 Single Queue and free for the other queue models.
 
-| **DTYPE** | **Queue models**                                                              |
+| **DTYPE** | **Queue Models**                                                              |
 |-----------|-------------------------------------------------------------------------------|
-| 0         | *Base TX Data & Context Descriptor Formats for* In order, single queue model. |
+| 0         | *Base TX Data & Context Descriptor Formats for* In order single queue model   |
 | 1         | *Native TX Context*                                                           |
 | 2         | Reserved for OEM                                                              |
 | 3         | Free                                                                          |
@@ -2390,7 +2390,7 @@ Single Queue and free for the other queue models.
 #### Base TX Data Descriptor - DTYPE = 0x0
 
 This is the basic data descriptor used for “in order” queues. (When the
-queue operates in “In order, single queue model” or in “In order , split
+queue operates in “In order single queue model” or in “In order split
 queue model”).
 
 ![Base Tx Descriptor DTYPE = 0x0](Diagrams/base_tx_desc_dtype0.png)
@@ -3086,12 +3086,12 @@ checksum when the DUMMY flag is set.</p>
 </tbody>
 </table>
 
-### TX packet and descriptors building rules Summary
+### TX Packet and Descriptors Building Rules Summary
 
 The packet and descriptors building rules are specified below. Any
 violation of those rules might be detected as malicious driver behavior.
 
-- Device executes L3/L4 checksum for packet checksums according to feature negotiation. When negotiated, Device calculates checksum for the relevant layer without SW activation (through descriptor.) The only exception is of the inner L4 checksum calculation that is executed when one of the conditions below is true
+* Device executes L3/L4 checksum for packet checksums according to feature negotiation. When negotiated, Device calculates checksum for the relevant layer without SW activation (through descriptor.) The only exception is of the inner L4 checksum calculation that is executed when one of the conditions below is true
 
   1.  Base mode data descriptor - when L4T is set to UDP ,TCP or SCTP or when IIPT is set to to "IPv4 packet with IP checksum offload "
   2.  CS_EN is set to 1.
@@ -3109,7 +3109,7 @@ violation of those rules might be detected as malicious driver behavior.
   3.  In case a single buffer holds a mixture of packet header and packet payload, for that limitation, that buffer is treated as 2 buffers.
 - If a packet or TSO spans on single or multiple transmit data descriptors:
   1.  All data descriptors in a packet must use the same DTYPE.
-  2.  When the queue operates in “in order , single queue model” or “out of order , split queue model” the data descriptors of the packet must be anything but DTYPEs 12. When the queue operates in "out of order ,split queue model" the data descriptors of the packet must be DTYPE 12.
+  2.  When the queue operates in “in order single queue model” or “out of order split queue model” the data descriptors of the packet must be anything but DTYPEs 12. When the queue operates in "out of order ,split queue model" the data descriptors of the packet must be DTYPE 12.
   3.  The fields in all the data descriptors must be valid.
   4.  All data descriptor fields but the Packet buffer address, TX buffer Size, and flags EOP, RS, and RE must carry the same values.
   5.  EOP must be set at the last data descriptor of a message and only there.
@@ -3127,12 +3127,12 @@ violation of those rules might be detected as malicious driver behavior.
   Note: A TSO context descriptor is one that has MSS, Tlen and Headerlen fields or a Base mode TX context descriptor of Dtype 0x1.
 - For a TSO packet, either its data descriptors or its first context descriptor must describe the packet header length. The *max_tx_hdr_len_seg* negotiated capability defines the Maximal header length supported by the device for segmentation.
 
-### Tx Descriptor write formats 
+### Tx Descriptor Write Formats 
 
 #### TX Writeback Descriptor Format - DTYPE = 0x0F
 
 This is the write back descriptor written to the descriptor queue when a
-queue operates in “In order, single queue model.”
+queue operates in “In order single queue model.”
 
 In these descriptors, the only significant fields are the 4-bit DTYPE
 (that is set to 0x0F) and RS bit that keeps its original value from the
@@ -3141,16 +3141,16 @@ Device may write any value to the Other Descriptors fields.
 
 ![Tx Descriptor WriteBack DTYPE = 0x0F](Diagrams/tx_desc_wb_dtype0x0f.png)
 
-### TX completion descriptor format  
+### TX Completion Descriptor Format  
 
 The text below describes the TX completion element written to the
 completion queue when a queue operates in “Out of order, split queue” or
-in “in order, split queue” models.
+in “in order split queue” models.
 
-As a completion queue setting , The TX completion element length can be
+As a completion queue setting, the TX completion element length can be
 either 4B or 8B.
 
-The 4B completion element layout is described below :
+The 4B completion element layout is described below:
 
 <table>
 <colgroup>
@@ -3175,9 +3175,9 @@ TX queue ID within the completion queue owner space.</th>
 <th>13:11</th>
 <th><p>Completion entry type (this is a coding of completion types).</p>
 <p>0:  Regular packet completion triggered by a periodic timer.<br />
-This is relevant only when the queue operates in the "in order , split
+This is relevant only when the queue operates in the "in order split
 queue" model).<br />
-From the SW point of view , this completion is similar to a “Regular
+From the SW point of view, this completion is similar to a “Regular
 Packet completion” (Completion entry type 2) and should be treated the
 same.</p>
 <p>1:  Regular packet completion for a packet sent on the exception path
@@ -3187,8 +3187,8 @@ model).<br />
 2: Regular Packet completion.</p>
 <p>TX packet completion for a packet that its RS bit set in the last TX
 descriptor ( when the queue operates in "on of order , split queue" or
-in “in order, single queue” models) or for every packet ( when the queue
-operates in "out of order , split queue" model ).<br />
+in “in order single queue” models) or for every packet (when the queue
+operates in "out of order split queue" model ).<br />
 <br />
 3: reserved.</p>
 <p>4: Descriptor fetch completion for a packet that has its RE bit set
@@ -3278,15 +3278,15 @@ is set to zero .</p></th>
 </tbody>
 </table>
 
-<span class="mark">Unlike the “in order , single queue model” which
-implements a descriptor done (DD) bit, for “in order , split queue” and
-“out of order , split queue” models (in which completion queue is used)
+<span class="mark">Unlike the “in order single queue model” which
+implements a descriptor done (DD) bit, for “in order split queue” and
+“out of order split queue” models (in which completion queue is used)
 ,software identifies new completion queue entries by comparing the
 generation bit. Hardware toggles the generation bit on every wraparound
 on the completion queue. Using this method, software can determine the
 old entries from the new ones by looking for mismatches on the
 generation bit from one descriptor to the next.  
-When working with a completion queue , Software must not post new
+When working with a completion queue, software must not post new
 packets to the TX queue unless it is guaranteed that the completions of
 the packets (either descriptor fetch completion or data fetch
 completion) will not be overlapped before software processes
@@ -3303,13 +3303,13 @@ The device supports the following interrupt modes:
 
 In each PF, only one of the two modes is enabled.
 
-### MSI mode 
+### MSI Mode 
 
 MSI is exposed in the MSI capability structure of the PCI configuration space of each PF. MSI is enabled by the OS using the "MSI Enable" flag of the "MSI Capability" structure in the PCI configuration space per PF.
 
 There is no support for MSI in VFs.
 
-### MSI-X mode 
+### MSI-X Mode 
 
 MSI-X enables multiple interrupts for the PFs/VFs.
 
@@ -3331,15 +3331,15 @@ Interrupt enablement by the driver is done via the INTENA flag in the
 VF/PFINT_DYN_CTL_N registers. (VF/PFINT_DYN_CTL_N is per vector control
 register while N represents the function vector index.).
 
-- Upon interrupt assertion, the INTENA flag is automatically cleared by Device. This prevents new interrupts from being issued until the interrupt is enabled once again by SW.
-- Software enables the interrupt by setting the INTENA flag and clearing NO_INT_MODE flag in the relevant VF/PFINT_DYN_CTL_N register.
+* Upon interrupt assertion, the INTENA flag is automatically cleared by Device. This prevents new interrupts from being issued until the interrupt is enabled once again by SW.
+* Software enables the interrupt by setting the INTENA flag and clearing NO_INT_MODE flag in the relevant VF/PFINT_DYN_CTL_N register.
 
 Setting or clearing *INTENA*, not as part of an interrupt handling
 routine, might lead to race conditions and therefore it is expected that
 software never clears *INTENA* and clearing of *INTENA* always be done
 by hardware.
 
-## Interrupt causes 
+## Interrupt Causes 
 
 This section lists all interrupt cause clients (sources).
 
@@ -3350,8 +3350,8 @@ trigger an interrupt.
 
 Each transmit queue is a potential interrupt cause client. The following events of the queue are considered as transmit events that can trigger an interrupt:
 
-- In case a packet generates a completion, when packet completion is written the completion queue (split queue model) or when packet descriptor is written to the descriptor queue (single queue model).
-- In case a packet did not generate a completion (in order queue model, sparse RS bit setting), when packet processing is completed by the device.
+* In case a packet generates a completion, when packet completion is written the completion queue (split queue model) or when packet descriptor is written to the descriptor queue (single queue model).
+* In case a packet did not generate a completion (in order queue model, sparse RS bit setting), when packet processing is completed by the device.
 
 When an interrupt is issued, SW should assume that the descriptor/completion of the latest packet processed by the device for that queue was written to the descriptor/completion queue regardless of if the packet generated a completion or not. (Before an interrupt is issued, the device writes the descriptor/completion of the latest packet processed for the queue).
 
@@ -3361,17 +3361,17 @@ Transmit queue ‘n’ can be enabled for interrupts by the IDPF using configura
 
 Each receive queue is a potential interrupt cause client. The following events of the queue are considered as a receive event that can trigger an interrupt :
 
-- When packet descriptors are written the completion queue (split queue model) or to the RX descriptor queue (single queue model).
+* When packet descriptors are written the completion queue (split queue model) or to the RX descriptor queue (single queue model).
 
-When an interrupt is issued , SW should assume that the descriptor/completion of all packets processed by the device for that queue were written to the completion queue.
+When an interrupt is issued, SW should assume that the descriptor/completion of all packets processed by the device for that queue were written to the completion queue.
 
 Receive queue ‘n’ can be enabled for interrupts by the IDPF using configuration flows described below. The queues can be mapped to any interrupt vector within the function space and mapped to any of its ITRs.
 
-### Receive buffer queues 
+### Receive Buffer Queues 
 
 Each receive buffer queue in “split queue model” is a potential interrupt cause client. The following events of the queue are considered as a receive event that can trigger an interrupt:
 
-- Head WB reporting (as described in “Out of order split queue model” section) is triggered if packet descriptors are fetched from host memory and the notification stride is crossed.
+* Head WB reporting (as described in “Out of order split queue model” section) is triggered if packet descriptors are fetched from host memory and the notification stride is crossed.
 
 When interrupt is issued, SW should assume that the latest head WB value for that queue is updated.
 
@@ -3379,7 +3379,7 @@ Receive buffer queue ‘n’ can be enabled for interrupts by the IDPF using con
 
 Issuing interrupt for receive buffer queues Head WB reporting is supported only when VIRTCHNL2_RX_SPLITQ_INTR_ON_HEAD_WB feature is negotiated.
 
-### Mailbox queues
+### Mailbox Queues
 
 The software driver supports Mailbox queues.
 
@@ -3387,7 +3387,7 @@ A completion of a VirtChnl command on the transmit mailbox queue or receiving a 
 
 Note that the device support for interrupt and interrupt flows are the same for RX/TX mailbox queues and for regular RX/TX queues.
 
-## Interrupt throttling 
+## Interrupt Throttling 
 
 Interrupt Throttling (ITR) is a mechanism that guarantees a minimum gap
 between two consecutive interrupts.
@@ -3582,29 +3582,29 @@ Additionally :
 - The intervals cannot be read through in the GLINT_DYN_CTL registers.
 - By default ,changing the ITR interval through this interface value causes the timer to expire which triggers an immediate interrupt in case there are pending causes.
 
-## Miscellaneous SW operations
+## Miscellaneous SW Operations
 
-### SW initiated interrupt 
+### SW Initiated Interrupt 
 
 The device enables SW to issue an interrupt cause to any of the vectors
 assigned to it and associate it with any of the ITR timers.
 
 A SW cause is submitted using the GLINT_DYN_CTL register.
 
-In the GLINT_DYN_CTL register software should :
+In the GLINT_DYN_CTL register software should:
 
-1.  Set SWINT_TRIG to 1 . This flag is used to trigger the SW cause.
+1.  Set SWINT_TRIG to 1. This flag is used to trigger the SW cause.
 2.  Set SW_ITR_INDX_ENA to 1.
 3.  Set SW_ITR_INDX to the associated ITR.
 
 Based on negotiation, the SW interrupt can be done be using the
 following options:
 
-- Piggybacked to an interrupt enablement operation using GLINT_DYN_CTL (i.e. when setting the INTENA flag).
+*Piggybacked to an interrupt enablement operation using GLINT_DYN_CTL (i.e. when setting the INTENA flag).
   - This option is supported only when VIRTCHNL2_CAP_INTR_SW_INTR_WITH_INTENA feature is negotiated.
   - SW can use this option only when operation occurs when interrupt is disabled or when interrupt is in NO_INT_MODE.
   - When using this option SW must clear the GLINT.INTENA_MSK flag.
-- As an individual operation using GLINT_DYN_CTL.
+*As an individual operation using GLINT_DYN_CTL.
   - This option is supported only when VIRTCHNL2_CAP_INTR_SW_INTR_INDV feature is negotiated.
   - SW must not use this option when the interrupt is in NO_INT_MODE.
   - When using this option SW must set the GLINT.INTENA_MSK flag.
@@ -3634,7 +3634,7 @@ request one vector per TX/RX queue pair. In the Split Queue model the
 IDPF will request one vector per Tx Completion queue and one per RX
 Buffer queue pair as well as one per RX Completion queue.
 
- Software pre-allocation, initialization and runtime configurations flow
+Software pre-allocation, initialization and runtime configurations flow
 is as follow:
 
 1. IDPF to discover its MSI-X related capabilities and resources by sending “VIRTCHNL_OP_GET_CAPS”, Opcode 100 command. Following this command, CP will reply back with following MSI-X related information:
@@ -3655,7 +3655,7 @@ got all its register information for runtime vector manipulation, it can
 use CP provided registers to control MSI-X vector functionality on
 runtime.
 
-# Overall flows
+# Overall Flows
 
 The Virtchannel messages are initiated by the Infrastructure Data-Plane
 Function driver and the CP sends a response.
@@ -3672,7 +3672,7 @@ the same driver function.
 Initialization includes Capability negotiation and virtchnl version
 negotiation.
 
-## Interrupt Initialization and Mailbox Initialization.
+## Interrupt Initialization and Mailbox Initialization
 
 At Initialization time, the SW sets up a mailbox queue pair by programming the mailbox queues registers such as Base Address, Length, Head and Tail pointers. Once these are programmed, the driver must enable the Mailbox queue as part of the length (xF_AxQLEN) registers.
 
@@ -5330,7 +5330,7 @@ configuration.
 
 ## L2 Tag Insertion Offload (WIP)
 
-- Device Interface
+* Device Interface
 
 L2 tag insertion offload is requested by the driver on a per-request
 basis (single send or TSO). If tag insertion is needed for a given
@@ -5338,13 +5338,13 @@ transmit packet placed on a transmit queue, the driver will specify that
 one or more tags should be inserted into the packet and will provide the
 tag(s) in the transmit descriptor(s).
 
-- Capability and Data structures
+* Capability and Data structures
 
 During the capability’s negotiation phase, the device will advertise
 whether it can support L2 tag insertion offload. If the feature is
 supported, the device will advertise how many L2 tags it can insert.
 
-- Configuration options
+* Configuration options
 
 On a per-message basis, the device may insert zero, one, or more L2
 tags. For each tag to be inserted, the first 16 bits (TPID) is
@@ -5354,7 +5354,7 @@ descriptor(s). If one tag needs to be added, it is provided in the data
 descriptor. If two or more tags need to be added, subsequent tag(s) are
 provided in the context descriptor.
 
-- Driver Configuration and Runtime flow
+* Driver Configuration and Runtime flow
 
 At configuration time, the driver will learn whether the device supports
 tag insertion offload and advertise support with the operating system
@@ -5367,7 +5367,7 @@ At run time, the driver will set up each transmit request to insert
 zero, one, or more tag(s), depending on the instructions from the
 operating system.
 
-- Device and Control Plane Behavioral Model
+* Device and Control Plane Behavioral Model
 
 If tag insertion offload is enabled for a given transmit request, the
 device will insert the tag(s) from the descriptor into the packet
@@ -5376,11 +5376,11 @@ same tag will be inserted for every individual packet.
 
 The device needs three pieces of information to perform this operation:
 
-- Number of tags to insert
+* Number of tags to insert
 
-- TCI value(s) for the inserted tag(s)
+* TCI value(s) for the inserted tag(s)
 
-- TPID value(s) for the inserted tag(s)
+* TPID value(s) for the inserted tag(s)
 
 The first two pieces of information are included in the descriptor on a
 per-request basis, while the TPID value(s) are configured up-front in
@@ -5396,14 +5396,14 @@ bits and consists of a TPID value followed by a TCI value.
 
 ## Tx Checksum
 
-- Device Interface
+* Device Interface
 
 Transmit checksum offload is requested by the driver on a per-packet
 basis. For a given transmit packet placed on a transmit queue, the
 driver will specify whether transmit checksum(s) should be calculated
 and inserted by the device.
 
-- Capability and Data structures
+* Capability and Data structures
 
 During the capabilities negotiation phase, the device will advertise
 support for the type(s) of transmit checksum calculation/insertion it is
@@ -6057,7 +6057,7 @@ regular completion came.</th>
 
 This feature enables Packet pacing hints to the device.
 
-- Device Interface
+* Device Interface
 
 The Driver fills out the Data descriptor with a hint to transmit a
 packet at a time in future. Field named SW_EDT in the Data descriptor
@@ -6068,16 +6068,16 @@ A value of 0 in SW_EDT means the SW is not asking to delay the packet,
 the device may still launch the packet at a future time when the
 scheduling conditions are met.
 
-- Capability and Data structures
+* Capability and Data structures
 
 In order to support SW requested packet pacing, the driver should
 configure Split Transmit queues and use flow Scheduling Descriptor
 format. The completions will be delayed and arrive out of order when the
 packet actually is scheduled by the device.
 
-- Driver Configuration and Runtime flow (WIP)
+* Driver Configuration and Runtime flow (WIP)
 
-- Device and Control Plane Behavioral Model (WIP)
+* Device and Control Plane Behavioral Model (WIP)
 
 ##  
 
@@ -6085,15 +6085,15 @@ packet actually is scheduled by the device.
 
 This feature enables flow steering to a queue or queue group or form dropping certain flows using exact match or wild card match filters on the device. It can be used for implementing tenant ACLs as well as long as the CP supports this feature for a given Driver interface.
 
-- Device Interface
+* Device Interface
 
 The Driver negotiates with the device the capability to add/delete/query flow steering filter rules over the mailbox. The response from the device can be negotiated as well using virtchannel flags
 
-- All responses: success or failure. This is the default setting for all virtchannel requests from the driver to CP.
-- Just failure response. This needs to be enabled by setting an appropriate virtchannel flag in the virtchannel Descriptor.
-- Fence. This needs to be enabled by setting an appropriate virtchannel flag in the virtchannel Descriptor. Upon setting this flag on a request from the driver to the CP, CP responds to this particular request after the CP checks all other previous requests from the Interface on this mailbox where completed successfully or otherwise.
+* All responses: success or failure. This is the default setting for all virtchannel requests from the driver to CP.
+* Just failure response. This needs to be enabled by setting an appropriate virtchannel flag in the virtchannel Descriptor.
+* Fence. This needs to be enabled by setting an appropriate virtchannel flag in the virtchannel Descriptor. Upon setting this flag on a request from the driver to the CP, CP responds to this particular request after the CP checks all other previous requests from the Interface on this mailbox where completed successfully or otherwise.
 
-- Capability and Data structures
+* Capability and Data structures
 ```C
 
 #define VIRTCHNL2_CAP_FLOW_RULES BIT(16)
@@ -7572,15 +7572,15 @@ queue descriptor fetch stride cross).</p>
 </tbody>
 </table>
 
-### TX DMA capabilities
+### TX DMA Capabilities
 
-| **Capability**                       | **SW parameter**                       | **Possible values** | **Default value** |
+| **Capability**                       | **SW Parameter**                       | **Possible Values** | **Default Value** |
 |--------------------------------------|----------------------------------------|---------------------|-------------------|
-| In order, split, TX queue model.     | VIRTCHNL2_TXQ_MODEL_IN_ORDER_SPLIT     | 0,1                 | 1                 |
-| In order, single, TX queue model.    | VIRTCHNL2_TXQ_MODEL_IN_ORDER_SINGLE    | 0,1                 | 1                 |
-| Out of order, split, TX queue model. | VIRTCHNL2_TXQ_MODEL_OUT_OF_ORDER_SPLIT | 0,1                 | 1                 |
+| In order split, TX queue model.     | VIRTCHNL2_TXQ_MODEL_IN_ORDER_SPLIT     | 0,1                 | 1                 |
+| In order single, TX queue model.    | VIRTCHNL2_TXQ_MODEL_IN_ORDER_SINGLE    | 0,1                 | 1                 |
+| Out of order split, TX queue model. | VIRTCHNL2_TXQ_MODEL_OUT_OF_ORDER_SPLIT | 0,1                 | 1                 |
 
-### TX Descriptor capabilities
+### TX Descriptor Capabilities
 
 <table>
 <colgroup>
