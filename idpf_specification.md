@@ -33,7 +33,7 @@ None of the standard interfaces available in the market provide for all these ne
 
 This is an abstraction of a physical or emulated Network PCIE Device as seen by the driver. It is modeled as having internally a **data path** component that carries out Packet handling and a **control plane** component that is used to configure and monitor the operations of the data-path.  An IDPF Device has the same interface whether used as a Physical Function (PF) PCIe device, a Virtual Function (VF) device (when virtualization is used) , or a composed PCIe entity. It is also Operating-system agnostic, and does not impose assumptions on the implementation of conformant Devices.
 
-![Figure 1 : Network Function Device Overview](Diagrams/network_function_device_overview.svg)
+![Figure 1: Network Function Device Overview](Diagrams/network_function_device_overview.svg)
 
 ## Abstraction
 
@@ -128,7 +128,7 @@ Since the capabilities are negotiated with the device, this allows the **Device 
 
 ## Device Identification 
 
-The IDPF will use the following Programming Interface under PCIE class : Network Controller (02h),subclass : Ethernet Controller (00h) as Programming Interface :  Ethernet Controller with IDPF compliant interface (01h). 
+The IDPF will use the following Programming Interface under PCIE class: Network Controller (02h), subclass: Ethernet Controller (00h) as Programming Interface:  Ethernet Controller with IDPF compliant interface (01h). 
 
 This will allow the driver to be loaded just based on Programming Interface identification, and we wouldn't need a generic Vendor ID for this device that every vendor needs to put in their HW. An emulated IDPF device will still have a Vendor ID such as "Redhat"
 
@@ -497,7 +497,7 @@ packet payload to a small buffer or to 1 or more big buffers is based on
 the packet payload length and not on the whole packet length (header and
 payload).
 
-RX queue to RX buffer queue/s association details :
+RX queue to RX buffer queue/s association details:
 
 - Each RX queue is associated to a single RX Buffer Queue Group and in the usual case, Rx Buffer Queue Group will feed a set of RX queues.
 - RX Buffer Queue Group consists of one or two RX Buffer Queues. On a given RX buffer queue, every buffer (or buffer pair, when header split is supported for the queue) points to a buffer (or buffer pair) of the same size.
@@ -541,7 +541,7 @@ The Head writeback reporting for buffer queue descriptor fetch (stride
 cross) is supported only when VIRTCHNL2_CAP_RX_SPLITQ_HEAD_WB feature is
 negotiated.
 
-### RX completion queues
+### RX Completion Queues
 
 SW tracks the number of buffers in hardware (posted to buffer queue and
 were not pulled from RX completion queue) and guarantees that there is
@@ -567,7 +567,7 @@ SW uses this bit to identify newly written completions by Device versus
 ones which have already been processed by SW. The bit polarity is
 flipped every ring wraparound.
 
-### RX Buffer queue association decision
+### RX Buffer Queue Association Decision
 
 When a packet arrives the device should take two “DMA related” decisions
 in the following order:
@@ -579,7 +579,7 @@ in the following order:
   assumed that the header buffer size for all Buffer queues in the group
   is identical.  
     
-  The output of this stage is one of the following :
+  The output of this stage is one of the following:
 
   - Post the whole packet to the packet buffer(s).
   - Post header to header buffer and payload to the packet buffer(s).
@@ -771,7 +771,7 @@ descriptors described above.
 
 #### 16B RX Descriptors Read Format for Split Q Model
 
-This is the read descriptor used when queue operates in “Out of order,
+This is the read descriptor used when queue operates in “Out of order
 split queue model.”  
 Descriptor length is 16B.
 
@@ -779,7 +779,7 @@ Descriptor fields layout:
 
 ![16B RX Descriptor Read format for Split Queue Model](Diagrams/rx_desc_read_split_q_16B.png)
 
-* **Buffer identifier (16): **The unique buffer identifier used by SW to associate the packet buffer addressed by this descriptor with the completion queue descriptor.
+* **Buffer identifier (16)**: The unique buffer identifier used by SW to associate the packet buffer addressed by this descriptor with the completion queue descriptor.
 * **Packet Buffer Address (64b)**: The physical address of the packet buffer defined in byte units. The packet buffer size is defined in the negotiated receive queue context. 
 
 #### 32B RX Descriptors Read Format for Split Q Model
@@ -1873,7 +1873,7 @@ according to the negotiated capabilities.</p>
 <p>If L3L4P is set to zero or one of the flags below are set to 1 ,
 SW should not assume Device calculated checksums for any of the headers
 in the packet and should recalculate the checksums and SW should treat
-the "Xusm reports" field as invalid :</p>
+the "Xusm reports" field as invalid:</p>
 <ul>
 <li><blockquote>
 <p>IPV6EXADD</p>
@@ -1982,7 +1982,7 @@ format.</p></th>
 </tbody>
 </table>
 
-#####  Split status Field
+#####  Split Status Field
 
 The table below details the contents of the split status field (Valid
 only when queue is configured to work in "split queue model").
@@ -2182,7 +2182,7 @@ Format</u>](#tx-descriptor-write-formats)) .
 SW uses the RS bit in the TX descriptor to indicate to the Device on
 which descriptor Device should report completion to SW.
 
-The following rules apply to RS bit setting :
+The following rules apply to RS bit setting:
 
 * SW must keep a minimal gap of IECM_TX_RS_MIN_GAP descriptors between 2 descriptors that have their RS flag set.
 * The RS flag can be set only on the last Transmit Data Descriptor of a packet (single sent packet or TSO).
@@ -2274,7 +2274,7 @@ For this model, the “TX head” field in “descriptor fetch” PCE holds the
 TX queue offset of the descriptor that follows the RE marked
 descriptor.  
   
-The following rules apply to RE bit setting :
+The following rules apply to RE bit setting:
 
 * SW must keep a minimal gap of IECM_TX_SPLITQ_RE_MIN_GAP descriptors between 2 descriptors that have their RE flag set.
 * The RE flag can be set only on the last Transmit Data Descriptor of a packet (single sent packet or TSO).
@@ -3004,7 +3004,7 @@ device. Offload is enabled when the IL2TAG2 flag is set.</th>
 
 #### 
 
-### TX Context Descriptor COMMAND field layout
+### TX Context Descriptor COMMAND Field Layout
 
 This table describes the TX descriptor command field layout that is used
 by all TX context descriptors except for the context descriptor of DTYPE
@@ -3097,35 +3097,35 @@ violation of those rules might be detected as malicious driver behavior.
   2.  CS_EN is set to 1.
 
   Note that for for case #a and #b the most inner header checksum is calculated using the offsets as parsed by the Device parser. The *max_tx_hdr_generic_offloads* negotiated capability defines the maximal header length supported by the device for non-generic checksum/CRC offloads.
-- The total size of a single packet in host memory must be at least **IECM_TX_MIN_LEN** bytes and up to the *max_mtu*. This rule applies for single packet send as well as for an LSO segment.
-- The header length of an LSO packet should be at least *min_lso_header_len*.
-- Optionally, Packet can carry a context descriptor(s). In that case, all context descriptors of a packet must be placed before the data descriptors of the packet. 
-  1.  Up to *max_ctxt_desc_per_sso_packet* context descriptors are allowed to be added to one SSO (Single Send Offload) message and up to *max_ctxt_desc_per_lso_segment* context descriptors are allowed to be added to one LSO (Large Send Offload) message.
-- A single transmit packet must contain at least one data descriptor and may span up to *max_sg_bufs_per_tx_pkt* buffers. The maximal length of a data buffer is defined by *tx_max_desc_data* negotiated parameter.
-- TSO Max payload size is *max_lso_payload_len* (as implied in TLEN field in the context descriptor), TSO MSS minimal value is refined by *min_mss_for_lso.* The maximal MSS value is set so that the total segment length (header and payload) do not exceed *max_mtu.*
-- Each segment within the TSO obeys the previous rule of spanning on up to *max_sg_bufs_per_tx_pkt* data buffers.
-  1.  The limitation refers to any buffer or buffer part of the segment so in case one data buffer holds data for multiple segments the data buffer is counted in each one of those segments.
-  2.  The limitation refers to both header buffers and payload buffers. The header buffers are counted in each one of the segments.
-  3.  In case a single buffer holds a mixture of packet header and packet payload, for that limitation, that buffer is treated as 2 buffers.
-- If a packet or TSO spans on single or multiple transmit data descriptors:
-  1.  All data descriptors in a packet must use the same DTYPE.
-  2.  When the queue operates in “in order single queue model” or “out of order split queue model” the data descriptors of the packet must be anything but DTYPEs 12. When the queue operates in "out of order ,split queue model" the data descriptors of the packet must be DTYPE 12.
-  3.  The fields in all the data descriptors must be valid.
-  4.  All data descriptor fields but the Packet buffer address, TX buffer Size, and flags EOP, RS, and RE must carry the same values.
-  5.  EOP must be set at the last data descriptor of a message and only there.
-  6.  RS and RE flags may be set only at the last data descriptor of a message.
-  7.  In case if the same field is present in more than 1 descriptor, the value of the field should be the same in all descriptors.
-  8.  Any context-type information in all descriptors associated with a particular TX message are set consistently.
-  9.  The TSO message header should not span on more than *max_hdr_buf_per_lso* buffers. (Max *max_hdr_buf_per_lso* Descriptors).
-- SW must keep a minimal gap of IECM_TX_RS_MIN_GAP descriptors between 2 descriptors that have their RS flag set(when set to zero , SW does not keep a gap).
-- SW must keep a minimal gap of IECM_TX_SPLITQ_RE_MIN_GAP descriptors between 2 descriptors that have their RE flag set(when set to zero , SW does not keep a gap).
-- RE flag can be set only for queues that operate in “out of order ,split queue” model.
-- When using TSO message SW must follow the Descriptors order:
-  1.  Single TSO context descriptor with the TSO bit set. 
-  2.  The rest of the Non-TSO context descriptors or TSO context descriptors that have their TSO bit set to 0.
-  3.  One or more TX data descriptors.
+* The total size of a single packet in host memory must be at least **IECM_TX_MIN_LEN** bytes and up to the *max_mtu*. This rule applies for single packet send as well as for an LSO segment.
+* The header length of an LSO packet should be at least *min_lso_header_len*.
+* Optionally, Packet can carry a context descriptor(s). In that case, all context descriptors of a packet must be placed before the data descriptors of the packet. 
+  -  Up to *max_ctxt_desc_per_sso_packet* context descriptors are allowed to be added to one SSO (Single Send Offload) message and up to *max_ctxt_desc_per_lso_segment* context descriptors are allowed to be added to one LSO (Large Send Offload) message.
+* A single transmit packet must contain at least one data descriptor and may span up to *max_sg_bufs_per_tx_pkt* buffers. The maximal length of a data buffer is defined by *tx_max_desc_data* negotiated parameter.
+* TSO Max payload size is *max_lso_payload_len* (as implied in TLEN field in the context descriptor), TSO MSS minimal value is refined by *min_mss_for_lso.* The maximal MSS value is set so that the total segment length (header and payload) do not exceed *max_mtu.*
+* Each segment within the TSO obeys the previous rule of spanning on up to *max_sg_bufs_per_tx_pkt* data buffers.
+  -  The limitation refers to any buffer or buffer part of the segment so in case one data buffer holds data for multiple segments the data buffer is counted in each one of those segments.
+  -  The limitation refers to both header buffers and payload buffers. The header buffers are counted in each one of the segments.
+  -  In case a single buffer holds a mixture of packet header and packet payload, for that limitation, that buffer is treated as 2 buffers.
+* If a packet or TSO spans on single or multiple transmit data descriptors:
+  -  All data descriptors in a packet must use the same DTYPE.
+  -  When the queue operates in “in order single queue model” or “out of order split queue model” the data descriptors of the packet must be anything but DTYPEs 12. When the queue operates in "out of order ,split queue model" the data descriptors of the packet must be DTYPE 12.
+  -  The fields in all the data descriptors must be valid.
+  -  All data descriptor fields but the Packet buffer address, TX buffer Size, and flags EOP, RS, and RE must carry the same values.
+  -  EOP must be set at the last data descriptor of a message and only there.
+  -  RS and RE flags may be set only at the last data descriptor of a message.
+  -  In case if the same field is present in more than 1 descriptor, the value of the field should be the same in all descriptors.
+  -  Any context-type information in all descriptors associated with a particular TX message are set consistently.
+  -  The TSO message header should not span on more than *max_hdr_buf_per_lso* buffers. (Max *max_hdr_buf_per_lso* Descriptors).
+* SW must keep a minimal gap of IECM_TX_RS_MIN_GAP descriptors between 2 descriptors that have their RS flag set (when set to zero, SW does not keep a gap).
+* SW must keep a minimal gap of IECM_TX_SPLITQ_RE_MIN_GAP descriptors between 2 descriptors that have their RE flag set (when set to zero, SW does not keep a gap).
+* RE flag can be set only for queues that operate in “out of order split queue” model.
+* When using TSO message SW must follow the Descriptors order:
+  -  Single TSO context descriptor with the TSO bit set. 
+  -  The rest of the Non-TSO context descriptors or TSO context descriptors that have their TSO bit set to 0.
+  -  One or more TX data descriptors.
   Note: A TSO context descriptor is one that has MSS, Tlen and Headerlen fields or a Base mode TX context descriptor of Dtype 0x1.
-- For a TSO packet, either its data descriptors or its first context descriptor must describe the packet header length. The *max_tx_hdr_len_seg* negotiated capability defines the Maximal header length supported by the device for segmentation.
+* For a TSO packet, either its data descriptors or its first context descriptor must describe the packet header length. The *max_tx_hdr_len_seg* negotiated capability defines the Maximal header length supported by the device for segmentation.
 
 ### Tx Descriptor Write Formats 
 
@@ -3239,7 +3239,7 @@ the last descriptor that its buffer should be deallocated .</p></th>
 </tbody>
 </table>
 
-The 8B completion element layout is described below :
+The 8B completion element layout is described below:
 
 <table>
 <colgroup>
@@ -3266,10 +3266,10 @@ The 8B completion element layout is described below :
 SW.</p>
 <p>Relevant only for completion types 1 and 2.</p>
 <p>For the rest of the completion types this field is not relevant and
-is set to zero .</p></th>
+is set to zero.</p></th>
 </tr>
 <tr class="odd">
-<th><mark>Reserved</mark></th>
+<th>Reserved</th>
 <th>63:56</th>
 <th></th>
 </tr>
@@ -3294,7 +3294,7 @@ them.</span>
 
 # Interrupts
 
-## Supported Interrupt modes 
+## Supported Interrupt Modes 
 
 The device supports the following interrupt modes:
 
@@ -3359,7 +3359,7 @@ Transmit queue ‘n’ can be enabled for interrupts by the IDPF using configura
 
 ### Receive Queues 
 
-Each receive queue is a potential interrupt cause client. The following events of the queue are considered as a receive event that can trigger an interrupt :
+Each receive queue is a potential interrupt cause client. The following events of the queue are considered as a receive event that can trigger an interrupt:
 
 * When packet descriptors are written the completion queue (split queue model) or to the RX descriptor queue (single queue model).
 
@@ -3393,9 +3393,9 @@ Interrupt Throttling (ITR) is a mechanism that guarantees a minimum gap
 between two consecutive interrupts.
 
 IDPF supports up to 3 ITR timers per vector, while the ITR intervals per
-vector can be programmed in the following ways :
+vector can be programmed in the following ways:
 
-- When vector is initialized, programming is done through the per vector GLINT_ITR [0,1] per vector registers.
+* When vector is initialized, programming is done through the per vector GLINT_ITR [0,1] per vector registers.
 
 The number of ITR timers per vector can be 2 or 3 as defined by the
 itr_idx_map Device capability.  
@@ -3405,7 +3405,7 @@ are described in the device capabilities section.
 Each one of the interrupt causes is mapped to a specific vector and to a
 specific ITR of the vector.
 
-The ITR interval can be 0.5us,1us , 2us or 4us as defined by the
+The ITR interval can be 0.5us, 1us, 2us, or 4us as defined by the
 itr_intvl_gran Device capability.  
 The possible values and default value (in the absence of negotiation)
 are described in the Device capabilities section.
@@ -3413,16 +3413,16 @@ are described in the Device capabilities section.
 Device is allowed to issue an interrupt when all the following conditions
 are fulfilled:
 
-- Interrupt is enabled.
-- Interrupt has at least one ITR that has expired and has a pending cause (either ITR has expired after cause was issued or cause was issued after the ITR has expired).
+* Interrupt is enabled.
+* Interrupt has at least one ITR that has expired and has a pending cause (either ITR has expired after cause was issued or cause was issued after the ITR has expired).
 
-As an example, assume a vector has only 1 active ITR :
+As an example, assume a vector has only 1 active ITR:
 
-- If an interrupt cause that is associated with the ITR happened before the ITR had expired or happened when interrupt was disabled (i.e. INTENA is zero), the interrupt assertion is delayed until both ITR expires and the interrupt is enabled.
+* If an interrupt cause that is associated with the ITR happened before the ITR had expired or happened when interrupt was disabled (i.e. INTENA is zero), the interrupt assertion is delayed until both ITR expires and the interrupt is enabled.
 
-- If an interrupt cause associated with this ITR happens after the ITR has expired when interrupt was enabled, the ITR is armed, and interrupt will be asserted the moment the cause happens.
+* If an interrupt cause associated with this ITR happens after the ITR has expired when interrupt was enabled, the ITR is armed, and interrupt will be asserted the moment the cause happens.
 
-Note :
+Note:
 
 Using multiple ITRs per vector is useful to support different throttling
 rates for different cause clients assigned to the same vector.
@@ -3432,10 +3432,10 @@ done according to the ITR with the higher rate but in case only one
 cause client~~s~~ is active at a certain time, the throttling
 rate is done according to its associated ITR rate.
 
-## Enable/disable interrupts for a vector 
+## Enable/Disable Interrupts for a Vector 
 
 Device supports the per vector NO_INT_MODE mode. When vector is in this
-mode :
+mode:
 
 - Interrupts are not issued from the device for causes associated with this vector.
 - Interrupt throttling mechanisms operate as if interrupt is enabled (i.e. interrupts are not disabled automatically when interrupt is issued).  
@@ -3447,15 +3447,15 @@ once in a period of time.
 
 The interrupt mechanism supports dynamic switching of a vector between
 interrupt enabled and NO_INT_MODE on a per vector basis as described
-below :
+below:
 
-1.  A switch from interrupt-enabled mode to NO_INT_MODE can be done by software only when the INTENA flag is cleared, that is, the interrupt is disabled for processing as described in “interrupt enable procedure(ADD LINK)” section. The switch is done by writing the GLINT_DYN_CTL register with INTENA flag cleared and NO_INT_MODE flag set.
-2.  A switch from NO_INT_MODE to interrupt enabled mode can occur at any time. The switch is done by software enabling the vector (setting the INTENA flag and clearing the NO_INT_MODE flag in the relevant GLINT_DYN_CTL register).
+*  A switch from interrupt-enabled mode to NO_INT_MODE can be done by software only when the INTENA flag is cleared, that is, the interrupt is disabled for processing as described in “interrupt enable procedure(ADD LINK)” section. The switch is done by writing the GLINT_DYN_CTL register with INTENA flag cleared and NO_INT_MODE flag set.
+*  A switch from NO_INT_MODE to interrupt enabled mode can occur at any time. The switch is done by software enabling the vector (setting the INTENA flag and clearing the NO_INT_MODE flag in the relevant GLINT_DYN_CTL register).
 
-Based on the written above , those are the following transitions between
-the different interrupt modes (enabled , disabled and NO_INT_MODE):
+Based on the written above, those are the following transitions between
+the different interrupt modes (enabled, disabled and NO_INT_MODE):
 
-<u>Interrupt mode :</u>
+<u>Interrupt mode:</u>
 
 <table>
 <colgroup>
@@ -3553,20 +3553,20 @@ an interrupt and will be visible to SW.
 Note that interrupt enablement is also done by SW after interrupt
 initialization (before first interrupt was issued).
 
-## Changing ITR intervals on-the-fly 
+## Changing ITR Intervals on-the-fly 
 
 The device supports SW changing the ITR rates dynamically.
 
 The rate change operation is submitted through the GLINT_DYN_CTL
 register.
 
-To enforce a rate change , software should :
+To enforce a rate change, software should:
 
 1.  Set the GLINT_DYN_CTL.ITR_INDX field to the relevant ITR. When GLINT_DYN_CTL.ITR_INDX is set to 0x3 the rate programming update is disabled.
 2.  Set the GLINT_DYN_CTL.INTERVAL to the desired interval.
 
 Based on negotiation, the rate change can be done b<u>y</u> using the
-following options :
+following options:
 
 - Piggybacked to an interrupt enablement operation done using GLINT_DYN_CTL (i.e. when setting the INTENA flag).
 - This option is supported only when VIRTCHNL2_CAP_INTR_ADAPT_WITH_INTENA feature is negotiated.
@@ -3577,7 +3577,7 @@ following options :
 - SW must not use this option when the interrupt is in NO_INT_MODE.
 - When using this option SW must set the GLINT.INTENA_MSK flag.
 
-Additionally :
+Additionally:
 
 - The intervals cannot be read through in the GLINT_DYN_CTL registers.
 - By default ,changing the ITR interval through this interface value causes the timer to expire which triggers an immediate interrupt in case there are pending causes.
@@ -3634,26 +3634,25 @@ request one vector per TX/RX queue pair. In the Split Queue model the
 IDPF will request one vector per Tx Completion queue and one per RX
 Buffer queue pair as well as one per RX Completion queue.
 
-Software pre-allocation, initialization and runtime configurations flow
+Software pre-allocation, initialization, and runtime configurations flow
 is as follow:
 
 1. IDPF to discover its MSI-X related capabilities and resources by sending “VIRTCHNL_OP_GET_CAPS”, Opcode 100 command. Following this command, CP will reply back with following MSI-X related information:
-  1.  ***mailbox_dyn_ctl*** – address of GLINT_DYN_CTL register to be used for runtime interrupt functionality configuration for vector mapped for Mailbox Queue Pair.
-  2.  ***mailbox_vector_id*** – index of the vector mapped by CP to be used for Mailbox Queue Pair.
-  3.  ***num_allocated_vectors*** – number of MSI-X vectors allocated and guaranteed for the function by CP, not including already provided Mailbox one.
-  4.  ***itr_idx_map*** – map of possible ITRs to be used.
+  *  ***mailbox_dyn_ctl*** – address of GLINT_DYN_CTL register to be used for runtime interrupt functionality configuration for vector mapped for Mailbox Queue Pair.
+  *  ***mailbox_vector_id*** – index of the vector mapped by CP to be used for Mailbox Queue Pair.
+  *  ***num_allocated_vectors*** – number of MSI-X vectors allocated and guaranteed for the function by CP, not including already provided Mailbox one.
+  *  ***itr_idx_map*** – map of possible ITRs to be used.
 2.   IDPF to allocate and map vectors to itself by usin “VIRTCHNL_OP_ALLOC_VECTORS” opcode 120. Important to mention, that IPDF is promised to have at least number of vectors, as provided by capabilities command, but it can also try to opportunistically allocate additional ones on “first come-first served '' basis using this virtchnl command. Following this allocation command, CP will reply to IPDF with all relevant information regarding allocated vectors, registers information etc. Returned vectors are returned and single or multiple sequential chunks of vectors, each one of them contains information as below (for most updated info refer to virtchnl header file):
-  1. ***start_vector_id, start_evv_id, num_vectors*** – provide indexes of allocated vectors.*
-  2. ***dynctl_reg_start, dynctl_reg_spacing*** – provide addresses of GLINT_DYN_CTL registers to be used for runtime configuration of the allocated vectors.*
-  3. ***itrn_reg_start, itrn_reg_spacing*** – provide addresses of GLINT_ITR_x registers to be used for runtime throttling configuration of the allocated vectors.
+  * ***start_vector_id, start_evv_id, num_vectors*** – provide indexes of allocated vectors.*
+  * ***dynctl_reg_start, dynctl_reg_spacing*** – provide addresses of GLINT_DYN_CTL registers to be used for runtime configuration of the allocated vectors.*
+  * ***itrn_reg_start, itrn_reg_spacing*** – provide addresses of GLINT_ITR_x registers to be used for runtime throttling configuration of the allocated vectors.
 3. IDPF to map TX and RX queues to already allocated vectors by using “VIRTCHNL_OP_MAP_QUEUE_VECTOR” opcode 111 by providing TX and RX queues and vector information. Command structure is organized in queue map chunks, each one of them defined as follows:
-  1. ***queue_id, queue_type –*** provide Queue information.
-  2. *** vector_id, itr_idx –*** vector information to map specified queue to.
+  * ***queue_id, queue_type –*** provide Queue information.
+  * ***vector_id, itr_idx –*** vector information to map specified queue to.
 
 After IPDF completed its vectors’ allocation and mapping activities and
 got all its register information for runtime vector manipulation, it can
-use CP provided registers to control MSI-X vector functionality on
-runtime.
+use CP provided registers to control MSI-X vector functionality on runtime.
 
 # Overall Flows
 
@@ -3733,7 +3732,7 @@ control queue descriptor (see References).</p></th>
 </tbody>
 </table>
 
-## High level flow with participants
+## High Level Flow with Participants
 
 #### Driver Negotiation General Flow
 
@@ -4197,14 +4196,14 @@ For example, the identifier in this case is OEM_1</th>
 </tbody>
 </table>
 
-## Message Return value Codes
+## Message Return Value Codes
 
 The return value is returned by CP for each message as part of “VirtChnl
 Message Return Value” field in the mailbox descriptor.
 
 Return values are as following:
 
-| **Return status**           | **Description**                                                              | **Enum Value** |
+| **Return Status**           | **Description**                                                              | **Enum Value** |
 |-----------------------------|------------------------------------------------------------------------------|----------------|
 | VIRTCHNL2_STATUS_OK         | Command success                                                              | 0              |
 | VIRTCHNL2_STATUS_ERR_EPERM  | Operation not permitted, used in case of command is not permitted for sender | 1              |
@@ -4418,7 +4417,7 @@ VIRTCHNL2_CAP_PTP = BIT(13),</p>
 
 ![Negotiate Capabilities](Diagrams/negotiate_cap.png)
 
-## Receive Descriptor Formats (RXDID) enumeration
+## Receive Descriptor Formats (RXDID) Enumeration
 
 As described in the ‘RX Descriptors Format’ section, the format of a descriptor is defined by 6-bit RXDID field of the receive descriptor. To enumerate all RXDIDs supported by the Device, the driver posts a message with VIRTCHNL_OP_GET_SUPPORTED_RXDIDS opcode.
 
@@ -4426,7 +4425,7 @@ In reply to this message CP PF will return a 64 bits mask of the supported RXDID
 
 The capability and negotiation protocol does not provide an enumeration of the receive descriptors format structures and relies on the format provided by the device’s package.
 
-## Packet Types negotiation 
+## Packet Types Negotiation 
 
 Depending on RX descriptor format, the packet type (PTYPE) field can be 10 or 8 bits in size. The parse graph programmed to hardware defines the relationship between packets and PTYPEs (packet type).
 
@@ -4451,7 +4450,7 @@ The CP PF replies with information for existing PTYPEs only. Depending on the nu
 
 This information contains a variable number of bytes per PTYPE in the following format:
 
-*Table 1 CP PF PTYPE reply format*
+CP PF PTYPE reply format
 
 <table>
 <colgroup>
@@ -4506,7 +4505,7 @@ spec</th>
 
 For example, for PTYPE  [26] CP PF could reply with the following buffer:
 
-*Table 2 CP PF PTYPE information reply example*
+CP PF PTYPE information reply example
 
 <table>
 <colgroup>
@@ -4584,7 +4583,7 @@ replies with corresponding 10 and 8 bits PTYPE IDs.
 For example, for the sequence of protocols {MAC, IPv4, TCP, PAY}, CP
 PF could reply with the following buffer:
 
-*Table 3 CP PF reply with PTYPE ID format*
+CP PF reply with PTYPE ID format
 
 <table>
 <colgroup>
@@ -4639,9 +4638,9 @@ process this packet buffer.
 After receiving and processing the raw packet buffer, the CP PF
 replies with information about the packet. This information includes:
 
-- Device PTYPE ID
+* Device PTYPE ID
 
-- A sequence of Protocols IDs with corresponding byte offsets to the
+* A sequence of Protocols IDs with corresponding byte offsets to the
   start of the associated protocol header. Using this information, the
   driver can detect parser depth and protocols supported by the
   Device.
@@ -4685,8 +4684,8 @@ bytes 90-109 payload
 Assuming the package supports GTP-U tunnels and can parse beyond the
 GTP-U header, the CP PF will reply with the following information:
 
-*Table 4 CP PF reply for GTP-U with inner TCPv4 packet if GTP-U
-supported by Device*
+CP PF reply for GTP-U with inner TCPv4 packet if GTP-U
+supported by Device
 
 <table>
 <colgroup>
@@ -4816,8 +4815,8 @@ If the package does not support GTP-U tunnels and parsing stops at the
 first UDP header, then the CP PF will reply with the following
 information:
 
-*Table 5 CP PF reply for GTP-U with inner TCPv4 packet if GTP-U not
-supported by Device*
+CP PF reply for GTP-U with inner TCPv4 packet if GTP-U not
+supported by Device
 
 <table>
 <colgroup>
@@ -4909,24 +4908,24 @@ supported by Device*
 
 ## vPort Initialization and Teardown
 
-VPORT Final state Machine
+#### VPORT Final State Machine
 (FSM):![Vport FSM](Diagrams/vport_fsm.png)
 
-- OP_CREATE_VPORT command must allocate at least one RX and one TX
+* OP_CREATE_VPORT command must allocate at least one RX and one TX
   queue, which will be associated with Queue Group #0.
 
-- VPORT can be transitioned to FREE state only from CONFIGURED state. In
+* VPORT can be transitioned to FREE state only from CONFIGURED state. In
   other words, if VPORT is enabled, it must be disabled first before
   releasing its resources and destroying it.
 
-- OP_DISABLE_VPORT and OP_ENABLE_VPORT can be called even if there are
+* OP_DISABLE_VPORT and OP_ENABLE_VPORT can be called even if there are
   Queue resources associated and they are active on the Vport.
 
-- VPORT RX Default Queues must be set upon execution of the
+* VPORT RX Default Queues must be set upon execution of the
   OP_CREATE_VPORT command. The lowest RX Queue index must be used for
   all three engines (LAN, RDMA and CPE).
 
-- OP_DISABLE_VPORT and OP_DESTROY_VPORT commands can be issued even when
+* OP_DISABLE_VPORT and OP_DESTROY_VPORT commands can be issued even when
   all or some of VPORT associated queues are enabled, including TX,
   RX, TX Completion and RX Buffer Queues. As a result, Queues
   associated with the VPORT must be disabled by the command is called.
@@ -4936,35 +4935,35 @@ IN/OUT params table.
 
 ![Data queue FSM](Diagrams/dataqueue_fsm.png)
 
-## Queue Initialization and teardown
+## Queue Initialization and Teardown
 
 Data Queues Final State Machine (FSM):
 
-- RX and TX queues can be allocated by using OP_CREATE_VPORT (Allocates
+* RX and TX queues can be allocated by using OP_CREATE_VPORT (Allocates
   default Queue Group #0), OP_ADD_QUEUES (Add Queues to already
   existing default Queue Group #0) or OP_ADD_QUEUE_GROUPS (Add
   additional Queue Groups).
 
-- Allocated queues are not yet configured, so OP_CONFIG_QUEUES command
+* Allocated queues are not yet configured, so OP_CONFIG_QUEUES command
   is expected to configure desired parameters to pre-allocated queues.
 
-- After Queues are configured properly they can be enabled/disabled
+* After Queues are configured properly they can be enabled/disabled
   using OP_ENABLE_QUEUES or OP_DISABLE_QUEUES.
 
-- Queue State Transition from ENABLED to FREE by issuing
+* Queue State Transition from ENABLED to FREE by issuing
   OP_DESTROY_VPORT or OP_DEL_QUEUES commands is prohibited.
 
-- Queue can be transitioned to FREE state only from CONFIGURED or
+* Queue can be transitioned to FREE state only from CONFIGURED or
   ALLOCATED states by issuing either OP_DESTROY_VPORT or OP_DEL_QUEUES
   events.
 
-- OP_ADD_QUEUES command can be issued even if the underlying VPORT is up
+* OP_ADD_QUEUES command can be issued even if the underlying VPORT is up
   and running, including traffic.
 
-- From FSM perspective, OP_ADD_QUEUES/OP_DEL_QUEUE vs.
+* From FSM perspective, OP_ADD_QUEUES/OP_DEL_QUEUE vs.
   OP_ADD_QUEUE_GROUPS/ OP_DEL_QUEUE_GROUPS are the same.
 
-- OP_ADD_QUEUES/OP_DEL_QUEUE manipulate only default Queue Group #0
+* OP_ADD_QUEUES/OP_DEL_QUEUE manipulate only default Queue Group #0
   allocated by OP_CREATE_VPORT, while non-default groups can be
   manipulated using OP_ADD_QUEUE_GROUPS/ OP_DEL_QUEUE_GROUPS commands.
 
@@ -5072,21 +5071,21 @@ struct virtchnl2_queue_group_id qg_ids[1];
 };
 ```
 
-- Events (WIP)
+## Events (WIP)
 
 Events are asynchronous messages that are sent from the NIC to the driver. The NIC may choose to send these events anytime once the mailbox is operational.
 
 Following are the events that the driver is interested in:
 
-**VIRTCHNL2_EVENT_LINK_CHANGE - Sent when the link is up or down**
+* **VIRTCHNL2_EVENT_LINK_CHANGE - Sent when the link is up or down**
 
-**VIRTCHNL2_EVENT_START_RESET_ADI - Sent when the ADI is reset has been initiated**
+* **VIRTCHNL2_EVENT_START_RESET_ADI - Sent when the ADI is reset has been initiated**
 
-**VIRTCHNL2_EVENT_FINISH_RESET_ADI - Sent when the ADI reset was completed**
+* **VIRTCHNL2_EVENT_FINISH_RESET_ADI - Sent when the ADI reset was completed**
 
 - The ADIs dont have physical function but their config space is emulated by the PF driver. These events are used by the PF driver to bring up the ADIs out of their reset
 
-**VIRTCHNL2_EVENT_UPDATE_STATS (TBD) - Sent when there is an update to be raised immediately**
+* **VIRTCHNL2_EVENT_UPDATE_STATS (TBD) - Sent when there is an update to be raised immediately**
 
 ```C
     struct virtchnl2_event {
@@ -5110,7 +5109,7 @@ Following are the events that the driver is interested in:
 
     };
 ```
-## Function Level reset
+## Function Level Reset
 
 When the driver is unloading, it triggers Function Level Reset (FLR/XLR)
 according to the type of the function it is working on (Physical
@@ -5131,10 +5130,10 @@ O/S. Potential XLR sources can be:
 
 This flow is triggered by the driver itself as part of driver load/unload or other failure use cases, which require return to driver default configuration. The flow to be executed is:
 
-- Before Triggering XLR, the state of device visible to IDPF driver in PF/VFGEN_RSTAT register to is expected to be “PF/VFR_ACTIVE” state (10b).
-- The IDPF triggers XFR: PF setting PFGEN_CTRL.PFSWR (XLR is triggered immediately) or VF sending the “VIRTCHNL_OP_RESET_VF” command, which is executed by Host Management after delay.
-- Following this, Device will automatically clear PF/VFGEN_RSTAT register to “PF/VFR_INPROGRESS” state (00b), while the driver will start polling the PF/VFGEN_RSTAT register to get back into “PF/VFR_COMPLETED” state (01b), meaning that hardware PF/VF device is initialized to its default state.
-- After it happens the PF/VF XIO is ready for re-initialization. As part of the initialization and execution of the first command in the initialization sequence “GetVersion” virtChnl command, Host Management will set PF/VFGEN_RSTAT register back to “PF/VFR_ACTIVE” state (10b).
+* Before Triggering XLR, the state of device visible to IDPF driver in PF/VFGEN_RSTAT register to is expected to be “PF/VFR_ACTIVE” state (10b).
+* The IDPF triggers XFR: PF setting PFGEN_CTRL.PFSWR (XLR is triggered immediately) or VF sending the “VIRTCHNL_OP_RESET_VF” command, which is executed by Host Management after delay.
+* Following this, Device will automatically clear PF/VFGEN_RSTAT register to “PF/VFR_INPROGRESS” state (00b), while the driver will start polling the PF/VFGEN_RSTAT register to get back into “PF/VFR_COMPLETED” state (01b), meaning that hardware PF/VF device is initialized to its default state.
+* After it happens the PF/VF XIO is ready for re-initialization. As part of the initialization and execution of the first command in the initialization sequence “GetVersion” virtChnl command, Host Management will set PF/VFGEN_RSTAT register back to “PF/VFR_ACTIVE” state (10b).
 
 ### Asynchronous VFR
 
@@ -5151,22 +5150,22 @@ involvement from PF located IDPF, Function Level Reset triggered on PF
 device will automatically trigger VF Level resets for all VFs mapped to
 this PF.
 
-# Standard offloads
+# Standard Offloads
 
-- Multiple Default vPorts (WIP)
-- Container Dedicated Queues (WIP)
+* Multiple Default vPorts (WIP)
+* Container Dedicated Queues (WIP)
 
 All offloads (standard or advanced) are negotiated. This gives a device
 the opportunity to opt out of supporting a particular offload.
 
-## MAC filter offload
+## MAC Filter Offload
 
-- Device Interface
+### Device Interface
 
 The driver uses this interface to add/delete L2 MAC addresses as filters
 to redirect packets to a specific vport.
 
-- Capability and Data structures
+### Capability and Data Structures
 ```C
     #define VIRTCHNL2_CAP_MACFILTER BIT(2)
 ```
@@ -5245,13 +5244,13 @@ The opcodes used to add/delete mac filters are
     };
 ```
 
-- Configuration Options
+### Configuration Options
 
 The MAC address assigned to the driver as part of the CREATE_VPORT
 response is considered as the PRIMARY address and any additional MAC
 addresses are marked as EXTRA addresses.
 
-- Driver Configuration and Runtime flow
+### Driver Configuration and Runtime Flow
 
 The driver negotiates MAC filter capability with the device by setting
 VIRTCHNL2_CAP_MACFILTER bit as part of negotiating the capabilities with
@@ -5261,19 +5260,19 @@ if the vport is allowed to add/delete MAC filters.
 At Runtime, the driver offloads add/delete mac filter requests to the
 device when the OS notifies the driver.
 
-- Device and Control Plane Behavioral Model
+### Device and Control Plane Behavioral Model
 
 The device adds/delete MAC address filters in hardware to direct packets
 to the requested vport.
 
 ## Promiscuous offload
 
-- Device Interface
+### Device Interface
 
 The driver uses this interface to configure unicast or multicast
 promiscuous mode on a vport.
 
-- Capability and Data structures
+### Capability and Data Structures
 ```C
 #define VIRTCHNL2_CAP_PROMISC BIT(8)
 
@@ -5311,17 +5310,17 @@ u8 pad[2];
 };
 ```
 
-- Driver Configuration and Runtime flow
+### Driver Configuration and Runtime Flow
 
 The driver negotiates Promiscuous offload capability with the device by
 setting VIRTCHNL2_CAP_PROMISC bit as part of negotiating the
 capabilities with the control plane. The control plane will set this bit
-in its response if the vport is allowed to configure promiscuous mode.
+in its response if the VPort is allowed to configure promiscuous mode.
 
 At Runtime, the driver offloads promiscuous mode setting requests to the
 device when the OS notifies the driver.
 
-- Device and Control Plane Behavioral Model
+### Device and Control Plane Behavioral Model
 
 The device will program the hardware to configure unicast/multicast
 promiscuous mode and as a result the driver should be able to send and
@@ -5330,7 +5329,7 @@ configuration.
 
 ## L2 Tag Insertion Offload (WIP)
 
-* Device Interface
+### Device Interface
 
 L2 tag insertion offload is requested by the driver on a per-request
 basis (single send or TSO). If tag insertion is needed for a given
@@ -5338,13 +5337,13 @@ transmit packet placed on a transmit queue, the driver will specify that
 one or more tags should be inserted into the packet and will provide the
 tag(s) in the transmit descriptor(s).
 
-* Capability and Data structures
+### Capability and Data Structures
 
 During the capability’s negotiation phase, the device will advertise
 whether it can support L2 tag insertion offload. If the feature is
 supported, the device will advertise how many L2 tags it can insert.
 
-* Configuration options
+### Configuration Options
 
 On a per-message basis, the device may insert zero, one, or more L2
 tags. For each tag to be inserted, the first 16 bits (TPID) is
@@ -5354,7 +5353,7 @@ descriptor(s). If one tag needs to be added, it is provided in the data
 descriptor. If two or more tags need to be added, subsequent tag(s) are
 provided in the context descriptor.
 
-* Driver Configuration and Runtime flow
+### Driver Configuration and Runtime Flow
 
 At configuration time, the driver will learn whether the device supports
 tag insertion offload and advertise support with the operating system
@@ -5367,7 +5366,7 @@ At run time, the driver will set up each transmit request to insert
 zero, one, or more tag(s), depending on the instructions from the
 operating system.
 
-* Device and Control Plane Behavioral Model
+### Device and Control Plane Behavioral Model
 
 If tag insertion offload is enabled for a given transmit request, the
 device will insert the tag(s) from the descriptor into the packet
@@ -5396,14 +5395,14 @@ bits and consists of a TPID value followed by a TCI value.
 
 ## Tx Checksum
 
-* Device Interface
+### Device Interface
 
 Transmit checksum offload is requested by the driver on a per-packet
 basis. For a given transmit packet placed on a transmit queue, the
 driver will specify whether transmit checksum(s) should be calculated
 and inserted by the device.
 
-* Capability and Data structures
+### Capability and Data Structures
 
 During the capabilities negotiation phase, the device will advertise
 support for the type(s) of transmit checksum calculation/insertion it is
@@ -5444,7 +5443,7 @@ __le32 csum_caps;
 
 }
 ```
-- Configuration
+### Configuration
 
 There are several different offload models for transmit checksum. The
 model depends on which type of transmit descriptor is being used.
@@ -5700,19 +5699,18 @@ As a result of this feature, the device will calculate a hash on certain fields 
 
 1.  Deliver the hash value in the RX descriptor along with the packet. This can be used by the Host OS for further classification needs.
 2.  Distribute the RX packets belonging to different flows to different RX queues based on the distribution programmed by the Device driver as part of Lookup Table (LUT) programming.
-  1.  All packets of a flow get hashed to a single RX queue as per the Data Plane programming of the device, although a device with programmable Dataplane can decide to hash them differently.
+   *  All packets of a flow get hashed to a single RX queue as per the Data Plane programming of the device, although a device with programmable Dataplane can decide to hash them differently.
   
-  The Device driver can learn about the fields on which the hash was performed for a packet and as an advanced feature can negotiate to select the fields in teh packet to perform the hash.
+  The Device driver can learn about the fields on which the hash was performed for a packet and as an advanced feature can negotiate to select the fields in the packet to perform the hash.
 
-- Device Interface
+* Device Interface
   - RSS hash value is delivered in the RX descriptor as described in the RX Descriptor sections.
 
-- Capability and Data structures
+* Capability and Data structures
 ```C
 #define VIRTCHNL2_OP_GET_RSS_KEY 513
 #define VIRTCHNL2_OP_SET_RSS_KEY 514
 #define VIRTCHNL2_OP_GET_RSS_LUT 515
-
 #define VIRTCHNL2_OP_SET_RSS_LUT 516
 
 /* VIRTCHNL2_RSS_ALGORITHM
@@ -5768,13 +5766,13 @@ u8 pad;
 u8 key[1]; /* RSS hash key, packed bytes */
 };
 ```
-- Configuration
+* Configuration
 
 RSS can be configured as a standard feature by negotiation with CP as part of device Capability negotiation.
 
 After the negotiation, during vPort Create the algorithm can be selected or provided by the Device as well as the key size and lut size used.
 
-- Driver Configuration and Runtime flow
+* Driver Configuration and Runtime flow
 
 1.  Driver -\> CP (get_capabilities)
 2.  Driver -\> CP (create_vport)
@@ -5783,7 +5781,7 @@ After the negotiation, during vPort Create the algorithm can be selected or prov
 5.  Driver -\> CP (set_lut)
 6.  Driver -\> CP (get_lut)
 
-- Device and Control Plane Behavioral Model
+* Device and Control Plane Behavioral Model
 
 The Device can expose standard and advanced configuration options for RSS, as part of standard features, the device must expose the ability to choose the Algorithm, set the Key and Lookup table for directing traffic to the Rx queues.
 
@@ -5793,7 +5791,7 @@ If the Driver sends a configuration that is malicious such as set the LUT with q
 
 ## Header Split
 
-- Device Interface
+* Device Interface
 
 Header split is enabled on a per-receive-queue basis. For each received
 packet, the device determines whether to split the packet across the
@@ -5802,7 +5800,7 @@ buffer, or post the whole packet to the packet buffer(s). The receive
 descriptor contains fields to communicate the packet layout across the
 header and packet buffer(s) between the device and the driver.
 
-- Capability and Data structures
+* Capability and Data Structures
 
 There are several capabilities associated with header split which must
 be learned from the device.
@@ -5815,7 +5813,7 @@ be learned from the device.
 - Packet buffer alignment requirement (if any)
 - Header split modes supported (see details below)
 
-- Configuration
+* Configuration
 
 Single queue model: if header split is enabled, either the 16B or 32B
 read descriptor format may be used. Each descriptor posted to the device
@@ -5840,12 +5838,12 @@ laid out across the associated buffers.
 
 Supported modes are the following:
 
-- Header Split disabled (Single buffer) – the whole packet is always posted to packet buffer(s)
-- Header split enabled W/O supporting "Split large, coalesce small"<span class="mark">.</span> – if the header is identified and fits into the header buffer, post header to header buffer and payload to packet buffer(s), else post the whole packet to the packet buffer(s)
-- Header Split with the support for “Split large, coalesce small” – if packet length is \<= header buffer size, post the whole packet to the header buffer, else use header split algorithm above.
+* Header Split disabled (Single buffer) – the whole packet is always posted to packet buffer(s)
+* Header split enabled W/O supporting "Split large, coalesce small"<span class="mark">.</span> – if the header is identified and fits into the header buffer, post header to header buffer and payload to packet buffer(s), else post the whole packet to the packet buffer(s)
+* Header Split with the support for “Split large, coalesce small” – if packet length is \<= header buffer size, post the whole packet to the header buffer, else use header split algorithm above.
   (Note: This option is supported only for non RSC. For RSC segments it is always header split regardless of this condition<span class="mark">.)</span>
-
-- Driver Configuration and Runtime flow
+  
+* Driver Configuration and Runtime flow
 
 If the driver wishes to enable header split, it must configure the
 receive queue context with the header buffer size and packet buffer
@@ -5859,17 +5857,17 @@ requirements, if any.
 When processing a receive queue, the driver must check each receive
 descriptor for the following information:
 
-- SPH – this bit indicates that the packet was split across the header buffer and packet buffer(s) unless HBO is also set, indicating an overflow condition
-- HBO – this bit indicates that the header length is larger than the header buffer size. In this situation, the whole packet is posted to the packet buffer(s)
-- HDRL – number of bytes placed in the header buffer; will be the header length if the packet is split or the packet length if the entire packet was posted to the header buffer
-- PKLT – number of bytes placed in packet buffer; for a packet that spans multiple buffers, all buffers but the last one is full (Note: In case of HBO the PKTL will hold the whole packet.)
+* SPH – this bit indicates that the packet was split across the header buffer and packet buffer(s) unless HBO is also set, indicating an overflow condition
+* HBO – this bit indicates that the header length is larger than the header buffer size. In this situation, the whole packet is posted to the packet buffer(s)
+* HDRL – number of bytes placed in the header buffer; will be the header length if the packet is split or the packet length if the entire packet was posted to the header buffer
+* PKLT – number of bytes placed in packet buffer; for a packet that spans multiple buffers, all buffers but the last one is full (Note: In case of HBO the PKTL will hold the whole packet.)
 
 Based on these fields in the receive descriptor, the driver indicates
 the packet up to the OS along with the appropriate software data
 structures to describe the location of the packet in one or more
 buffers.
 
-- Device and Control Plane Behavioral Model
+* Device and Control Plane Behavioral Model
 
 Upon packet reception, the device chooses a target receive queue using
 either exact match rules or hash-based queue selection. If header split
@@ -5881,7 +5879,7 @@ and packet buffer(s), the device will
 
 ## RSC
 
-- Device Interface
+* Device Interface
 
 Receive Segment Coalescing (RSC) can be enabled in conjunction with
 header split and the split (receive) queue model. The RSC context may be
@@ -5894,7 +5892,7 @@ the RSC datagram are posted consecutively to the Receive Queue. The
 driver processes the Receive Queue descriptors and indicates the
 datagram to the operating system.
 
-- Capability and Data structures
+* Capability and Data structures
 
 The device supports a total number of RSC contexts. A subset of this
 number can be made available to an AVH host interface instance. This
@@ -5915,7 +5913,7 @@ software. This is one of several criteria by which the RSC context may
 be closed. This would typically be configured by control software; the
 host driver would not have control over this setting.
 
-- Configuration
+* Configuration
 
 When RSC is enabled, the receive split queue model must be used. RSC is
 not supported with the single queue model or when header split is
@@ -5923,7 +5921,7 @@ disabled. RSC is enabled in the receive queue context and would
 typically be enabled for all receive queues associated with a given
 vPort.
 
-- Driver Configuration and Runtime flow
+* Driver Configuration and Runtime flow
 
 The driver must enable RSC on a per-receive-queue basis. Typically, the
 driver would enable RSC for all the queues associated with a given host
@@ -5938,40 +5936,40 @@ When processing a receive queue enabled for RSC, the driver must be
 prepared to indicate receive datagrams up to the maximum RSC coalesce
 size. This may be larger than the interface MTU.
 
-- Device and Control Plane Behavioral Model
+* Device and Control Plane Behavioral Model
 
 When RSC is enabled, the receive flow in the device is as follows:
 
-- Packet arrives at the device, which searches for an in-use RSC context associated with the flow.
-- If not found, the device pulls the next available buffer from the Rx Buffer Queue and finds a free RSC context
-- The device writes the packet data to the buffer in host memory and updates its internal RSC context. The packet header is not written to host memory until the RSC context is closed.
-- If there is an in-use RSC context associated with the flow (i.e., for all subsequent packets after the first to open an RSC context), the device compares the remaining space in the already-allocated buffer with the number of bytes of data in the current packet.
-  - If needed, the device pulls the next available buffer from the Rx Buffer Queue and updates the RSC context accordingly.
-- The Device appends the packet data to the buffer(s) in host memory and updates the header for each subsequent packet.
-- At some point, it will be time to close the context.
-- The device writes the packet header to host memory (to the header buffer associated with the first packet buffer) and completes all buffers associated with the RSC context consecutively on the receive queue. Note that the buffers may or may not have been consecutive on the Rx Buffer Queue.
+1. Packet arrives at the device, which searches for an in-use RSC context associated with the flow.
+2. If not found, the device pulls the next available buffer from the Rx Buffer Queue and finds a free RSC context
+3. The device writes the packet data to the buffer in host memory and updates its internal RSC context. The packet header is not written to host memory until the RSC context is closed.
+4. If there is an in-use RSC context associated with the flow (i.e., for all subsequent packets after the first to open an RSC context), the device compares the remaining space in the already-allocated buffer with the number of bytes of data in the current packet.
+  * If needed, the device pulls the next available buffer from the Rx Buffer Queue and updates the RSC context accordingly.
+5. The Device appends the packet data to the buffer(s) in host memory and updates the header for each subsequent packet.
+6. At some point, it will be time to close the context.
+7. The device writes the packet header to host memory (to the header buffer associated with the first packet buffer) and completes all buffers associated with the RSC context consecutively on the receive queue. Note that the buffers may or may not have been consecutive on the Rx Buffer Queue.
 
 ## Double Completion (WIP)
 
-- Device Interface
-- Capability and Data structures
-- Configuration
-- Driver Configuration and Runtime flow
-- Device and Control Plane Behavioral Model
+* Device Interface
+* Capability and Data structures
+* Configuration
+* Driver Configuration and Runtime flow
+* Device and Control Plane Behavioral Model
 
-**Host SW support for LSO miss completions**
+**Host SW Support for LSO Miss Completions**
 
-- When there is a miss for a TX packet rule lookup in the Device and the Device sends the packet to be handled by Special SW on Embedded Cores , Device will send two completions for SW (per completion queue context configuration) :
+* When there is a miss for a TX packet rule lookup in the Device and the Device sends the packet to be handled by Special SW on Embedded Cores, Device will send two completions for SW (per completion queue context configuration):
   - First completion is reported as a “miss” completion. This completion is sent for the original packet that is missed.
   - Second completion is reported as a “reinject” completion. This completion is sent for the reinjected packet.
 
 In both cases the timestamp reported in the TX completion represents the
 time upon which completion is sent to host SW.
 
-- Host SW should deallocate the original packet buffers when it gets the first completion and should send a completion to the congestion control SW (with the completion timestamp) when it gets the second completion. Host SW activates a timer between the first and second completion . Host SW reports the completion to congestion control SW if timer expires before second completion was sent from Device.
-  - SW cannot release the packet buffer Context ( In case of Linux, it's the SKB) until both are done.
+* Host SW should deallocate the original packet buffers when it gets the first completion and should send a completion to the congestion control SW (with the completion timestamp) when it gets the second completion. Host SW activates a timer between the first and second completion . Host SW reports the completion to congestion control SW if timer expires before second completion was sent from Device.
+* SW cannot release the packet buffer Context ( In case of Linux, it's the SKB) until both are done.
   
-  Here are the few cases that a driver might see in terms of the order of completion, and the flow it needs to implement to support the double completion feature.
+Here are the few cases that a driver might see in terms of the order of completion, and the flow it needs to implement to support the double completion feature.
 
 <table>
 <colgroup>
@@ -6391,12 +6389,12 @@ VIRTCHNL2_VPORT_ENABLE_RDMA             = BIT(4),
 ####	MMIO Space Learning
 After the RDMA capability negotiation, IDPF driver must learn about the various MMIO memory regions in the memory BAR that it should map. This will allow RDMA driver to map its own regions in the best possible way depending on the usage.
 This memory region discovery opcode can be called in other cases by IDPF driver as well in future if it needs to support other independent auxiliary drivers that need their own BAR space mapping.
-There are two flows that a driver    can follow depending on the support in the OS.
+There are two flows that a driver can follow depending on the support in the OS.
 1.	It can start with just mapping the Memory pages corresponding to the virtchannel Mailbox registers  and the reset registers. Then map the rest once the driver learns about the rest of the memory regions from Device Control Plane leaving behind regions that will be mapped by another auxiliary/dependent driver (in this case RDMA driver) appropriately.
 2.	Or it can start with mapping all the BAR and then request unmap from the OS of the regions that it should not be mapping so that the auxiliary/dependent driver can map it appropriately. (Note: currently Linux does not support this flow and is proposed as an enhancement, the benefit with this approach is that there is only one contiguous mapping/region (with holes) for the IDPF drivers MMIO space.
 In either case the virtchannel exchange with the device Control remains the same and needs to happen as soon as the driver learns that it is enabled to support RDMA auxiliary/dependent driver or any other auxiliary/dependent driver that needs its own memory mapping.
 
-Virtchannel Details
+#### Virtchannel Details
 
 ```C
 enum virtchnl2_op {
@@ -6417,13 +6415,13 @@ struct virtchnl2_get_lan_memory_regions {
 	struct virtchnl2_mem_region mem_reg[STRUCT_VAR_LEN];
 };
 ```
-####		RDMA MSIX vector allocation
+#### RDMA MSIX Vector Allocation
 IDPF driver given the OS capabilities needs to request MSIX vectors on behalf of the  RDMA vendor specific dependent driver as a onetime request for all vectors or additional request for RDMA specific Aux driver usage once it is aware of its enabled capabilities and the number of vectors that Control Plane carves out for RDMA usage.
 Driver implements the following policy
 1.	A default allocation of 4  vectors is made for RDMA by LAN IDPF driver if the Control plane does not inform the driver about RDMA dedicate allocation of vectors. This amount will be taken from the num_allocated_vectors in get_capability that Device Control plane informs LAN driver about. So LAN will have less than max msix for its use based on the default policy.
 2.	Default allocation policy will be used only if the Device Control plane does not initialize  num_rdma_allocated_vectors in the get_capability structure using some of the padding area to specify exactly how many vectors to be allocated for RDMA and given to the RDMA CORE driver.  If this field is understood by the driver and populated by the Device Control Plane with a non-zero value, then the IDPF driver may not take any vectors from num_allocated_vectors given to the LAN but will allocate the sum of LAN + RDMA with Device Control Plane and with the OS. And give the RDMA portion to the RDMA core driver for its use.
 
-####	Init and Runtime Virtchannel  Messages and flows between RDMA driver and The Device Control Plane
+#### Init and Runtime Virtchannel Messages and Flows between RDMA Driver and the Device Control Plane
 All interactions between the RDMA vendor specific dependent driver and the Device Control plane after the initial exchange are pretty much opaque to the IDPF driver.
 Opaque Virtchannel message:
 
@@ -6433,7 +6431,7 @@ VIRTCHNL2_OP_RDMA			= 529,
 This OP/call is used as an opaque RDMA virtchannel message between the vendor driver and the Device Control plane. A message buffer from RDMA driver is sent to the Device Control with this Opcode and the Device Control can do the reverse using the same opcode to send a message buffer to the RDMA driver. The interpretation of this message buffer is agreed upon between the Vendor RDMA driver and the Device Control plane.
 
 
-# Additional Offloads and capabilities
+# Additional Offloads and Capabilities
 
 These offloads are just like standard offloads but not enabled by the
 drivers by default and the NIC vendors do not provide these offloads as
@@ -6441,18 +6439,18 @@ a standard capability to a PF or a VF device
 
 ## PTP (WIP)
 
-- Device Interface
+* Device Interface
   
   Device provides an Interface for synchronizing the system clock with device clock. The interface is mainly to read the device clock. There is no additional interface for software to control or write to the device clock. Device clock sync with external/GrandMaster is taken care of by the device itself. VFs will not have the access to device clock. If a VF is attached to VM, VM will rely on Hypervisor/Qemu API to sync VMs system clock with Host system clock.
 
-- Capability and Data structures
+* Capability and Data structures
   
   The response from VIRTCHNL2_OP_GET_CAPS rrom CP will have the VIRTCHNL2_CAP_PTP information. Driver will use this info to either register the PTP interfaces to driver ro control the requests from the user/stack.
 
-- Configuration
+* Configuration
 
 
-- Driver Configuration and Runtime flow
+* Driver Configuration and Runtime flow
   
   On driver initialization/load if the PTP capability is supported by device, driver will register the PTP object along with two read callbacks. *Gettime64* for reading the device clock and *Getcrosststamp* for PTM(Precision Time Measurement). The device registers to read the device clock are SHTIME, SHTIME_L and SHTIME_H. ART_L and ART_H are used for PTM.
 
@@ -6483,7 +6481,7 @@ ATR High-Level Flow
 - Subsequent incoming frames are directed to a receive queue associated with Core B
 - If the connection is closed, the filter is removed
 
-- Capability and Data structures
+- Capability and Data Structures
 
 Devices may have one or more options to add exact-match filters to the
 table. The mechanism should be communicated at configuration time. Some
@@ -6493,16 +6491,16 @@ options include:
 - Driver adds the filter to an “ATR queue” via a single bit in the data descriptor (in this case, the associated RX queue would need to be configured in the TX queue context)
 - Driver enables Device sampling on each “ATR Queue” (in this case, the driver sets a sampling rate, or the device adds filters on a best effort basis)
 
-- Configuration
+* Configuration
 
 ATR is most effective if there is a TX/RX queue pair per core associated
 with the host interface.
 
-- Driver Configuration and Runtime flow
+* Driver Configuration and Runtime flow
 
 See above.
 
-- Device and Control Plane Behavioral Model
+* Device and Control Plane Behavioral Model
 
 See above.
 
@@ -6541,9 +6539,9 @@ enablement flow to be performed by IDPF PF driver:
 
 S-IOV is an advanced virtualization capability provided by the device to some of its functions ( for now only PF), it is a much lighter weight virtualization as compared to SR-IOV and does provide a huge fan out.
 
-- Device Interface
+* Device Interface
 
-- Capability and Data structures
+* Capability and Data Structures
 
   ```C
   #define VIRTCHNL2_OP_CREATE_ADI 532
@@ -6568,7 +6566,7 @@ makes modification to the packet or the wire side CRC.
 
 # Appendix
 
-##  Protocols IDs for PTYPE negotiation
+##  Protocols IDs for PTYPE Negotiation
 
 Well-known protocols identifications for PTYPE negotiation. Sequential order is used to provide cache efficient lookups.
 
@@ -6576,7 +6574,7 @@ Mandatory Protocol IDs must be supported by all IDPF compliant devices to provid
 
 User specific or private protocols can be mapped to range 32768-65534 guaranteed to be used for well-known protocols.
 
-*Table 5 SW facing Protocols IDs for PTYPE negotiation*
+SW Facing Protocols IDs for PTYPE Negotiation
 
 <table>
 <colgroup>
@@ -7446,7 +7444,7 @@ Note that num_queues may be larger than the default number of queues.
 
 # 
 
-# Device capabilities default values assumed by the IDPF driver
+# Device Capabilities default Values Assumed by the IDPF Driver
 
 Any drive that is compliant with the spec should assume the default
 value.  
@@ -7457,7 +7455,7 @@ Virtchannel data structures for vport configuration, queue configuration
 etc have enough padding defined to be able to accommodate negotiation in
 the future of non-default values with the Device control plane.
 
-### Interrupt capabilities
+### Interrupt Capabilities
 
 <table>
 <colgroup>
@@ -7514,7 +7512,7 @@ enablement operation</th>
 </tbody>
 </table>
 
-### RX DMA capabilities
+### RX DMA Capabilities
 
 <table>
 <colgroup>
@@ -7646,7 +7644,7 @@ first bytes of payload)</p></th>
 
 ### 
 
-### TX packet/buffer limitations 
+### TX Packet/Buffer Limitations 
 
 <table>
 <colgroup>
@@ -7671,14 +7669,14 @@ first bytes of payload)</p></th>
 <tr class="header">
 <th>Max LSO payload length.</th>
 <th><blockquote>
-<p><em><mark>max_lso_payload_len</mark></em></p>
+<p><em>max_lso_payload_len</em></p>
 </blockquote></th>
 <th></th>
 <th>256K-1</th>
 </tr>
 <tr class="odd">
 <th>Min MSS for LSO</th>
-<th><em><mark>min_mss_for_lso</mark></em></th>
+<th><em>min_mss_for_lso</em></th>
 <th></th>
 <th>88</th>
 </tr>
@@ -7686,7 +7684,7 @@ first bytes of payload)</p></th>
 <th>Min SSO/LSO packet size as sent by the driver (excluding any
 expansion done by the device).<br />
 Field is described in byte units.</th>
-<th><p><strong><mark>IECM_TX_MIN_LEN</mark></strong></p>
+<th><p><strong>IECM_TX_MIN_LEN</strong></p>
 <p><mark></mark></p></th>
 <th></th>
 <th>17</th>
@@ -7695,7 +7693,7 @@ Field is described in byte units.</th>
 <th>Min LSO header length as sent by the driver (excluding any expansion
 done by the device).</th>
 <th><blockquote>
-<p><em><mark>min_lso_header_len</mark></em></p>
+<p><em>min_lso_header_len</em></p>
 </blockquote></th>
 <th></th>
 <th>17</th>
@@ -7706,7 +7704,7 @@ expansion done by the device).</p>
 <p>Note : Device is obligated to check the max_mtu on the TX path. On
 the RX path ,the device is not required to check the max_mtu which means
 that host SW can accept packets bigger than max_mtu.</p></th>
-<th><em><strong><mark>max_mtu</mark></strong></em></th>
+<th><em><strong>max_mtu</strong></em></th>
 <th></th>
 <th>9KB</th>
 </tr>
@@ -7715,7 +7713,7 @@ that host SW can accept packets bigger than max_mtu.</p></th>
 (excluding any expansion done by the device).</p>
 <p>Device does not support segmentation for a header longer than
 that.</p></th>
-<th><p><em><strong><mark>max_tx_hdr_len_seg</mark></strong></em></p>
+<th><p><em><strong>max_tx_hdr_len_seg</strong></em></p>
 <p><mark></mark></p></th>
 <th></th>
 <th>255</th>
@@ -7726,9 +7724,9 @@ that.</p></th>
 <p>Device does not support doing a generic offload (i.e. checksum field
 , LSO incremental field) to a field located deeper in the packet
 header.</p>
-<p>Note : Generic offload is an offload that is executed using offsets
+<p>Note: Generic offload is an offload that is executed using offsets
 from the TX descriptor.</p></th>
-<th><p><em><strong><mark>max_tx_hdr_generic_offloads</mark></strong></em></p>
+<th><p><em><strong>max_tx_hdr_generic_offloads</strong></em></p>
 <p><mark></mark></p></th>
 <th></th>
 <th>256</th>
@@ -7738,9 +7736,9 @@ from the TX descriptor.</p></th>
 (excluding any expansion done by the device).</p>
 <p>Device does not support calculating checksum/CRC to a field located
 deeper in the packet header.</p>
-<p>Note : Non generic checksum offload is a checksum offload that is
+<p>Note: Non generic checksum offload is a checksum offload that is
 executed using offsets from the Device parser.</p></th>
-<th><p><em><strong><mark>max_tx_hdr_HWparse_csum</mark></strong></em></p>
+<th><strong>max_tx_hdr_HWparse_csum</strong>
 <p><mark></mark></p></th>
 <th></th>
 <th>256</th>
@@ -7752,7 +7750,7 @@ executed using offsets from the Device parser.</p></th>
 
 ### 
 
-### RX packet/buffer limitations 
+### RX Packet/Buffer Limitations 
 
 <table>
 <colgroup>
@@ -7764,14 +7762,14 @@ executed using offsets from the Device parser.</p></th>
 <thead>
 <tr class="header">
 <th><strong>Capability</strong></th>
-<th><strong>SW parameter</strong></th>
-<th><strong>Possible values</strong></th>
-<th><strong>Default value</strong></th>
+<th><strong>SW Parameter</strong></th>
+<th><strong>Possible Values</strong></th>
+<th><strong>Default Value</strong></th>
 </tr>
 <tr class="odd">
 <th>Minimum buffer size supported for single queue model.<br />
 Field is described in 128B units.</th>
-<th><em><mark>min_rx_buf_sz_single_queue</mark></em></th>
+<th><em>min_rx_buf_sz_single_queue</em></th>
 <th></th>
 <th>2K</th>
 </tr>
@@ -7779,7 +7777,7 @@ Field is described in 128B units.</th>
 <th>Minimum “large RX buffer” size supported for split queue
 model.<br />
 Field is described in 128B units.</th>
-<th><em><mark>min_large_rx_buf_sz_split_queue</mark></em></th>
+<th><em>min_large_rx_buf_sz_split_queue</em></th>
 <th></th>
 <th>4K</th>
 </tr>
@@ -7787,7 +7785,7 @@ Field is described in 128B units.</th>
 <th>Minimum “small RX buffer” size supported for split queue
 model.<br />
 Field is described in 128B units.</th>
-<th><em><mark>min_small_rx_buf_sz_split_queue</mark></em></th>
+<th><em>min_small_rx_buf_sz_split_queue</em></th>
 <th></th>
 <th>2K</th>
 </tr>
@@ -7795,7 +7793,7 @@ Field is described in 128B units.</th>
 <th><p>Minimum “RX header buffer” size supported for header split.<br />
 Field is described in 64B units.</p>
 <p>Relevant for both single and split queue models.</p></th>
-<th><p><em><mark>min_rx_hdr_buf_sz</mark></em></p>
+<th><p><em>min_rx_hdr_buf_sz</em></p>
 <p><mark></mark></p></th>
 <th></th>
 <th>256</th>
@@ -7804,14 +7802,14 @@ Field is described in 64B units.</p>
 <th><p>Maximum RX buffer size.<br />
 Field is described in 128B units.</p>
 <p>Relevant for all buffers except for “RX header buffer”</p></th>
-<th><em><mark>max_rx_buf_sz</mark></em></th>
+<th><em>max_rx_buf_sz</em></th>
 <th></th>
 <th>16KB-128B</th>
 </tr>
 <tr class="header">
 <th>Maximum “RX header buffer” size.<br />
 Field is described in 64B units.</th>
-<th><em><mark>max_rx_hdr_buf_sz</mark></em></th>
+<th><em>max_rx_hdr_buf_sz</em></th>
 <th></th>
 <th>1KB-64B</th>
 </tr>
@@ -7820,7 +7818,7 @@ Field is described in 64B units.</th>
 </tbody>
 </table>
 
-### Checksum Offload capabilities
+### Checksum Offload Capabilities
 
 <table>
 <colgroup>
@@ -7838,25 +7836,25 @@ Field is described in 64B units.</th>
 </tr>
 <tr class="odd">
 <th>RX checksum support for most inner headers.</th>
-<th><em><mark>VIRTCHNL2_CAP_RX_CSUM_L3_IPV4_IN0
+<th><em>VIRTCHNL2_CAP_RX_CSUM_L3_IPV4_IN0
 VIRTCHNL2_CAP_RX_CSUM_L4_IPV4_TCP_IN0
 VIRTCHNL2_CAP_RX_CSUM_L4_IPV4_UDP_IN0
 VIRTCHNL2_CAP_RX_CSUM_L4_IPV4_SCTP_IN0
 VIRTCHNL2_CAP_RX_CSUM_L4_IPV6_TCP_IN0
 VIRTCHNL2_CAP_RX_CSUM_L4_IPV6_UDP_IN0
-VIRTCHNL2_CAP_RX_CSUM_L4_IPV6_SCTP_IN0</mark></em></th>
+VIRTCHNL2_CAP_RX_CSUM_L4_IPV6_SCTP_IN0</em></th>
 <th></th>
 <th></th>
 </tr>
 <tr class="header">
 <th>RX checksum support for 1<sup>st</sup> inner tunnel.</th>
-<th><em><mark>VIRTCHNL2_CAP_RX_CSUM_L3_IPV4_IN1
+<th><em>VIRTCHNL2_CAP_RX_CSUM_L3_IPV4_IN1
 VIRTCHNL2_CAP_RX_CSUM_L4_IPV4_TCP_IN1<br />
 VIRTCHNL2_CAP_RX_CSUM_L4_IPV4_UDP_IN1
 VIRTCHNL2_CAP_RX_CSUM_L4_IPV4_SCTP_IN1
 VIRTCHNL2_CAP_RX_CSUM_L4_IPV6_TCP_IN1
 VIRTCHNL2_CAP_RX_CSUM_L4_IPV6_UDP_IN1
-VIRTCHNL2_CAP_RX_CSUM_L4_IPV6_SCTP_IN1</mark></em></th>
+VIRTCHNL2_CAP_RX_CSUM_L4_IPV6_SCTP_IN1</em></th>
 <th></th>
 <th></th>
 </tr>
@@ -7865,13 +7863,13 @@ VIRTCHNL2_CAP_RX_CSUM_L4_IPV6_SCTP_IN1</mark></em></th>
 <p>In case the packet parser supports more than 2 tunnels , this
 capability represents the 2<sup>nd</sup> tunnel and the following
 ones.</p></th>
-<th><em><mark>VIRTCHNL2_CAP_RX_CSUM_L3_IPV4_IN2
+<th><em>VIRTCHNL2_CAP_RX_CSUM_L3_IPV4_IN2
 VIRTCHNL2_CAP_RX_CSUM_L4_IPV4_TCP_IN2<br />
 VIRTCHNL2_CAP_RX_CSUM_L4_IPV4_UDP_IN2
 VIRTCHNL2_CAP_RX_CSUM_L4_IPV4_SCTP_IN2
 VIRTCHNL2_CAP_RX_CSUM_L4_IPV6_TCP_IN2
 VIRTCHNL2_CAP_RX_CSUM_L4_IPV6_UDP_IN2
-VIRTCHNL2_CAP_RX_CSUM_L4_IPV6_SCTP_IN2</mark></em></th>
+VIRTCHNL2_CAP_RX_CSUM_L4_IPV6_SCTP_IN2</em></th>
 <th></th>
 <th></th>
 </tr>
@@ -7879,27 +7877,27 @@ VIRTCHNL2_CAP_RX_CSUM_L4_IPV6_SCTP_IN2</mark></em></th>
 <th><p>TX checksum support for most inner headers.</p>
 <p>Note : Those capabilities are relevant only for an SSO. For LSO the
 packet checksums must be calculated by Device.</p></th>
-<th><em><mark>VIRTCHNL2_CAP_TX_CSUM_L3_IPV4_IN0
+<th><em>VIRTCHNL2_CAP_TX_CSUM_L3_IPV4_IN0
 VIRTCHNL2_CAP_TX_CSUM_L4_IPV4_TCP_IN0
 VIRTCHNL2_CAP_TX_CSUM_L4_IPV4_UDP_IN0
 VIRTCHNL2_CAP_TX_CSUM_L4_IPV4_SCTP_IN0
 VIRTCHNL2_CAP_TX_CSUM_L4_IPV6_TCP_IN0
 VIRTCHNL2_CAP_TX_CSUM_L4_IPV6_UDP_IN0
-VIRTCHNL2_CAP_TX_CSUM_L4_IPV6_SCTP_IN0</mark></em></th>
+VIRTCHNL2_CAP_TX_CSUM_L4_IPV6_SCTP_IN0</em></th>
 <th></th>
 <th></th>
 </tr>
 <tr class="odd">
 <th><p>TX checksum support for 1<sup>st</sup> inner tunnel.</p>
-<p>Note : Those capabilities are relevant only for an SSO. For LSO the
+<p>Note: Those capabilities are relevant only for an SSO. For LSO the
 packet checksums must be calculated by Device.</p></th>
-<th><p><em><mark>VIRTCHNL2_CAP_TX_CSUM_L3_IPV4_IN1
+<th><p><em>VIRTCHNL2_CAP_TX_CSUM_L3_IPV4_IN1
 VIRTCHNL2_CAP_TX_CSUM_L4_IPV4_TCP_IN1<br />
 VIRTCHNL2_CAP_TX_CSUM_L4_IPV4_UDP_IN1
 VIRTCHNL2_CAP_TX_CSUM_L4_IPV4_SCTP_IN1
 VIRTCHNL2_CAP_TX_CSUM_L4_IPV6_TCP_IN1
 VIRTCHNL2_CAP_TX_CSUM_L4_IPV6_UDP_IN1
-VIRTCHNL2_CAP_TX_CSUM_L4_IPV6_SCTP_IN1</mark></em></p>
+VIRTCHNL2_CAP_TX_CSUM_L4_IPV6_SCTP_IN1</em></p>
 <p><mark></mark></p></th>
 <th></th>
 <th></th>
@@ -7908,15 +7906,15 @@ VIRTCHNL2_CAP_TX_CSUM_L4_IPV6_SCTP_IN1</mark></em></p>
 <th><p>TX checksum support for 2<sup>nd</sup> inner tunnel.</p>
 <p>In case packet passer supports more than 2 tunnels , this capability
 represents the 2<sup>nd</sup> tunnel and the following ones.</p>
-<p>Note : Those capabilities are relevant only for an SSO. For LSO the
+<p>Note: Those capabilities are relevant only for an SSO. For LSO the
 packet checksums must be calculated by Device.</p></th>
-<th><em><mark>VIRTCHNL2_CAP_TX_CSUM_L3_IPV4_IN2
+<th><em>VIRTCHNL2_CAP_TX_CSUM_L3_IPV4_IN2
 VIRTCHNL2_CAP_TX_CSUM_L4_IPV4_TCP_IN2<br />
 VIRTCHNL2_CAP_TX_CSUM_L4_IPV4_UDP_IN2
 VIRTCHNL2_CAP_TX_CSUM_L4_IPV4_SCTP_IN2
 VIRTCHNL2_CAP_TX_CSUM_L4_IPV6_TCP_IN2
 VIRTCHNL2_CAP_TX_CSUM_L4_IPV6_UDP_IN2
-VIRTCHNL2_CAP_TX_CSUM_L4_IPV6_SCTP_IN2</mark></em></th>
+VIRTCHNL2_CAP_TX_CSUM_L4_IPV6_SCTP_IN2</em></th>
 <th></th>
 <th></th>
 </tr>
@@ -7928,7 +7926,7 @@ VIRTCHNL2_CAP_TX_CSUM_L4_IPV6_SCTP_IN2</mark></em></th>
 </tr>
 <tr class="header">
 <th>Support TX packet generic checksum calculation.</th>
-<th><em><mark>VIRTCHNL2_CAP_TX_CSUM_GENERIC</mark></em></th>
+<th><em>VIRTCHNL2_CAP_TX_CSUM_GENERIC</em></th>
 <th></th>
 <th></th>
 </tr>
@@ -7937,7 +7935,7 @@ VIRTCHNL2_CAP_TX_CSUM_L4_IPV6_SCTP_IN2</mark></em></th>
 </tbody>
 </table>
 
-### Segmentation Offload capabilities
+### Segmentation Offload Capabilities
 
 <table>
 <colgroup>
@@ -7949,9 +7947,9 @@ VIRTCHNL2_CAP_TX_CSUM_L4_IPV6_SCTP_IN2</mark></em></th>
 <thead>
 <tr class="header">
 <th><strong>Capability</strong></th>
-<th><strong>SW parameter</strong></th>
-<th><strong>Possible values</strong></th>
-<th><strong>Default value</strong></th>
+<th><strong>SW Parameter</strong></th>
+<th><strong>Possible Values</strong></th>
+<th><strong>Default Value</strong></th>
 </tr>
 <tr class="odd">
 <th>TX segmentation support.</th>
@@ -7988,7 +7986,7 @@ VIRTCHNL2_CAP_SEG_IPV6_SCTP_IN2</th>
 </tr>
 <tr class="header">
 <th><p>Support TX packet generic LSO.</p>
-<p>When this capability is supported , VIRTCHNL2_CAP_TX_CSUM_GENERIC
+<p>When this capability is supported, VIRTCHNL2_CAP_TX_CSUM_GENERIC
 must be supported as well.</p></th>
 <th>VIRTCHNL2_CAP_SEG_GENERIC</th>
 <th></th>
@@ -7999,7 +7997,7 @@ must be supported as well.</p></th>
 </tbody>
 </table>
 
-### RSS capabilities
+### RSS Capabilities
 
 <table>
 <colgroup>
@@ -8039,7 +8037,7 @@ VIRTCHNL2_CAP_RSS_IPV6_AH_ESP</th>
 </tbody>
 </table>
 
-### Header split capabilities
+### Header Split Capabilities
 
 <table>
 <colgroup>
@@ -8068,7 +8066,7 @@ VIRTCHNL2_CAP_RX_HSPLIT_AT_L4V6</th>
 </tbody>
 </table>
 
-### RSC offload capabilities
+### RSC Offload Capabilities
 
 <table>
 <colgroup>
@@ -8096,9 +8094,9 @@ VIRTCHNL2_CAP_RSC_IPV6_TCP</th>
 </tbody>
 </table>
 
-### L2 Tag offload capabilities
+### L2 Tag Offload Capabilities
 
-| **Capability**                                  | **SW parameter**                                                   | **Possible values** | **Default value** |
+| **Capability**                                  | **SW Parameter**                                                   | **Possible Values** | **Default Value** |
 |-------------------------------------------------|--------------------------------------------------------------------|---------------------|-------------------|
 | Support L2Tag1 insertion on TX from descriptor. | ***<span class="mark">VIRTCHNL2_CAP_RX_DESC_L2TAG1_ADD</span>***   |                     | **1**             |
 | Support L2Tag2 insertion on TX from descriptor. | ***<span class="mark">VIRTCHNL2_CAP_RX_DESC_L2TAG2_ADD</span>***   |                     | **1**             |
@@ -8109,7 +8107,7 @@ VIRTCHNL2_CAP_RSC_IPV6_TCP</th>
 
 ### 
 
-# Virtchannel header file/s (WIP)
+# Virtchannel Header File/s (WIP)
 
 # virtchannel2.h
 
@@ -8400,7 +8398,7 @@ enum virtchnl2_cap_rsc {
 
 /* Other capability flags */
 #ifdef WINDOWS_SUPPORT
-enum virtchnl2_cap_other : u64 {
+enum virtchnl2_cap_other: u64 {
 #else
 enum virtchnl2_cap_other {
 #endif
@@ -11621,7 +11619,7 @@ struct idc_rdma_vport_auxiliary_drv {
 #endif /* _IDC_RDMA_H_*/
 ```
 
-# Appendix : OEM Capabilities
+# Appendix: OEM Capabilities
  Vendor can define their own OEM specific capabilities and develop a vendor driver that is IDPF compliant.
  
  - Capability and Data structures
