@@ -46,8 +46,8 @@ Abstracted SW Elements:
 
   For example, in a NIC Device, vPort can be a group of DMA (Direct Memory Access) queues or just one (that deposits the packet into Host or VM memory). When a vPort is a group of DMA queues, there is a host side load balancer or classifier implemented in the Device/SW Data path past the vSwitch to pick one of the queues of the vPort for final delivery of the packet.
   
-  Note: There is no replication of packets within a vPort.
-* **Buffers, Descriptors, and descriptor queues**: The main communication mechanism between the Device and host-side software (including the driver) is by placing relevant data (received or to be transmitted) and requests/responses in memory buffers and creating data-structures called descriptors that point to these buffers (and holds some metadata describing various attributes of the data in the buffers). These descriptors are placed into Circular Ring-queues (See Figure 1 ) called **Descriptor Queues**.
+***Note:*** There is no replication of packets within a vPort.
+* **Buffers, descriptors, and descriptor queues**: The main communication mechanism between the Device and host-side software (including the driver) is by placing relevant data (received or to be transmitted) and requests/responses in memory buffers and creating data-structures called descriptors that point to these buffers (and holds some metadata describing various attributes of the data in the buffers). These descriptors are placed into Circular Ring-queues (See Figure 1 ) called **Descriptor Queues**.
 
   These descriptor queues are often used in pairs, with one queue used in the Host-to-Device direction, and the other in Device-To-Host direction.
 * **Descriptor Queue**: A descriptor queue is a memory region whose length is some multiple of the size of the relevant descriptors it is meant to hold. (As noted above, descriptors are data-structures containing pointers to data-buffers + additional flags and meta-data used in processing that data).
@@ -165,9 +165,9 @@ Fixed: Mailbox registers, Control, and status registers. See register section
 
 Flexible: Queue and Interrupt registers. See register section.
 
-**_Note:_** When the driver writes a device register and then reads that same register the device might return the old register value (value before the register write) unless the driver keeps 2 ms latency between the write access and the read accesses.
+***Note:*** When the driver writes a device register and then reads that same register the device might return the old register value (value before the register write) unless the driver keeps 2 ms latency between the write access and the read accesses.
  
-# Versioning (Device, Driver, virtchannel version)
+# Versioning (Device, Driver, virtchannel Version)
 
 ## Device Versioning
 
@@ -259,7 +259,7 @@ Mailbox commands are
 | Message Infrastructure Type | 2-3| TX Side:<br />0x0801 – “Send to CP” opcode.<br />The driver may use this command to send a mailbox message to its CP.<br />Other opcodes will be rejected and not sent to the destination.<br /><br />RX side: 0x0804– “Send to Peer IDPF Driver” opcode.<br />The driver will receive this opcode inside descriptors coming from CP.|
 | Message Data Length | 4-5 | Attached buffer length in bytes (this field is set to 0 when buffer is not attached). Up to 4KB. Used only when Flag.BUFF and optionally Flag.RD(TX case) are set.|
 | Hardware Return Value | 6-7 | Hardware Return value, which indicates that Descriptor was processed by Hardware successfully. Relevant when Flag.DD and CMP are set for descriptor.|
-| VirtChnl Message Opcode | 8-11.3 | Includes VirtChnl opcode value,. i.e. VIRTCHNL2_OP_GET_CAPS = 500.<br />Opcodes 0x0000 - 0x7FFF are in use.<br />Codes 0x8000-0xFFFF - are reserved.<br />**_Note:_** The upper 4 bits in byte 11 are reserved for the virtchnl descriptor format.
+| VirtChnl Message Opcode | 8-11.3 | Includes VirtChnl opcode value,. i.e. VIRTCHNL2_OP_GET_CAPS = 500.<br />Opcodes 0x0000 - 0x7FFF are in use.<br />Codes 0x8000-0xFFFF - are reserved.<br />***Note:*** The upper 4 bits in byte 11 are reserved for the virtchnl descriptor format.
 | VirtChnl Descriptor Type | 11.4-11.7 | v_dtype, default value is 0 but can be used in future to enhance the VirtChnl descriptor format.<br />Values 1-7 are reserved for future expansion. Values 8-15 are reserved for OEM descriptor formats.|
 | VirtChnl Message Return Value | 12-15 | VirtChnl command return value sent by CP will be received here. Not relevant for TX.|
 | Message Parameter 0 | 16-19 | Can be used to include message parameter|
@@ -285,7 +285,7 @@ All fields inside the TX descriptor, which are not provided by the sender, but a
 | Message Infrastructure Type | 2-3| 0x0801 – “Send to CP” opcode.<br />The driver uses this command opcode only to send a mailbox message to its CP.<br />Other opcodes will be rejected and not sent to the destination.|
 | Message Data Length | 4-5 | Attached buffer length in bytes (this field is set to 0 when buffer is not attached). Up to 4KB.|
 | Hardware Return Value | 6-7 |Should be set to 0. |
-| VirtChnl Message Opcode | 8-11.3 | Includes VirtChnl opcode value,. i.e. VIRTCHNL2_OP_GET_CAPS = 500.<br />Opcodes 0x0000 - 0x7FFF are in use.<br />Codes 0x8000-0xFFFF - are reserved.<br />**_Note:_** The upper 4 bits in byte 11 are reserved for the virtchnl descriptor format.|
+| VirtChnl Message Opcode | 8-11.3 | Includes VirtChnl opcode value,. i.e. VIRTCHNL2_OP_GET_CAPS = 500.<br />Opcodes 0x0000 - 0x7FFF are in use.<br />Codes 0x8000-0xFFFF - are reserved.<br />***Note:*** The upper 4 bits in byte 11 are reserved for the virtchnl descriptor format.|
 | VirtChnl Descriptor Type | 11.4-11.7 | v_dtype, default value is 0 but can be used in future to enhance the VirtChnl descriptor format.<br />Values 1-7 are reserved for future expansion. Values 8-15 are reserved for OEM descriptor formats.|
 | VirtChnl Message Return Value | 12-15 | Should be set to 0.|
 | Message Parameter 0 | 16-19 | Can be used to include message parameter|
@@ -310,7 +310,7 @@ This is the TX descriptor view, after it was processed and sent by the device, w
 | Message Infrastructure Type | 2-3 | Preserve the field value in the descriptor.|
 | Message Data Length | 4-5 | Preserve the field value in the descriptor.|
 | Hardware Return Value | 6-7 | Expected to be set to 0 (Success) by Device.|
-| VirtChnl Message Opcode | 8-11.3 | Includes VirtChnl opcode value,. i.e. VIRTCHNL2_OP_GET_CAPS = 500.<br />Opcodes 0x0000 - 0x7FFF are in use.<br />Codes 0x8000-0xFFFF - are reserved.<br />Note: The upper 4 bits in byte 11 are reserved for the VirtChnl descriptor Format.|
+| VirtChnl Message Opcode | 8-11.3 | Includes VirtChnl opcode value,. i.e. VIRTCHNL2_OP_GET_CAPS = 500.<br />Opcodes 0x0000 - 0x7FFF are in use.<br />Codes 0x8000-0xFFFF - are reserved.<br />***Note:*** The upper 4 bits in byte 11 are reserved for the VirtChnl descriptor Format.|
 | VirtChnl Descriptor Type | 11.4-11.7 | v_dtype, default value is 0 but can be used in future to enhance the VirtChnl descriptor format.<br />Values 1-7 are reserved for future expansion. Values 8-15 are reserved for OEM descriptor formats.|
 | VirtChnl Message Return Value | 12-15 | Should be set to 0.|
 | Message Parameter 0 | 16-19 | Can be used to include message parameter|
@@ -319,7 +319,7 @@ This is the TX descriptor view, after it was processed and sent by the device, w
 | Data Address high / Message Parameter 2 | 24-27 | Preserve the field value in the descriptor.|
 | Data Address low / Message Parameter 3 | 28-31 | Preserve the field value in the descriptor.|
 
-### RX descriptor command Submit format
+### RX Descriptor Command Submit Format
 
 The driver must advertise empty RX descriptors into Mailbox RX queues,potentially including free 4KB buffers. During free descriptor preparation, the driver will clear any unused fields (including unused Flags) and set data pointers and data length to a mapped DMA pointer, see table below.
 
@@ -335,7 +335,7 @@ The driver must advertise empty RX descriptors into Mailbox RX queues,potentiall
 | Message Infrastructure Type | 2-3 | Should be set to 0.|
 | Message Data Length | 4-5 | Attached buffer length in bytes (this field is set to 4KB to advertise maximum buffer length)|
 | Hardware Return Value | 6-7 | Should be set to 0.|
-| VirtChnl Message Opcode | 8-11.3 | Should be set to 0.<br />Note: The upper 4 bits in byte 11 are reserved for the VirtChnl descriptor Format.|
+| VirtChnl Message Opcode | 8-11.3 | Should be set to 0.<br />***Note:*** The upper 4 bits in byte 11 are reserved for the VirtChnl descriptor Format.|
 | VirtChnl Descriptor Type | 11.4-11.7 |v_dtype, default value is 0 but can be used in future to enhance the VirtChnl descriptor format.<br />Values 1-7 are reserved for future expansion. Values 8-15 are reserved for OEM descriptor formats.|
 | VirtChnl Message Return Value | 12-15 | Should be set to 0.|
 | Message Parameter 0 | 16-19 | Should be set to 0.|
@@ -345,7 +345,7 @@ When a Flags capability is negotiated, it can be used to give more direction to 
 | Data Address high / Message Parameter 2 | 24-27 | As BUF is always set - 4KB buffer address to be pointed.|
 | Data Address low / Message Parameter 3 | 28-31 | As BUF is always set - 4KB buffer address to be pointed.|
 
-### RX descriptor command Completed format
+### RX Descriptor Command Completed Format
 
 When a mailbox command arrives from the device to Driver RX Mailbox Queue, it will use previously advertised RX descriptors and additional 4KB buffers  and fill it with mailbox command data. This structure defines what fields will be seen by the driver.
 
@@ -361,7 +361,7 @@ When a mailbox command arrives from the device to Driver RX Mailbox Queue, it wi
 | Opcode | 2-3 | Should be ignored by Driver.|
 | Message Data Length | 4-5 | Attached buffer length in bytes (this field is set to 0 when buffer is not attached). Up to 4KB|
 | Hardware Return Value | 6-7 | Should be ignored by Driver.|
-| VirtChnl Message Opcode | 8-11.3 | Includes Internal virtChnl opcode value, all 32 bits. i.e. VIRTCHNL_OP_GET_CAPS = 100.<br />Opcodes 0x0000 - 0x7FFF are in use.<br />Codes 0x8000-0xFFFF - are reserved.<br />Note: The upper 4 bits in byte 11 are reserved for the VirtChnl descriptor Format.|
+| VirtChnl Message Opcode | 8-11.3 | Includes Internal virtChnl opcode value, all 32 bits. i.e. VIRTCHNL_OP_GET_CAPS = 100.<br />Opcodes 0x0000 - 0x7FFF are in use.<br />Codes 0x8000-0xFFFF - are reserved.<br />***Note:*** The upper 4 bits in byte 11 are reserved for the VirtChnl descriptor Format.|
 | VirtChnl Descriptor Type | 11.4-11.7 | v_dtype, default value is 0 but can be used in future to enhance the VirtChnl descriptor format.<br />Values 1-7 are reserved for future expansion.<br />Values 8-15 are reserved for OEM descriptor formats.|
 | VirtChnl Message Return Value | 12-15 | Should be set to 0.|
 | Message Parameter 0 | 16-19 | Can be used to include message parameter|
@@ -549,7 +549,7 @@ enough space in the RX completion queue for any future descriptor(s)
 posted by SW (via Rx Buffer Queue) without assuming anything about the
 SW processing rate of entries.
 
-Note: SW should guarantee that there is a minimum free space of 128B in
+***Note:*** SW should guarantee that there is a minimum free space of 128B in
 each completion queue to avoid the theoretical case in which Device
 wraps around the ring and overrides an entry that has not been read yet
 by SW.
@@ -595,7 +595,7 @@ in the following order:
   The main input for this decision is the “Header split decision”
   output.
 
-### RSC SW/Device handshake principles 
+### RSC SW/Device Handshake Principles 
 
 Receive Side Coalescing (RSC) is a mode in which multiple packets from a
 single TCP (Transmission Control Protocol) flow are merged to create a
@@ -2293,7 +2293,7 @@ Completion queue for any future completions (either “descriptor fetch”
 completions or “data fetch” completions) without assuming anything on
 its processing rate of the completions.
 
-Note: SW should guarantee that there is a minimum free space of 128B in
+***Note:*** SW should guarantee that there is a minimum free space of 128B in
 the completion queue to avoid the theoretical case in which Device wraps
 around the ring and overrides a line that has not been read yet by SW.
 
@@ -2356,7 +2356,7 @@ extension, only OEMs can use it for their OEM specific features.
 “WIP” Means they are in the process of getting defined for
 Standardization.
 
-Note:
+***Note:***
 
 6 are already defined in Current Spec, 13 Free for future, 3 WIP, 10 “Reserved for OEM”.  
 2 DTYPEs out of the 13 free DTYPs are “reserved for OEM” for In-order
@@ -3124,7 +3124,7 @@ violation of those rules might be detected as malicious driver behavior.
   -  Single TSO context descriptor with the TSO bit set. 
   -  The rest of the Non-TSO context descriptors or TSO context descriptors that have their TSO bit set to 0.
   -  One or more TX data descriptors.
-  Note: A TSO context descriptor is one that has MSS, Tlen and Headerlen fields or a Base mode TX context descriptor of Dtype 0x1.
+***Note:*** A TSO context descriptor is one that has MSS, Tlen and Headerlen fields or a Base mode TX context descriptor of Dtype 0x1.
 * For a TSO packet, either its data descriptors or its first context descriptor must describe the packet header length. The *max_tx_hdr_len_seg* negotiated capability defines the Maximal header length supported by the device for segmentation.
 
 ### Tx Descriptor Write Formats 
@@ -3422,7 +3422,7 @@ As an example, assume a vector has only 1 active ITR:
 
 * If an interrupt cause associated with this ITR happens after the ITR has expired when interrupt was enabled, the ITR is armed, and interrupt will be asserted the moment the cause happens.
 
-Note:
+***Note:***
 
 Using multiple ITRs per vector is useful to support different throttling
 rates for different cause clients assigned to the same vector.
@@ -5841,7 +5841,7 @@ Supported modes are the following:
 * Header Split disabled (Single buffer) – the whole packet is always posted to packet buffer(s)
 * Header split enabled W/O supporting "Split large, coalesce small"<span class="mark">.</span> – if the header is identified and fits into the header buffer, post header to header buffer and payload to packet buffer(s), else post the whole packet to the packet buffer(s)
 * Header Split with the support for “Split large, coalesce small” – if packet length is \<= header buffer size, post the whole packet to the header buffer, else use header split algorithm above.
-  (Note: This option is supported only for non RSC. For RSC segments it is always header split regardless of this condition<span class="mark">.)</span>
+  (***Note:*** This option is supported only for non RSC. For RSC segments it is always header split regardless of this condition<span class="mark">.)</span>
   
 * Driver Configuration and Runtime flow
 
@@ -5860,7 +5860,7 @@ descriptor for the following information:
 * SPH – this bit indicates that the packet was split across the header buffer and packet buffer(s) unless HBO is also set, indicating an overflow condition
 * HBO – this bit indicates that the header length is larger than the header buffer size. In this situation, the whole packet is posted to the packet buffer(s)
 * HDRL – number of bytes placed in the header buffer; will be the header length if the packet is split or the packet length if the entire packet was posted to the header buffer
-* PKLT – number of bytes placed in packet buffer; for a packet that spans multiple buffers, all buffers but the last one is full (Note: In case of HBO the PKTL will hold the whole packet.)
+* PKLT – number of bytes placed in packet buffer; for a packet that spans multiple buffers, all buffers but the last one is full (***Note:*** In case of HBO the PKTL will hold the whole packet.)
 
 Based on these fields in the receive descriptor, the driver indicates
 the packet up to the OS along with the appropriate software data
@@ -6378,7 +6378,7 @@ The Spec will carry the flows and Interfaces between the IDPF driver and IDPF De
 ### South Side Interactions with Device Control Plane
 #### RDMA Capability negotiation
 As the IDPF driver comes up, if it does have the RDMA support code in it, it will announce to the Device Control that it is capable of supporting RDMA capability and vendor specific RDMA driver. If the Device supports the RDMA capability along with IDPF Spec and the Control plane policy allows enabling it for an instance of the PF or VF driver it will respond with the RDMA capability enabled bit in the Capabilities bitmap.
-Note: RDMA transport protocol is agnostic to IDPF driver and the transport in use is a negotiation/learning between the RDMA driver and the Device Control plane. The same RDMA vendor driver is assumed to support all Transports that apply to a given device. 
+***Note:*** RDMA transport protocol is agnostic to IDPF driver and the transport in use is a negotiation/learning between the RDMA driver and the Device Control plane. The same RDMA vendor driver is assumed to support all Transports that apply to a given device. 
 As an IDPF driver can come up with multiple logical LAN interfaces corresponding to the multiple vPorts created at Init or later at runtime, the Device Control must mark a vport_flag (a new ENABLE_RDMA flag) for a given vPort so that the driver can then instantiate the corresponding RDMA device Interface instance. If the Vport_flags bitmask does not indicate ENABLE_RDMA for any of the vports even if the device level capability grants RDMA to the driver, no RDMA devices/interfaces will be created by the IDPF driver.
 
 Besides the device level RDMA capability, the driver also learns vport level RDMA capability from the device control plane. This is indicated as a vport flag set in the response to create_vport by the Device Control plane.
@@ -6391,7 +6391,7 @@ After the RDMA capability negotiation, IDPF driver must learn about the various 
 This memory region discovery opcode can be called in other cases by IDPF driver as well in future if it needs to support other independent auxiliary drivers that need their own BAR space mapping.
 There are two flows that a driver can follow depending on the support in the OS.
 1.	It can start with just mapping the Memory pages corresponding to the virtchannel Mailbox registers  and the reset registers. Then map the rest once the driver learns about the rest of the memory regions from Device Control Plane leaving behind regions that will be mapped by another auxiliary/dependent driver (in this case RDMA driver) appropriately.
-2.	Or it can start with mapping all the BAR and then request unmap from the OS of the regions that it should not be mapping so that the auxiliary/dependent driver can map it appropriately. (Note: currently Linux does not support this flow and is proposed as an enhancement, the benefit with this approach is that there is only one contiguous mapping/region (with holes) for the IDPF drivers MMIO space.
+2.	Or it can start with mapping all the BAR and then request unmap from the OS of the regions that it should not be mapping so that the auxiliary/dependent driver can map it appropriately. (***Note:*** currently Linux does not support this flow and is proposed as an enhancement, the benefit with this approach is that there is only one contiguous mapping/region (with holes) for the IDPF drivers MMIO space.
 In either case the virtchannel exchange with the device Control remains the same and needs to happen as soon as the driver learns that it is enabled to support RDMA auxiliary/dependent driver or any other auxiliary/dependent driver that needs its own memory mapping.
 
 #### Virtchannel Details
@@ -6557,9 +6557,9 @@ S-IOV is an advanced virtualization capability provided by the device to some of
 
 ## 
 
-## CRC Strip/No-strip offload: (WIP)
+## CRC Strip/No-strip Offload: (WIP)
 
-Note: Also negotiate if the CRC provided is updated when the Device
+***Note:*** Also negotiate if the CRC provided is updated when the Device
 makes modification to the packet or the wire side CRC.
 
  
@@ -7608,7 +7608,7 @@ queue descriptor fetch stride cross).</p>
 </tr>
 <tr class="odd">
 <th><p>Max data buffers per SSO/LSO packet.</p>
-<p>Note : When equals to 18 SW can avoid any calculations or check for
+<p>Note: When equals to 18 SW can avoid any calculations or check for
 linearization for Linux.</p></th>
 <th><em><mark>max_sg_bufs_per_tx_pkt</mark></em></th>
 <th>1 to 18</th>
@@ -7625,14 +7625,14 @@ first bytes of payload)</p></th>
 </tr>
 <tr class="odd">
 <th><p>Min spacing between 2 RS marked descriptors<em>.</em></p>
-<p>Note : this capability is a queue level capability<em>.</em></p></th>
+<p>Note: this capability is a queue level capability<em>.</em></p></th>
 <th>IECM_TX_RS_MIN_GAP</th>
 <th></th>
 <th>0</th>
 </tr>
 <tr class="header">
 <th><p>Min spacing between 2 RE marked descriptors.</p>
-<p>Note : this capability is a queue level capability.</p></th>
+<p>Note: this capability is a queue level capability.</p></th>
 <th>IECM_TX_SPLITQ_RE_MIN_GAP</th>
 <th></th>
 <th>32</th>
@@ -7701,7 +7701,7 @@ done by the device).</th>
 <tr class="header">
 <th><p>Max TX packet size as sent by the host driver (excluding any
 expansion done by the device).</p>
-<p>Note : Device is obligated to check the max_mtu on the TX path. On
+<p>Note: Device is obligated to check the max_mtu on the TX path. On
 the RX path ,the device is not required to check the max_mtu which means
 that host SW can accept packets bigger than max_mtu.</p></th>
 <th><em><strong>max_mtu</strong></em></th>
@@ -7875,7 +7875,7 @@ VIRTCHNL2_CAP_RX_CSUM_L4_IPV6_SCTP_IN2</em></th>
 </tr>
 <tr class="header">
 <th><p>TX checksum support for most inner headers.</p>
-<p>Note : Those capabilities are relevant only for an SSO. For LSO the
+<p>Note: Those capabilities are relevant only for an SSO. For LSO the
 packet checksums must be calculated by Device.</p></th>
 <th><em>VIRTCHNL2_CAP_TX_CSUM_L3_IPV4_IN0
 VIRTCHNL2_CAP_TX_CSUM_L4_IPV4_TCP_IN0
@@ -11486,20 +11486,20 @@ union virtchnl2_rx_desc {
 ```
 # Appendix : Linux RDMA
 
-## North Side Interfaces and flows for Linux: 
+## North Side Interfaces and Flows for Linux: 
 This section is not part of the main spec and it is just an example implementation detail referred from the Linux support for RDMA driver.
 
-###	RDMA Aux drivers naming
+###	RDMA Aux Drivers Naming
 IDPF driver will create a Core and multiple vPort level Aux device instances for RDMA. The Core RDMA device driver will setup the Control Queues with RDMA FW and any other Interface level initialization and the Vport Aux device instance can be one to one with the LAN vport netdev instances. Although, not every vport must have an associated RDMA vport auxiliary device instance as discussed earlier. 
-( Note: The LAN driver itself is also undergoing changes to create LAN netdevs as Aux device instances on the aux bus. Although RDMA vPort Aux device instances are not dependent on the LAN Aux Devices per Netdev and so the work can be done independently)  
+(***Note:*** The LAN driver itself is also undergoing changes to create LAN netdevs as Aux device instances on the aux bus. Although RDMA vPort Aux device instances are not dependent on the LAN Aux Devices per Netdev and so the work can be done independently)  
 RDMA Aux devices will be named carrying the following key words in the name: IDPF, VENDOR ID, RDMA, TYPE OF the DEVICE (CORE or VPort), A Global ID 
 This allows for a unique vendor specific RDMA driver to be loaded along with IDPF driver.
 The Global unique ID, is requested from the OS and helps identify individual Aux driver instances.
-###	RDMA Driver bring up and teardown flows
+###	RDMA Driver Bring Up and Teardown Flows
 Bringup:
 1.	IDPF driver creates the RDMA Core Aux Device  Instance when the IDPF driver is granted the RDMA capability from the Device Control. IDPF driver fills out the Core Dev Info struct to be used by the RDMA Core Aux driver as part of creating the Aux device.
 2.	After the RDMA Core Aux device instance is created, the OS calls the probe for the corresponding device to load the driver if a driver is registered for the device. 
-3.	IDPF driver waits for  RDMA Core driver to call back vport_dev_ctrl()that is part of the core_ops with the status UP into the IDPF driver to indicate that RDMA Core driver is now ready to support any RDMA vport device driver load requests upon creation of the RDMA vport Aux Device.
+3.	IDPF driver waits for  RDMA Core driver to call back vport_dev_ctrl()that is part of the core_ops with the status UP into the IDPF driver to indicate that RDMA Core driver is now ready to support any RDMA vport device driver load requests upon creation of the RDMA vPort Aux Device.
 4.	IDPF driver has to still wait to create the RDMA vport Aux Device for the corresponding LAN vport netdev to be created and the Device Control indicating in the LAN Vport flags that an RDMA instance needs to created for this vport. So both the step 3 and 4 needs to happen for a given RDMA vport Aux device to be created.
   (Two options :
   1.	When LAN Aux vport devices are enabled, there is a choice to inform the IDPF Core (LAN) driver about the netdev and vport Info even when an RDMA vport device does not have to be created.)
