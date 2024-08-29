@@ -4,8 +4,8 @@
 | ----- | -- | ------ |
 |0.9|2/2/2023|1st Draft for Oasis IDPF TC|
 |0.91|2/7/2023|Added OEM descriptor format range to mailbox descriptors.|
-|0.91|2/14/2023|Added place holders for multiple Default vport capability and Container Dedicated Queues.|
-|0.91|2/14/2023|vport Attributes flow to be described|
+|0.91|2/14/2023|Added place holders for multiple Default vPort capability and Container Dedicated Queues.|
+|0.91|2/14/2023|vPort Attributes flow to be described|
 |0.91|2/28/2023|Updated virtchnl2 descriptor structure. <br /> Updated TX descriptor IDs in virtchnl2_lan_desc.h|
 |0.91|4/19/2023|Name updated to match the Oasis TC|
 
@@ -3821,7 +3821,7 @@ VIRTCHNL_OP_CREATE_VPORT</th>
 <th>VIRTCHNL2_OP_DESTROY_VPORT</th>
 <th>Yes</th>
 <th><p>Deallocation of all resources associated with the VPORT.</p>
-<p>Note: There is no vport reset cmd, disable and destroy stands for
+<p>Note: There is no vPort reset cmd, disable and destroy stands for
 reset.</p></th>
 <th>All Functions Drivers</th>
 <th>Shall be sent only if VIRTCHNL_OP_CREATE_VPORT is successful.<br />
@@ -3850,7 +3850,7 @@ VPORT = Queue group =&gt; after enable at least one queue.</p></th>
 <th><p>Disable VPORT.<br />
 This cmd can be sent even if VIRTCHNL_OP_DISABLE_QUEUES_V2 was not
 sent..</p>
-<p>Note: There is not vport reset cmd, disable and destroy stands for
+<p>Note: There is not vPort reset cmd, disable and destroy stands for
 reset.</p></th>
 <th>All Functions Drivers</th>
 <th>Shall be sent only if VIRTCHNL_OP_ENABLE_VPORT is successful.<br />
@@ -4053,7 +4053,7 @@ affect it.</th>
 <th>523</th>
 <th>VIRTCHNL2_OP_GET_STATS</th>
 <th>Yes</th>
-<th>Get vport statistics</th>
+<th>Get vPort statistics</th>
 <th>All Functions Drivers</th>
 <th></th>
 </tr>
@@ -4166,7 +4166,7 @@ handles this in various scenarios.</th>
 <th>538</th>
 <th>VIRTCHNL2_OP_ADD_QUEUE_GROUPS</th>
 <th>yes</th>
-<th>Add Queue Groups to a vport</th>
+<th>Add Queue Groups to a vPort</th>
 <th></th>
 <th></th>
 </tr>
@@ -4174,7 +4174,7 @@ handles this in various scenarios.</th>
 <th>539</th>
 <th>VIRTCHNL2_OP_DEL_QUEUE_GROUPS</th>
 <th>yes</th>
-<th>Delete Queue Groups from a vport</th>
+<th>Delete Queue Groups from a vPort</th>
 <th></th>
 <th></th>
 </tr>
@@ -4362,13 +4362,13 @@ also allocates and maps this queue to vector.</th>
 <tr class="odd">
 <th>u16</th>
 <th>max_vports</th>
-<th>Maximum number of vports that can be supported.</th>
+<th>Maximum number of vPorts that can be supported.</th>
 <th>Only output.</th>
 </tr>
 <tr class="header">
 <th>u16</th>
 <th>default_num_vports</th>
-<th><p>Default number of vports that the data path driver should comeup
+<th><p>Default number of vPorts that the data path driver should comeup
 with.</p>
 <p>default_num_vports &lt;= max_vports.</p></th>
 <th>Only output.</th>
@@ -4914,23 +4914,23 @@ supported by Device
 * OP_CREATE_VPORT command must allocate at least one RX and one TX
   queue, which will be associated with Queue Group #0.
 
-* VPORT can be transitioned to FREE state only from CONFIGURED state. In
-  other words, if VPORT is enabled, it must be disabled first before
+* vPort can be transitioned to FREE state only from CONFIGURED state. In
+  other words, if vPort is enabled, it must be disabled first before
   releasing its resources and destroying it.
 
 * OP_DISABLE_VPORT and OP_ENABLE_VPORT can be called even if there are
-  Queue resources associated and they are active on the Vport.
+  Queue resources associated and they are active on the vPort.
 
-* VPORT RX Default Queues must be set upon execution of the
+* vPort RX Default Queues must be set upon execution of the
   OP_CREATE_VPORT command. The lowest RX Queue index must be used for
   all three engines (LAN, RDMA and CPE).
 
 * OP_DISABLE_VPORT and OP_DESTROY_VPORT commands can be issued even when
-  all or some of VPORT associated queues are enabled, including TX,
+  all or some of vPort associated queues are enabled, including TX,
   RX, TX Completion and RX Buffer Queues. As a result, Queues
-  associated with the VPORT must be disabled by the command is called.
+  associated with the vPort must be disabled by the command is called.
 
-WIP: vport_flags, vport_type usage and in-general vport Datastructure
+WIP: vport_flags, vport_type usage and in-general vPort Datastructure
 IN/OUT params table.
 
 ![Data queue FSM](Diagrams/dataqueue_fsm.png)
@@ -4957,7 +4957,7 @@ Data Queues Final State Machine (FSM):
   ALLOCATED states by issuing either OP_DESTROY_VPORT or OP_DEL_QUEUES
   events.
 
-* OP_ADD_QUEUES command can be issued even if the underlying VPORT is up
+* OP_ADD_QUEUES command can be issued even if the underlying vPort is up
   and running, including traffic.
 
 * From FSM perspective, OP_ADD_QUEUES/OP_DEL_QUEUE vs.
@@ -4969,14 +4969,14 @@ Data Queues Final State Machine (FSM):
 
 ## Queue Group Initialization and Tear Down
 
-A vport’s queues can be split into multiple queue groups to provide
-dedicated/isolated resources to multiple applications sharing a vport.
+A vPort’s queues can be split into multiple queue groups to provide
+dedicated/isolated resources to multiple applications sharing a vPort.
 Each queue group can be associated with an application using Device receive
 filters and SW based transmit filters. RSS can be enabled and configured
 per RX queue group to load balance incoming packets across queues in a
 queue group. From TX queue perspective, Queues can be grouped to be
 connected to different Device Traffic Classes (TCS) or even grouped
-inside the vport to provide ability to control ETS (arbitration SP/WFQ)
+inside the vPort to provide ability to control ETS (arbitration SP/WFQ)
 between different Queue groups.
 
 Queue Group capability is not on by default and the capability is
@@ -4995,8 +4995,8 @@ groups.
 #define VIRTCHNL2_OP_DEL_QUEUE_GROUPS 539
 ```
 
-By default all the queues of a vport belong to a single queue group 0.
-Additional queue groups can be added to the vport using ADD_QUEUE_GROUPS
+By default all the queues of a vPort belong to a single queue group 0.
+Additional queue groups can be added to the vPort using ADD_QUEUE_GROUPS
 message.
 
 ```C
@@ -5022,7 +5022,7 @@ struct virtchnl2_add_queue_groups {
 
 * CreateVport.
 
-* NA for mailbox and other types not assigned to vport
+* NA for mailbox and other types not assigned to vPort
 
 */
 
@@ -5163,7 +5163,7 @@ the opportunity to opt out of supporting a particular offload.
 ### Device Interface
 
 The driver uses this interface to add/delete L2 MAC addresses as filters
-to redirect packets to a specific vport.
+to redirect packets to a specific vPort.
 
 ### Capability and Data Structures
 ```C
@@ -5255,7 +5255,7 @@ addresses are marked as EXTRA addresses.
 The driver negotiates MAC filter capability with the device by setting
 VIRTCHNL2_CAP_MACFILTER bit as part of negotiating the capabilities with
 the control plane. The control plane will set this bit in its response
-if the vport is allowed to add/delete MAC filters.
+if the vPort is allowed to add/delete MAC filters.
 
 At Runtime, the driver offloads add/delete mac filter requests to the
 device when the OS notifies the driver.
@@ -5263,14 +5263,14 @@ device when the OS notifies the driver.
 ### Device and Control Plane Behavioral Model
 
 The device adds/delete MAC address filters in hardware to direct packets
-to the requested vport.
+to the requested vPort.
 
 ## Promiscuous offload
 
 ### Device Interface
 
 The driver uses this interface to configure unicast or multicast
-promiscuous mode on a vport.
+promiscuous mode on a vPort.
 
 ### Capability and Data Structures
 ```C
@@ -5290,7 +5290,7 @@ promiscuous mode on a vport.
 
 /* VIRTCHNL2_OP_CONFIG_PROMISCUOUS_MODE
 
-* Driver sends vport id and flags to the CP whereas CP performs the
+* Driver sends vPort id and flags to the CP whereas CP performs the
 action
 
 * and returns the status.
@@ -5723,7 +5723,7 @@ As a result of this feature, the device will calculate a hash on certain fields 
 #define VIRTCHNL2_RSS_ALG_XOR_SYMMETRIC 3
 
 /* VIRTCHNL2_OP_CREATE_VPORT
-* PF/VF driver sends this message to CP to create a vport by filling in required
+* PF/VF driver sends this message to CP to create a vPort by filling in required
 * fields of virtchnl2_create_vport structure.
 * CP responds with the updated virtchnl2_create_vport structure containing the
 * necessary fields followed by chunks which in turn will have an array of
@@ -6379,9 +6379,9 @@ The Spec will carry the flows and Interfaces between the IDPF driver and IDPF De
 #### RDMA Capability negotiation
 As the IDPF driver comes up, if it does have the RDMA support code in it, it will announce to the Device Control that it is capable of supporting RDMA capability and vendor specific RDMA driver. If the Device supports the RDMA capability along with IDPF Spec and the Control plane policy allows enabling it for an instance of the PF or VF driver it will respond with the RDMA capability enabled bit in the Capabilities bitmap.
 ***Note:*** RDMA transport protocol is agnostic to IDPF driver and the transport in use is a negotiation/learning between the RDMA driver and the Device Control plane. The same RDMA vendor driver is assumed to support all Transports that apply to a given device. 
-As an IDPF driver can come up with multiple logical LAN interfaces corresponding to the multiple vPorts created at Init or later at runtime, the Device Control must mark a vport_flag (a new ENABLE_RDMA flag) for a given vPort so that the driver can then instantiate the corresponding RDMA device Interface instance. If the Vport_flags bitmask does not indicate ENABLE_RDMA for any of the vports even if the device level capability grants RDMA to the driver, no RDMA devices/interfaces will be created by the IDPF driver.
+As an IDPF driver can come up with multiple logical LAN interfaces corresponding to the multiple vPorts created at Init or later at runtime, the Device Control must mark a vport_flag (a new ENABLE_RDMA flag) for a given vPort so that the driver can then instantiate the corresponding RDMA device Interface instance. If the Vport_flags bitmask does not indicate ENABLE_RDMA for any of the vPorts even if the device level capability grants RDMA to the driver, no RDMA devices/interfaces will be created by the IDPF driver.
 
-Besides the device level RDMA capability, the driver also learns vport level RDMA capability from the device control plane. This is indicated as a vport flag set in the response to create_vport by the Device Control plane.
+Besides the device level RDMA capability, the driver also learns vPort level RDMA capability from the device control plane. This is indicated as a vPort flag set in the response to create_vport by the Device Control plane.
 ```C
 VIRTCHNL2_VPORT_ENABLE_RDMA             = BIT(4),
 ```
@@ -7451,7 +7451,7 @@ value.
 In order to use a non default value it must negotiate it with the
 control plane.  
   
-Virtchannel data structures for vport configuration, queue configuration
+Virtchannel data structures for vPort configuration, queue configuration
 etc have enough padding defined to be able to accommodate negotiation in
 the future of non-default values with the Device control plane.
 
@@ -8863,8 +8863,8 @@ VIRTCHNL2_CHECK_STRUCT_LEN(8, virtchnl2_version_info);
  * @max_tx_complq: Maximum number of supported completion queues
  * @max_sriov_vfs: The PF sends the maximum VFs it is requesting. The CP
  *		   responds with the maximum VFs granted.
- * @max_vports: Maximum number of vports that can be supported
- * @default_num_vports: Default number of vports driver should allocate on load
+ * @max_vports: Maximum number of vPorts that can be supported
+ * @default_num_vports: Default number of vPorts driver should allocate on load
  * @max_tx_hdr_size: Max header length hardware can parse/checksum, in bytes
  * @max_sg_bufs_per_tx_pkt: Max number of scatter gather buffers that can be
  *			    sent per transmit packet without needing to be
@@ -8907,8 +8907,8 @@ VIRTCHNL2_CHECK_STRUCT_LEN(8, virtchnl2_version_info);
  * max number of vectors for a PF.
  * CP will respond with the vector ID of mailbox allocated to the PF in
  * mailbox_vector_id and the number of itr index registers in itr_idx_map.
- * It also responds with default number of vports that the dataplane driver
- * should comeup with in default_num_vports and maximum number of vports that
+ * It also responds with default number of vPorts that the dataplane driver
+ * should comeup with in default_num_vports and maximum number of vPorts that
  * can be supported in max_vports.
  *
  * Associated with VIRTCHNL2_OP_GET_CAPS.
@@ -8985,7 +8985,7 @@ struct virtchnl2_queue_reg_chunks {
 VIRTCHNL2_CHECK_STRUCT_VAR_LEN(40, virtchnl2_queue_reg_chunks, chunks);
 
 /**
- * enum virtchnl2_vport_flags - Vport flags
+ * enum virtchnl2_vport_flags - vPort flags
  * @VIRTCHNL2_VPORT_UPLINK_PORT: Uplink port flag
  * @VIRTCHNL2_VPORT_INLINE_FLOW_STEER: Inline flow steering enabled
  * @VIRTCHNL2_VPORT_INLINE_FLOW_STEER_RXQ: Inline flow steering enabled
@@ -9010,7 +9010,7 @@ enum virtchnl2_vport_flags {
 #endif /* !LINUX_SUPPORT */
 
 /**
- * struct virtchnl2_create_vport - Create vport config info
+ * struct virtchnl2_create_vport - Create vPort config info
  * @vport_type: See enum virtchnl2_vport_type
  * @txq_model: See virtchnl2_queue_model
  * @rxq_model: See virtchnl2_queue_model
@@ -9019,13 +9019,13 @@ enum virtchnl2_vport_flags {
  * @num_rx_q: Number of Rx queues
  * @num_rx_bufq: Valid only if rxq_model is split queue
  * @default_rx_q: Relative receive queue index to be used as default
- * @vport_index: Used to align PF and CP in case of default multiple vports,
+ * @vport_index: Used to align PF and CP in case of default multiple vPorts,
  *		 it is filled by the PF and CP returns the same value, to
  *		 enable the driver to support multiple asynchronous parallel
  *		 CREATE_VPORT requests and associate a response to a specific
  *		 request.
  * @max_mtu: Max MTU. CP populates this field on response
- * @vport_id: Vport id. CP populates this field on response
+ * @vport_id: vPort id. CP populates this field on response
  * @default_mac_addr: Default MAC address
  * @vport_flags: See enum virtchnl2_vport_flags
  * @rx_desc_ids: See enum virtchnl2_rx_desc_id_bitmasks
@@ -9046,7 +9046,7 @@ enum virtchnl2_vport_flags {
  * @pad: Padding for future extensions
  * @chunks: Chunks of contiguous queues
  *
- * PF/VF sends this message to CP to create a vport by filling in required
+ * PF/VF sends this message to CP to create a vPort by filling in required
  * fields of virtchnl2_create_vport structure.
  * CP responds with the updated virtchnl2_create_vport structure containing the
  * necessary fields followed by chunks which in turn will have an array of
@@ -9087,11 +9087,11 @@ struct virtchnl2_create_vport {
 VIRTCHNL2_CHECK_STRUCT_VAR_LEN(192, virtchnl2_create_vport, chunks.chunks);
 
 /**
- * struct virtchnl2_vport - Vport identifier information
- * @vport_id: Vport id
+ * struct virtchnl2_vport - vPort identifier information
+ * @vport_id: vPort id
  * @pad: Padding for future extensions
  *
- * PF/VF sends this message to CP to destroy, enable or disable a vport by
+ * PF/VF sends this message to CP to destroy, enable or disable a vPort by
  * filling in the vport_id in virtchnl2_vport structure.
  * CP responds with the status of the requested operation.
  *
@@ -9149,7 +9149,7 @@ VIRTCHNL2_CHECK_STRUCT_LEN(56, virtchnl2_txq_info);
 
 /**
  * struct virtchnl2_config_tx_queues - TX queue config
- * @vport_id: Vport id
+ * @vport_id: vPort id
  * @num_qinfo: Number of virtchnl2_txq_info structs
  * @pad: Padding for future extensions
  * @qinfo: Tx queues config info
@@ -9158,7 +9158,7 @@ VIRTCHNL2_CHECK_STRUCT_LEN(56, virtchnl2_txq_info);
  * queues. This message contains an array of num_qinfo instances of
  * virtchnl2_txq_info structures. CP configures requested queues and returns
  * a status code. If num_qinfo specified is greater than the number of queues
- * associated with the vport, an error is returned and no queues are configured.
+ * associated with the vPort, an error is returned and no queues are configured.
  *
  * Associated with VIRTCHNL2_OP_CONFIG_TX_QUEUES.
  */
@@ -9228,7 +9228,7 @@ VIRTCHNL2_CHECK_STRUCT_LEN(88, virtchnl2_rxq_info);
 
 /**
  * struct virtchnl2_config_rx_queues - Rx queues config
- * @vport_id: Vport id
+ * @vport_id: vPort id
  * @num_qinfo: Number of instances
  * @pad: Padding for future extensions
  * @qinfo: Rx queues config info
@@ -9237,7 +9237,7 @@ VIRTCHNL2_CHECK_STRUCT_LEN(88, virtchnl2_rxq_info);
  * This message contains an array of num_qinfo instances of virtchnl2_rxq_info
  * structures. CP configures requested queues and returns a status code.
  * If the number of queues specified is greater than the number of queues
- * associated with the vport, an error is returned and no queues are configured.
+ * associated with the vPort, an error is returned and no queues are configured.
  *
  * Associated with VIRTCHNL2_OP_CONFIG_RX_QUEUES.
  */
@@ -9251,7 +9251,7 @@ VIRTCHNL2_CHECK_STRUCT_VAR_LEN(112, virtchnl2_config_rx_queues, qinfo);
 
 /**
  * struct virtchnl2_add_queues - Data for VIRTCHNL2_OP_ADD_QUEUES
- * @vport_id: Vport id
+ * @vport_id: vPort id
  * @num_tx_q: Number of Tx qieues
  * @num_tx_complq: Number of Tx completion queues
  * @num_rx_q:  Number of Rx queues
@@ -9325,7 +9325,7 @@ VIRTCHNL2_CHECK_STRUCT_LEN(16, virtchnl2_tx_queue_group_info);
 /**
  * struct virtchnl2_queue_group_id - Queue group ID
  * @queue_group_id: Queue group ID - Depended on it's type
- *		    Data: Is an ID which is relative to Vport
+ *		    Data: Is an ID which is relative to vPort
  *		    Config & Mailbox: Is an ID which is relative to func
  *		    This ID is use in future calls, i.e. delete.
  *		    Requested by host and assigned by Control plane.
@@ -9368,7 +9368,7 @@ VIRTCHNL2_CHECK_STRUCT_VAR_LEN(120, virtchnl2_queue_group_info, chunks.chunks);
 /**
  * struct virtchnl2_add_queue_groups - Add queue groups
  * @vport_id: Vport_id to add queue group to, same as allocated by
- *	      CreateVport. NA for mailbox and other types not assigned to vport.
+ *	      CreateVport. NA for mailbox and other types not assigned to vPort.
  * @num_queue_groups: Total number of queue groups
  * @pad: Padding for future extensions
 #ifndef FLEX_ARRAY_SUPPORT
@@ -9406,7 +9406,7 @@ VIRTCHNL2_CHECK_STRUCT_LEN(16, virtchnl2_add_queue_groups);
 
 /**
  * struct virtchnl2_delete_queue_groups - Delete queue groups
- * @vport_id: Vport ID to delete queue group from, same as allocated by
+ * @vport_id: vPort ID to delete queue group from, same as allocated by
  *	      CreateVport.
  * @num_queue_groups: Defines number of groups provided
  * @pad: Padding
@@ -9512,7 +9512,7 @@ VIRTCHNL2_CHECK_STRUCT_VAR_LEN(64, virtchnl2_alloc_vectors, vchunks.vchunks);
 
 /**
  * struct virtchnl2_rss_lut - RSS LUT info
- * @vport_id: Vport id
+ * @vport_id: vPort id
  * @lut_entries_start: Start of LUT entries
  * @lut_entries: Number of LUT entrties
  * @pad: Padding
@@ -9537,7 +9537,7 @@ VIRTCHNL2_CHECK_STRUCT_VAR_LEN(16, virtchnl2_rss_lut, lut);
 /**
  * struct virtchnl2_rss_hash - RSS hash info
  * @ptype_groups: Packet type groups bitmap
- * @vport_id: Vport id
+ * @vport_id: vPort id
  * @pad: Padding for future extensions
  *
  * PF/VF sends these messages to get and set the hash filter enable bits for
@@ -9563,7 +9563,7 @@ VIRTCHNL2_CHECK_STRUCT_LEN(16, virtchnl2_rss_hash);
  * @pad: Padding for future extensions
  *
  * This message is used to set number of SRIOV VFs to be created. The actual
- * allocation of resources for the VFs in terms of vport, queues and interrupts
+ * allocation of resources for the VFs in terms of vPort, queues and interrupts
  * is done by CP. When this call completes, the IDPF driver calls
  * pci_enable_sriov to let the OS instantiate the SRIOV PCIE devices.
  * The number of VFs set to 0 will destroy all the VFs of this function.
@@ -9732,8 +9732,8 @@ VIRTCHNL2_CHECK_STRUCT_LEN(8, virtchnl2_get_ptype_info);
 #endif /* !FLEX_ARRAY_SUPPORT */
 
 /**
- * struct virtchnl2_vport_stats - Vport statistics
- * @vport_id: Vport id
+ * struct virtchnl2_vport_stats - vPort statistics
+ * @vport_id: vPort id
  * @pad: Padding
  * @rx_bytes: Received bytes
  * @rx_unicast: Received unicast packets
@@ -9834,13 +9834,13 @@ VIRTCHNL2_CHECK_STRUCT_LEN(600, virtchnl2_phy_port_stats);
 
 /**
  * struct virtchnl2_port_stats - Port statistics
- * @vport_id: Vport ID
+ * @vport_id: vPort ID
  * @pad: Padding
  * @phy_port_stats: Physical port statistics
- * @virt_port_stats: Vport statistics
+ * @virt_port_stats: vPort statistics
  *
  * vport_id. CP responds with stats in struct virtchnl2_port_stats that
- * includes both physical port as well as vport statistics.
+ * includes both physical port as well as vPort statistics.
  *
  * Associated with VIRTCHNL2_OP_GET_PORT_STATS.
  */
@@ -9857,7 +9857,7 @@ VIRTCHNL2_CHECK_STRUCT_LEN(736, virtchnl2_port_stats);
  * struct virtchnl2_event - Event info
  * @event: Event opcode. See enum virtchnl2_event_codes
  * @link_speed: Link_speed provided in Mbps
- * @vport_id: Vport ID
+ * @vport_id: vPort ID
  * @link_status: Link status
  * @pad: Padding
  * @adi_id: ADI id
@@ -9882,7 +9882,7 @@ VIRTCHNL2_CHECK_STRUCT_LEN(16, virtchnl2_event);
 
 /**
  * struct virtchnl2_rss_key - RSS key info
- * @vport_id: Vport id
+ * @vport_id: vPort id
  * @key_len: Length of RSS key
  * @pad: Padding
  * @key: RSS hash key, packed bytes
@@ -9934,7 +9934,7 @@ VIRTCHNL2_CHECK_STRUCT_VAR_LEN(24, virtchnl2_queue_chunks, chunks);
 
 /**
  * struct virtchnl2_del_ena_dis_queues - Enable/disable queues info
- * @vport_id: Vport id
+ * @vport_id: vPort id
  * @pad: Padding
  * @chunks: Chunks of contiguous queues info
  *
@@ -9977,7 +9977,7 @@ VIRTCHNL2_CHECK_STRUCT_LEN(24, virtchnl2_queue_vector);
 
 /**
  * struct virtchnl2_queue_vector_maps - Map/unmap queues info
- * @vport_id: Vport id
+ * @vport_id: vPort id
  * @num_qv_maps: Number of queue vector maps
  * @pad: Padding
  * @qv_maps: Queue to vector maps
@@ -10003,7 +10003,7 @@ VIRTCHNL2_CHECK_STRUCT_VAR_LEN(40, virtchnl2_queue_vector_maps, qv_maps);
 
 /**
  * struct virtchnl2_loopback - Loopback info
- * @vport_id: Vport id
+ * @vport_id: vPort id
  * @enable: Enable/disable
  * @pad: Padding for future extensions
  *
@@ -10039,7 +10039,7 @@ VIRTCHNL2_CHECK_STRUCT_LEN(8, virtchnl2_mac_addr);
 
 /**
  * struct virtchnl2_mac_addr_list - List of MAC addresses
- * @vport_id: Vport id
+ * @vport_id: vPort id
  * @num_mac_addr: Number of MAC addresses
  * @pad: Padding
  * @mac_addr_list: List with MAC address info
@@ -10062,11 +10062,11 @@ VIRTCHNL2_CHECK_STRUCT_VAR_LEN(16, virtchnl2_mac_addr_list, mac_addr_list);
 
 /**
  * struct virtchnl2_promisc_info - Promiscuous type information
- * @vport_id: Vport id
+ * @vport_id: vPort id
  * @flags: See enum virtchnl2_promisc_flags
  * @pad: Padding for future extensions
  *
- * PF/VF sends vport id and flags to the CP where as CP performs the action
+ * PF/VF sends vPort id and flags to the CP where as CP performs the action
  * and returns the status.
  *
  * Associated with VIRTCHNL2_OP_CONFIG_PROMISCUOUS_MODE.
@@ -10352,7 +10352,7 @@ virtchnl2_vc_validate_vf_msg(struct virtchnl2_version_info *ver, u32 v_opcode,
 	 * the driver would be 192 bytes because of the 1-sized array in the
 	 * virtchnl2_create_vport structure whereas the message size expected
 	 * by the CP would be 160 bytes (as the driver doesn't send any chunk
-	 * information on create vport). This means, both 160 and 192 byte
+	 * information on create vPort). This means, both 160 and 192 byte
 	 * message length are valid. The math for the message size check of the
 	 * opcodes consider the said scenarios for the flex array supported
 	 * structures.
@@ -11490,31 +11490,31 @@ union virtchnl2_rx_desc {
 This section is not part of the main spec and it is just an example implementation detail referred from the Linux support for RDMA driver.
 
 ###	RDMA Aux Drivers Naming
-IDPF driver will create a Core and multiple vPort level Aux device instances for RDMA. The Core RDMA device driver will setup the Control Queues with RDMA FW and any other Interface level initialization and the Vport Aux device instance can be one to one with the LAN vport netdev instances. Although, not every vport must have an associated RDMA vport auxiliary device instance as discussed earlier. 
+IDPF driver will create a Core and multiple vPort level Aux device instances for RDMA. The Core RDMA device driver will setup the Control Queues with RDMA FW and any other Interface level initialization and the vPort Aux device instance can be one to one with the LAN vPort netdev instances. Although, not every vPort must have an associated RDMA vPort auxiliary device instance as discussed earlier. 
 (***Note:*** The LAN driver itself is also undergoing changes to create LAN netdevs as Aux device instances on the aux bus. Although RDMA vPort Aux device instances are not dependent on the LAN Aux Devices per Netdev and so the work can be done independently)  
-RDMA Aux devices will be named carrying the following key words in the name: IDPF, VENDOR ID, RDMA, TYPE OF the DEVICE (CORE or VPort), A Global ID 
+RDMA Aux devices will be named carrying the following key words in the name: IDPF, VENDOR ID, RDMA, TYPE OF the DEVICE (CORE or vPort), A Global ID 
 This allows for a unique vendor specific RDMA driver to be loaded along with IDPF driver.
 The Global unique ID, is requested from the OS and helps identify individual Aux driver instances.
 ###	RDMA Driver Bring Up and Teardown Flows
 Bringup:
 1.	IDPF driver creates the RDMA Core Aux Device  Instance when the IDPF driver is granted the RDMA capability from the Device Control. IDPF driver fills out the Core Dev Info struct to be used by the RDMA Core Aux driver as part of creating the Aux device.
 2.	After the RDMA Core Aux device instance is created, the OS calls the probe for the corresponding device to load the driver if a driver is registered for the device. 
-3.	IDPF driver waits for  RDMA Core driver to call back vport_dev_ctrl()that is part of the core_ops with the status UP into the IDPF driver to indicate that RDMA Core driver is now ready to support any RDMA vport device driver load requests upon creation of the RDMA vPort Aux Device.
-4.	IDPF driver has to still wait to create the RDMA vport Aux Device for the corresponding LAN vport netdev to be created and the Device Control indicating in the LAN Vport flags that an RDMA instance needs to created for this vport. So both the step 3 and 4 needs to happen for a given RDMA vport Aux device to be created.
+3.	IDPF driver waits for  RDMA Core driver to call back vport_dev_ctrl()that is part of the core_ops with the status UP into the IDPF driver to indicate that RDMA Core driver is now ready to support any RDMA vPort device driver load requests upon creation of the RDMA vPort Aux Device.
+4.	IDPF driver has to still wait to create the RDMA vPort Aux Device for the corresponding LAN vPort netdev to be created and the Device Control indicating in the LAN vPort flags that an RDMA instance needs to created for this vPort. So both the step 3 and 4 needs to happen for a given RDMA vPort Aux device to be created.
   (Two options :
-  1.	When LAN Aux vport devices are enabled, there is a choice to inform the IDPF Core (LAN) driver about the netdev and vport Info even when an RDMA vport device does not have to be created.)
-  2.	Other option is to inform only when RDMA vport device has to be created.)
-5.	All communication from RDMA vport driver goes to the Core RDMA driver using the handle provided by the IDPF driver in the idc_rdma_vport_dev_info as the Core RDMA Aux Device pointer.
+  1.	When LAN Aux vPort devices are enabled, there is a choice to inform the IDPF Core (LAN) driver about the netdev and vPort Info even when an RDMA vPort device does not have to be created.)
+  2.	Other option is to inform only when RDMA vPort device has to be created.)
+5.	All communication from RDMA vPort driver goes to the Core RDMA driver using the handle provided by the IDPF driver in the idc_rdma_vport_dev_info as the Core RDMA Aux Device pointer.
 6.	Core Driver calls the IDPF driver with core_ops for sending any Opaque messages down to the Device control using virtchannel RDMA ops or for setting up the Queue vector mapping or requesting reset etc. 
 7.	IDPF driver can send events to the Core or the vPort RDMA Aux device such as Reset pending, MTU change etc.
 8.	IDPF driver can also send asynchronous RDMA messages received from Device Control directly to the Core RDMA Aux driver using a vc_receive call back into the Aux RDMA Core Driver.
 Teardown Flow:
 1. When the RDMA core driver is de-registered/unbound, it must first issue a vport_dev_ctrl() callback to the IDPF driver with status DOWN in its driver remove(). 
-2. This is a blocking call and the IDPF driver deletes all the RDMA Vport auxiliary devices in response to it. 
+2. This is a blocking call and the IDPF driver deletes all the RDMA vPort auxiliary devices in response to it. 
 3. The RDMA core driver can then continue to de-initialize the core device in its driver remove().
 ###	Reset flows
-When the RDMA Core Aux driver requests reset, it becomes blocking as the IDPF driver goes and destroys all the Aux RDMA vPort devices and ultimately the Core RDMA Aux device is deleted as well. After that it follows through with a Function level reset for the whole PCIE interface. Upon reset Completion of the PCIE interface, the RDMA Core device and the Vport devices are created afresh as described in the RDMA init flow.
-When a Reset  pending event is detected on the IDPF driver side due to the Device Control plane indicating that the Interface is being reset, IDPF driver must first inform the Core RDMA Aux driver that a reset is pending through an event so that RDMA Core driver stops accessing  the HW and then IDPF driver goes to remove all RDMA vport Aux devices and then finally destroying the Core RDMA Aux device as well.  
+When the RDMA Core Aux driver requests reset, it becomes blocking as the IDPF driver goes and destroys all the Aux RDMA vPort devices and ultimately the Core RDMA Aux device is deleted as well. After that it follows through with a Function level reset for the whole PCIE interface. Upon reset Completion of the PCIE interface, the RDMA Core device and the vPort devices are created afresh as described in the RDMA init flow.
+When a Reset  pending event is detected on the IDPF driver side due to the Device Control plane indicating that the Interface is being reset, IDPF driver must first inform the Core RDMA Aux driver that a reset is pending through an event so that RDMA Core driver stops accessing  the HW and then IDPF driver goes to remove all RDMA vPort Aux devices and then finally destroying the Core RDMA Aux device as well.  
 ###	RDMA Driver Generic Data structures and Inter Driver Communication Ops 
 ```C
 /* SPDX-License-Identifier: GPL-2.0 */
@@ -11551,8 +11551,8 @@ struct idc_rdma_core_ops {
 	int (*vc_send_sync)(struct iidc_core_dev_info *cdev_info, u8 *msg, u16 len, u8 *recv_msg, u16 *recv_len);
 	
 	/* vport_dev_ctrl is for RDMA CORE driver to indicate it is either ready
-	 * for individual vport aux devices, or it is leaving the state where it
-	 * can support vports and they need to be downed
+	 * for individual vPort aux devices, or it is leaving the state where it
+	 * can support vPorts and they need to be downed
 	 */
 	int (*vport_dev_ctrl)(struct idc_rdma_core_dev_info *cdev_info,
 			      bool up);
