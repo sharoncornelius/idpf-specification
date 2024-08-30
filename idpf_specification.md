@@ -2567,11 +2567,11 @@ checksum when the DUMMY flag is set.</p></th>
 <th><p>The IP header type and its offload. In case of tunneling, the
 IIPT relates to the inner IP header.</p>
 <ul>
-<li><p>00b – Non-IP packet or packet type is not defined by
-software</p></li>
-<li><p>01b – IPv6 packet</p></li>
-<li><p>10b – IPv4 packet with no IP checksum offload</p></li>
-<li><p>11b – IPv4 packet with IP checksum offload</p></li>
+<p>00b – Non-IP packet or packet type is not defined by
+software</p>
+<p>01b – IPv6 packet</p>
+<p>10b – IPv4 packet with no IP checksum offload</p>
+<p>11b – IPv4 packet with IP checksum offload</p>
 </ul>
 <p>For an IPV4 TSO message, this field must be set to “11”</p>
 <p>This field is used in Base mode.</p>
