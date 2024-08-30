@@ -2927,7 +2927,7 @@ Malicious Drivers on Data Queues.</th>
 This is the context descriptor with L2TAG2 and TSO.  
 This descriptor is used for all queue models.
 
-![Tx TSO Context Descriptor DTYPE = 0x08](Diagrams/tx_tso_context_desc_dtype0x08.png)
+![Tx TSO Context Descriptor DTYPE = 0x08](Diagrams/tx_tso_context_desc-dtype0x08.png)
 
 Descriptor fields layout:
 
