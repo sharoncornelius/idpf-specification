@@ -2362,9 +2362,9 @@ Note:
 2 DTYPEs out of the 13 free DTYPs are “reserved for OEM” for In-order
 Single Queue and free for the other queue models.
 
-| **DTYPE** | **Queue models**                                                              |
+| **DTYPE** | **Queue Models**                                                              |
 |-----------|-------------------------------------------------------------------------------|
-| 0         | *Base TX Data & Context Descriptor Formats for* In order, single queue model. |
+| 0         | *Base TX Data & Context Descriptor Formats for* In order single queue model. |
 | 1         | *Native TX Context*                                                           |
 | 2         | Reserved for OEM                                                              |
 | 3         | Free                                                                          |
@@ -2390,7 +2390,7 @@ Single Queue and free for the other queue models.
 #### Base TX Data Descriptor - DTYPE = 0x0
 
 This is the basic data descriptor used for “in order” queues. (When the
-queue operates in “In order, single queue model” or in “In order , split
+queue operates in “In order single queue model” or in “In order , split
 queue model”).
 
 ![Base Tx Descriptor DTYPE = 0x0](Diagrams/base_tx_desc_dtype0.png)
@@ -2857,7 +2857,7 @@ COMMAND field layout”).</p></th>
 This is the context descriptor with flex bytes and TSO.  
 This descriptor is used for all queue models.
 
-![Tx TSO Context Descriptor DTYPE = 0x05](Diagrams/tx_tso_context_desc_dtype0x05.png)
+![Tx TSO Context Descriptor DTYPE = 0x05](Diagrams/tx_tso_context_desc-dtype0x05.png)
 
 Descriptor fields layout:
 
@@ -5151,7 +5151,7 @@ involvement from PF located IDPF, Function Level Reset triggered on PF
 device will automatically trigger VF Level resets for all VFs mapped to
 this PF.
 
-# Standard offloads
+# Standard Offloads
 
 - Multiple Default vPorts (WIP)
 - Container Dedicated Queues (WIP)
@@ -5159,7 +5159,7 @@ this PF.
 All offloads (standard or advanced) are negotiated. This gives a device
 the opportunity to opt out of supporting a particular offload.
 
-## MAC filter offload
+## MAC Filter Offload
 
 - Device Interface
 
@@ -5266,7 +5266,7 @@ device when the OS notifies the driver.
 The device adds/delete MAC address filters in hardware to direct packets
 to the requested vport.
 
-## Promiscuous offload
+## Promiscuous Offload
 
 - Device Interface
 
@@ -5793,7 +5793,7 @@ If the Driver sends a configuration that is malicious such as set the LUT with q
 
 ## Header Split
 
-- Device Interface
+### Device Interface
 
 Header split is enabled on a per-receive-queue basis. For each received
 packet, the device determines whether to split the packet across the
@@ -5802,7 +5802,7 @@ buffer, or post the whole packet to the packet buffer(s). The receive
 descriptor contains fields to communicate the packet layout across the
 header and packet buffer(s) between the device and the driver.
 
-- Capability and Data structures
+### Capability and Data Structures
 
 There are several capabilities associated with header split which must
 be learned from the device.
@@ -5815,7 +5815,7 @@ be learned from the device.
 - Packet buffer alignment requirement (if any)
 - Header split modes supported (see details below)
 
-- Configuration
+### Configuration
 
 Single queue model: if header split is enabled, either the 16B or 32B
 read descriptor format may be used. Each descriptor posted to the device
