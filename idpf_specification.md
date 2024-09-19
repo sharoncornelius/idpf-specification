@@ -2251,7 +2251,7 @@ to the packet descriptors placement order in the TX queue.
 
 As in the “In order single queue model”, also in this model:
 
-* "TX Queues" are used to pass buffers from SW to Device while "Tx Completion Queues" are used to pass descriptor completions from Device to SW (also called PCE- packet completion element).
+* TX Queues are used to pass buffers from SW to Device while Tx Completion Queues are used to pass descriptor completions from Device to SW (also called PCE- packet completion element).
 * Single Device supports an asymmetric ratio of Tx queues to TX Completion queues. Each TX queue is associated to a single TX completion Queue and in the usual case, TX completion Queue will be fed by a set of Tx queues. The association between a TX queue and the completion queue is defined in the TX queue context.
 
 In contrast to the “In order single queue model” where PCE can be
@@ -5172,75 +5172,39 @@ to redirect packets to a specific vPort.
 The opcodes used to add/delete mac filters are
 ```C
     #define VIRTCHNL2_OP_ADD_MAC_ADDR 535
-
     #define VIRTCHNL2_OP_DEL_MAC_ADDR 536
-
     /* VIRTCHNL2_MAC_TYPE
-
-    * VIRTCHNL2_MAC_ADDR_PRIMARY
-
-    * Driver should set @type to VIRTCHNL2_MAC_ADDR_PRIMARY for the
-
-    * primary/device unicast MAC address filter for VIRTCHNL2_OP_ADD_MAC_ADDR
-
-    * and VIRTCHNL2_OP_DEL_MAC_ADDR. This allows for the underlying control
-
-    * plane function to accurately track the MAC address and for VM/function
-
-    * reset.
-
-    *
-
-    * VIRTCHNL2_MAC_ADDR_EXTRA
-
-    * Driver should set @type to VIRTCHNL2_MAC_ADDR_EXTRA for any extra
-
-    * unicast and/or multicast filters that are being added/deleted via
-
-    * VIRTCHNL2_OP_ADD_MAC_ADDR/VIRTCHNL2_OP_DEL_MAC_ADDR respectively.
-
-    */
-
+     * VIRTCHNL2_MAC_ADDR_PRIMARY
+     * Driver should set @type to VIRTCHNL2_MAC_ADDR_PRIMARY for the
+     * primary/device unicast MAC address filter for VIRTCHNL2_OP_ADD_MAC_ADDR
+     * and VIRTCHNL2_OP_DEL_MAC_ADDR. This allows for the underlying control
+     * plane function to accurately track the MAC address and for VM/function
+     * reset.
+     * VIRTCHNL2_MAC_ADDR_EXTRA
+     * Driver should set @type to VIRTCHNL2_MAC_ADDR_EXTRA for any extra
+     * unicast and/or multicast filters that are being added/deleted via
+     * VIRTCHNL2_OP_ADD_MAC_ADDR/VIRTCHNL2_OP_DEL_MAC_ADDR respectively.
+     */
     #define VIRTCHNL2_MAC_ADDR_PRIMARY 1
-
     #define VIRTCHNL2_MAC_ADDR_EXTRA 2
-
     /* structure to specify each MAC address */
-
     struct virtchnl2_mac_addr {
-
         u8 addr[ETH_ALEN];
-
         /* see VIRTCHNL2_MAC_TYPE definitions */
-
         u8 type;
-
         u8 pad;
-
     };
-
     /* VIRTCHNL2_OP_ADD_MAC_ADDR
-
-    * VIRTCHNL2_OP_DEL_MAC_ADDR
-
-    * PF/VF driver uses this structure to send list of MAC addresses to be
-
-    * added/deleted to the CP whereas CP performs the action and returns the
-
-    * status.
-
-    */
-
+     * VIRTCHNL2_OP_DEL_MAC_ADDR
+     * PF/VF driver uses this structure to send list of MAC addresses to be
+     * added/deleted to the CP whereas CP performs the action and returns the
+     * status.
+     */
     struct virtchnl2_mac_addr_list {
-
         __le32 vport_id;
-
         __le16 num_mac_addr;
-
         u8 pad[2];
-
         struct virtchnl2_mac_addr mac_addr_list[1];
-
     };
 ```
 
@@ -5275,38 +5239,21 @@ promiscuous mode on a vPort.
 ### Capability and Data Structures
 ```C
 #define VIRTCHNL2_CAP_PROMISC BIT(8)
-
 #define VIRTCHNL2_OP_CONFIG_PROMISCUOUS_MODE 537
-
 /* VIRTCHNL2_PROMISC_FLAGS
-
-* Flags used for promiscuous mode
-
-*/
-
+ * Flags used for promiscuous mode
+ */
 #define VIRTCHNL2_UNICAST_PROMISC BIT(0)
-
 #define VIRTCHNL2_MULTICAST_PROMISC BIT(1)
-
 /* VIRTCHNL2_OP_CONFIG_PROMISCUOUS_MODE
-
-* Driver sends vPort id and flags to the CP whereas CP performs the
-action
-
-* and returns the status.
-
-*/
-
+ * Driver sends vPort id and flags to the CP whereas CP performs the action
+ * and returns the status.
+ */
 struct virtchnl2_promisc_info {
-
 __le32 vport_id;
-
 /* see VIRTCHNL2_PROMISC_FLAGS definitions */
-
 __le16 flags;
-
 u8 pad[2];
-
 };
 ```
 
@@ -5643,46 +5590,25 @@ Rx Checksum offload is requested by the driver on a per-queue basis after the De
 ```C
 
 #define VIRTCHNL2_CAP_RX_CSUM_L3_IPV4 BIT(8)
-
 #define VIRTCHNL2_CAP_RX_CSUM_L4_IPV4_TCP BIT(9)
-
-#define VIRTCHNL2_CAP_RX_CSUM_L4_IPV4_UDP BIT(10)
-
-
+#define VIRTCHNL2_CAP_RX_CSUM_L4_IPV4_UDP BIT(10
 #define VIRTCHNL2_CAP_RX_CSUM_L4_IPV4_SCTP BIT(11)
-
 #define VIRTCHNL2_CAP_RX_CSUM_L4_IPV6_TCP BIT(12)
-
 #define VIRTCHNL2_CAP_RX_CSUM_L4_IPV6_UDP BIT(13)
-
 #define VIRTCHNL2_CAP_RX_CSUM_L4_IPV6_SCTP BIT(14)
-
 #define VIRTCHNL2_CAP_RX_CSUM_GENERIC BIT(15) /* raw Checksum */
-
 #define VIRTCHNL2_CAP_TX_CSUM_L3_SINGLE_TUNNEL BIT(16)
-
 #define VIRTCHNL2_CAP_TX_CSUM_L3_DOUBLE_TUNNEL BIT(17)
-
 #define VIRTCHNL2_CAP_RX_CSUM_L3_SINGLE_TUNNEL BIT(18)
-
 #define VIRTCHNL2_CAP_RX_CSUM_L3_DOUBLE_TUNNEL BIT(19)
-
 #define VIRTCHNL2_CAP_TX_CSUM_L4_SINGLE_TUNNEL BIT(20)
-
 #define VIRTCHNL2_CAP_TX_CSUM_L4_DOUBLE_TUNNEL BIT(21)
-
 #define VIRTCHNL2_CAP_RX_CSUM_L4_SINGLE_TUNNEL BIT(22)
-
 #define VIRTCHNL2_CAP_RX_CSUM_L4_DOUBLE_TUNNEL BIT(23)
-
 struct virtchnl2_get_capabilities {
-
 /* see VIRTCHNL2_CHECKSUM_OFFLOAD_CAPS definitions */
-
 __le32 csum_caps;
-
 …
-
 }
 ```
 - Configuration: (WIP)
@@ -5699,14 +5625,15 @@ As a result of this feature, the device will calculate a hash on certain fields 
 
 1.  Deliver the hash value in the RX descriptor along with the packet. This can be used by the Host OS for further classification needs.
 2.  Distribute the RX packets belonging to different flows to different RX queues based on the distribution programmed by the Device driver as part of Lookup Table (LUT) programming.
-   *  All packets of a flow get hashed to a single RX queue as per the Data Plane programming of the device, although a device with programmable Dataplane can decide to hash them differently.
+
+All packets of a flow get hashed to a single RX queue as per the Data Plane programming of the device, although a device with programmable Dataplane can decide to hash them differently.
   
   The Device driver can learn about the fields on which the hash was performed for a packet and as an advanced feature can negotiate to select the fields in the packet to perform the hash.
 
-* Device Interface
-  - RSS hash value is delivered in the RX descriptor as described in the RX Descriptor sections.
+### Device Interface
+RSS hash value is delivered in the RX descriptor as described in the RX Descriptor sections.
 
-* Capability and Data structures
+### Capability and Data Structures
 ```C
 #define VIRTCHNL2_OP_GET_RSS_KEY 513
 #define VIRTCHNL2_OP_SET_RSS_KEY 514
@@ -5766,22 +5693,22 @@ u8 pad;
 u8 key[1]; /* RSS hash key, packed bytes */
 };
 ```
-* Configuration
+### Configuration
 
 RSS can be configured as a standard feature by negotiation with CP as part of device Capability negotiation.
 
 After the negotiation, during vPort Create the algorithm can be selected or provided by the Device as well as the key size and lut size used.
 
-* Driver Configuration and Runtime flow
+### Driver Configuration and Runtime Flow
 
-1.  Driver -\> CP (get_capabilities)
-2.  Driver -\> CP (create_vport)
-3.  Driver -\> CP (set_key)
-4.  Driver -\> CP (get_key)
-5.  Driver -\> CP (set_lut)
-6.  Driver -\> CP (get_lut)
+*  Driver -\> CP (get_capabilities)
+*  Driver -\> CP (create_vport)
+*  Driver -\> CP (set_key)
+*  Driver -\> CP (get_key)
+*  Driver -\> CP (set_lut)
+*  Driver -\> CP (get_lut)
 
-* Device and Control Plane Behavioral Model
+### Device and Control Plane Behavioral Model
 
 The Device can expose standard and advanced configuration options for RSS, as part of standard features, the device must expose the ability to choose the Algorithm, set the Key and Lookup table for directing traffic to the Rx queues.
 
@@ -5791,7 +5718,7 @@ If the Driver sends a configuration that is malicious such as set the LUT with q
 
 ## Header Split
 
-* Device Interface
+### Device Interface
 
 Header split is enabled on a per-receive-queue basis. For each received
 packet, the device determines whether to split the packet across the
@@ -5800,7 +5727,7 @@ buffer, or post the whole packet to the packet buffer(s). The receive
 descriptor contains fields to communicate the packet layout across the
 header and packet buffer(s) between the device and the driver.
 
-* Capability and Data Structures
+### Capability and Data Structures
 
 There are several capabilities associated with header split which must
 be learned from the device.
@@ -5813,7 +5740,7 @@ be learned from the device.
 - Packet buffer alignment requirement (if any)
 - Header split modes supported (see details below)
 
-* Configuration
+### Configuration
 
 Single queue model: if header split is enabled, either the 16B or 32B
 read descriptor format may be used. Each descriptor posted to the device
@@ -5843,7 +5770,7 @@ Supported modes are the following:
 * Header Split with the support for “Split large, coalesce small” – if packet length is \<= header buffer size, post the whole packet to the header buffer, else use header split algorithm above.
   (***Note:*** This option is supported only for non RSC. For RSC segments it is always header split regardless of this condition<span class="mark">.)</span>
   
-* Driver Configuration and Runtime flow
+### Driver Configuration and Runtime flow
 
 If the driver wishes to enable header split, it must configure the
 receive queue context with the header buffer size and packet buffer
@@ -5867,7 +5794,7 @@ the packet up to the OS along with the appropriate software data
 structures to describe the location of the packet in one or more
 buffers.
 
-* Device and Control Plane Behavioral Model
+### Device and Control Plane Behavioral Model
 
 Upon packet reception, the device chooses a target receive queue using
 either exact match rules or hash-based queue selection. If header split
@@ -5879,7 +5806,7 @@ and packet buffer(s), the device will
 
 ## RSC
 
-* Device Interface
+### Device Interface
 
 Receive Segment Coalescing (RSC) can be enabled in conjunction with
 header split and the split (receive) queue model. The RSC context may be
@@ -5892,7 +5819,7 @@ the RSC datagram are posted consecutively to the Receive Queue. The
 driver processes the Receive Queue descriptors and indicates the
 datagram to the operating system.
 
-* Capability and Data structures
+### Capability and Data Structures
 
 The device supports a total number of RSC contexts. A subset of this
 number can be made available to an AVH host interface instance. This
@@ -5913,7 +5840,7 @@ software. This is one of several criteria by which the RSC context may
 be closed. This would typically be configured by control software; the
 host driver would not have control over this setting.
 
-* Configuration
+### Configuration
 
 When RSC is enabled, the receive split queue model must be used. RSC is
 not supported with the single queue model or when header split is
@@ -5921,7 +5848,7 @@ disabled. RSC is enabled in the receive queue context and would
 typically be enabled for all receive queues associated with a given
 vPort.
 
-* Driver Configuration and Runtime flow
+### Driver Configuration and Runtime Flow
 
 The driver must enable RSC on a per-receive-queue basis. Typically, the
 driver would enable RSC for all the queues associated with a given host
@@ -5936,7 +5863,7 @@ When processing a receive queue enabled for RSC, the driver must be
 prepared to indicate receive datagrams up to the maximum RSC coalesce
 size. This may be larger than the interface MTU.
 
-* Device and Control Plane Behavioral Model
+### Device and Control Plane Behavioral Model
 
 When RSC is enabled, the receive flow in the device is as follows:
 
@@ -5944,7 +5871,7 @@ When RSC is enabled, the receive flow in the device is as follows:
 2. If not found, the device pulls the next available buffer from the Rx Buffer Queue and finds a free RSC context
 3. The device writes the packet data to the buffer in host memory and updates its internal RSC context. The packet header is not written to host memory until the RSC context is closed.
 4. If there is an in-use RSC context associated with the flow (i.e., for all subsequent packets after the first to open an RSC context), the device compares the remaining space in the already-allocated buffer with the number of bytes of data in the current packet.
-  * If needed, the device pulls the next available buffer from the Rx Buffer Queue and updates the RSC context accordingly.
+  	* If needed, the device pulls the next available buffer from the Rx Buffer Queue and updates the RSC context accordingly.
 5. The Device appends the packet data to the buffer(s) in host memory and updates the header for each subsequent packet.
 6. At some point, it will be time to close the context.
 7. The device writes the packet header to host memory (to the header buffer associated with the first packet buffer) and completes all buffers associated with the RSC context consecutively on the receive queue. Note that the buffers may or may not have been consecutive on the Rx Buffer Queue.
