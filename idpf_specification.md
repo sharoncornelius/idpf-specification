@@ -932,7 +932,7 @@ the “Packet Types negotiation” section of this document.</p></th>
 </tr>
 <tr class="odd">
 <th>6,7</th>
-<th><strong><mark>Length</mark></strong></th>
+<th>Length</th>
 <th>26</th>
 <th><table>
 <colgroup>
@@ -998,15 +998,15 @@ The table below details the contents of the Status field.
 <th>DD</th>
 <th>1b</th>
 <th><p><strong>Descriptor Done</strong></p>
-<p><mark>Descriptor done indication flag</mark></p></th>
+<p>Descriptor done indication flag </p></th>
 </tr>
 <tr class="header">
 <th>1</th>
 <th>EOP</th>
 <th>1b</th>
 <th><p><strong>End of Packet</strong></p>
-<p><mark>End of packet flag is set to 1b indicating that this descriptor
-is the last one of a packets</mark></p></th>
+<p>End of packet flag is set to 1b indicating that this descriptor
+is the last one of a packets </p></th>
 </tr>
 <tr class="odd">
 <th>2</th>
@@ -1032,7 +1032,7 @@ field as invalid</p></th>
 </tr>
 <tr class="odd">
 <th>4</th>
-<th><mark>CRCP</mark></th>
+<th>CRCP</th>
 <th>1b</th>
 <th><p><strong>CRC Posted</strong></p>
 <p>CRCP indicates that the Ethernet CRC is posted with data to the host
@@ -1049,7 +1049,7 @@ re-calculated after the packet modification. Original/re-calculated CRC
 should be part of device capability negotiation.</p></th>
 </tr>
 <tr class="header">
-<th><mark>5:7</mark></th>
+<th>5:7 </th>
 <th>Reserved</th>
 <th>RSV</th>
 <th><p><strong>Reserved</strong></p>
@@ -1325,7 +1325,7 @@ is cleared.</p></th>
 </tr>
 <tr class="header">
 <th>11:6</th>
-<th><mark>RSV</mark></th>
+<th>RSV</th>
 <th>3b</th>
 <th><strong>Reserved</strong></th>
 </tr>
@@ -7450,9 +7450,9 @@ enablement operation</th>
 <thead>
 <tr class="header">
 <th><strong>Capability</strong></th>
-<th><strong>SW parameter</strong></th>
-<th><strong>Possible values</strong></th>
-<th><strong>Default value</strong></th>
+<th><strong>SW Parameter</strong></th>
+<th><strong>Possible Values</strong></th>
+<th><strong>Default Value</strong></th>
 </tr>
 <tr class="odd">
 <th><p>Head writeback reporting for buffer queue descriptor fetch (on
@@ -7473,7 +7473,7 @@ queue descriptor fetch stride cross).</p>
 </tr>
 <tr class="odd">
 <th>Number of RX buffer queues per RX queue</th>
-<th><em><mark>u8 num_buf_queues_per_rx</mark></em></th>
+<th><em>u8 num_buf_queues_per_rx</em></th>
 <th><p>1(large buffer queue),</p>
 <p>2(large and small buffer queues)</p></th>
 <th>2</th>
@@ -7522,13 +7522,13 @@ queue descriptor fetch stride cross).</p>
 </tr>
 <tr class="odd">
 <th>Max number of context descriptors per SSO packet</th>
-<th><em><mark>max_ctxt_desc_per_sso_packet</mark></em></th>
+<th><em>max_ctxt_desc_per_sso_packet</em></th>
 <th></th>
 <th>1</th>
 </tr>
 <tr class="header">
 <th>Max number of context descriptors per LSO segment</th>
-<th><em><mark>max_ctxt_desc_per_lso_segment</mark></em></th>
+<th><em>max_ctxt_desc_per_lso_segment</em></th>
 <th></th>
 <th>1</th>
 </tr>
@@ -7536,7 +7536,7 @@ queue descriptor fetch stride cross).</p>
 <th><p>Max data buffers per SSO/LSO packet.</p>
 <p>Note: When equals to 18 SW can avoid any calculations or check for
 linearization for Linux.</p></th>
-<th><em><mark>max_sg_bufs_per_tx_pkt</mark></em></th>
+<th><em>max_sg_bufs_per_tx_pkt</em></th>
 <th>1 to 18</th>
 <th>10</th>
 </tr>
@@ -7582,9 +7582,9 @@ first bytes of payload)</p></th>
 <thead>
 <tr class="header">
 <th><strong>Capability</strong></th>
-<th><strong>SW parameter</strong></th>
-<th><strong>Possible values</strong></th>
-<th><strong>Default value</strong></th>
+<th><strong>SW Parameter</strong></th>
+<th><strong>Possible Values</strong></th>
+<th><strong>Default Value</strong></th>
 </tr>
 <tr class="odd">
 <th>Max TX buffer size.</th>
@@ -7594,9 +7594,9 @@ first bytes of payload)</p></th>
 </tr>
 <tr class="header">
 <th>Max LSO payload length.</th>
-<th><blockquote>
+<th>
 <p><em>max_lso_payload_len</em></p>
-</blockquote></th>
+</th>
 <th></th>
 <th>256K-1</th>
 </tr>
@@ -7611,16 +7611,16 @@ first bytes of payload)</p></th>
 expansion done by the device).<br />
 Field is described in byte units.</th>
 <th><p><strong>IECM_TX_MIN_LEN</strong></p>
-<p><mark></mark></p></th>
+<p></p></th>
 <th></th>
 <th>17</th>
 </tr>
 <tr class="odd">
 <th>Min LSO header length as sent by the driver (excluding any expansion
 done by the device).</th>
-<th><blockquote>
+<th>
 <p><em>min_lso_header_len</em></p>
-</blockquote></th>
+</th>
 <th></th>
 <th>17</th>
 </tr>
@@ -7756,9 +7756,9 @@ Field is described in 64B units.</th>
 <thead>
 <tr class="header">
 <th><strong>Capability</strong></th>
-<th><strong>SW parameter</strong></th>
-<th><strong>Possible values</strong></th>
-<th><strong>Default value</strong></th>
+<th><strong>SW Parameter</strong></th>
+<th><strong>Possible Values</strong></th>
+<th><strong>Default Value</strong></th>
 </tr>
 <tr class="odd">
 <th>RX checksum support for most inner headers.</th>
@@ -7846,7 +7846,7 @@ VIRTCHNL2_CAP_TX_CSUM_L4_IPV6_SCTP_IN2</em></th>
 </tr>
 <tr class="odd">
 <th>Support RX packet raw checksum calculation.</th>
-<th><em><mark>VIRTCHNL2_CAP_RX_CSUM_GENERIC</mark></em></th>
+<th><em>VIRTCHNL2_CAP_RX_CSUM_GENERIC</em></th>
 <th></th>
 <th></th>
 </tr>
@@ -7935,9 +7935,9 @@ must be supported as well.</p></th>
 <thead>
 <tr class="header">
 <th><strong>Capability</strong></th>
-<th><strong>SW parameter</strong></th>
-<th><strong>Possible values</strong></th>
-<th><strong>Default value</strong></th>
+<th><strong>SW Parameter</strong></th>
+<th><strong>Possible Values</strong></th>
+<th><strong>Default Value</strong></th>
 </tr>
 <tr class="odd">
 <th>Protocols used for RSS key (inner most headers).</th>
@@ -7975,9 +7975,9 @@ VIRTCHNL2_CAP_RSS_IPV6_AH_ESP</th>
 <thead>
 <tr class="header">
 <th><strong>Capability</strong></th>
-<th><strong>SW parameter</strong></th>
-<th><strong>Possible values</strong></th>
-<th><strong>Default value</strong></th>
+<th><strong>SW Parameter</strong></th>
+<th><strong>Possible Values</strong></th>
+<th><strong>Default Value</strong></th>
 </tr>
 <tr class="odd">
 <th>Header boundary for header split.</th>
