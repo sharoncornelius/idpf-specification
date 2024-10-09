@@ -2364,8 +2364,8 @@ Single Queue and free for the other queue models.
 
 | **DTYPE** | **Queue Models**                                                              |
 |-----------|-------------------------------------------------------------------------------|
-| 0         | *Base TX Data & Context Descriptor Formats for* In order single queue model   |
-| 1         | *Native TX Context*                                                           |
+| 0         | Base TX Data & Context Descriptor Formats for In order single queue model     |
+| 1         | Native TX Context                                                             |
 | 2         | Reserved for OEM                                                              |
 | 3         | Free                                                                          |
 | 4         | Context with L2Tag1                                                           |
@@ -2375,7 +2375,7 @@ Single Queue and free for the other queue models.
 | 9         | WIP                                                                           |
 | 10        | Reserved for OEM                                                              |
 | 11        | Free                                                                          |
-| 12        | TX Data Descriptor for Out of order split queue model.                       |
+| 12        | TX Data Descriptor for Out of order split queue model.                        |
 | 13-14     | Free                                                                          |
 | 15        | Free (Except for In-order Single Queue where DTYPE is reserved for OEM)       |
 | 16-18     | Reserved for OEM                                                              |
@@ -2408,7 +2408,7 @@ Descriptor fields layout:
 <thead>
 <tr class="header">
 <th><strong>Field</strong></th>
-<th><strong> Size</strong></th>
+<th><strong>Size</strong></th>
 <th><strong>Functionality</strong></th>
 </tr>
 <tr class="odd">
@@ -2528,16 +2528,16 @@ of the transmit descriptor and its data buffer.</p>
 Descriptor.</p>
 <p>Notes:</p>
 <ul>
-<li><blockquote>
+<li>
 <p>SW must keep a minimal gap of IECM_TX_RS_MIN_GAP descriptors between
 2 descriptors with RE bit set.</p>
-</blockquote></li>
+</li>
 </ul>
 <ul>
-<li><blockquote>
+<li>
 <p>The RE flag can be set only on the last Transmit Data Descriptor of a
 message (i.e., a packet or TSO).</p>
-</blockquote></li>
+</li>
 </ul></th>
 </tr>
 <tr class="odd">
@@ -2567,11 +2567,11 @@ checksum when the DUMMY flag is set.</p></th>
 <th><p>The IP header type and its offload. In case of tunneling, the
 IIPT relates to the inner IP header.</p>
 <ul>
-<li><p>00b – Non-IP packet or packet type is not defined by
-software</p></li>
-<li><p>01b – IPv6 packet</p></li>
-<li><p>10b – IPv4 packet with no IP checksum offload</p></li>
-<li><p>11b – IPv4 packet with IP checksum offload</p></li>
+<p>00b – Non-IP packet or packet type is not defined by
+software</p>
+<p>01b – IPv6 packet</p>
+<p>10b – IPv4 packet with no IP checksum offload</p>
+<p>11b – IPv4 packet with IP checksum offload</p>
 </ul>
 <p>For an IPV4 TSO message, this field must be set to “11”</p>
 <p>This field is used in Base mode.</p>
