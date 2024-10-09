@@ -2120,7 +2120,7 @@ Regardless of queue model, the following fields in the descriptor can
 hold different values depending on the negotiated queue context: 
 
 1.  Depending on negotiated queue context, the "Hash [23:16]/MirrorID/FlexiFlags1" field in the first 16B of the descriptor holds the MirrorID field or the Hash [23:16] or the FlexiFlags1 field.
-2.  Depending on negotiated queue context ,the “FlexiMD.1/Raw_CS/L2TAG1/RSCPayLen” field in the first 16B of the descriptor holds one of the following values:
+2.  Depending on negotiated queue context, the “FlexiMD.1/Raw_CS/L2TAG1/RSCPayLen” field in the first 16B of the descriptor holds one of the following values:
     1.  Holds the RSCPayLen for an RSC packet or the Raw csum for a non RSC packet.
     2.  Holds the L2TAG1 field in case the tag is present in the RX descriptor (L2TAG1P flag is set) or holds the FlexiMD.1 field.
     3.  Always holds the FlexiMD.1 field.
@@ -2129,7 +2129,7 @@ hold different values depending on the negotiated queue context:
 
 Field "L2TAG2/FlexMD2" in the second 16B of the descriptor holds L2TAG2
 if L2TAG2P is set,  
-Else , field holds FlexMD2.
+Else, field holds FlexMD2.
 
 ## TX Queues
 
@@ -2235,13 +2235,13 @@ In this model, SW posts descriptors to Device through the TX queue in
 the same manner it does for the “single queue model” and as in the
 “single queue model", SW sets the RS bit to indicate to Device on which
 descriptors it should report a completion to SW.  
-Similarly to the “single queue model” , In addition to reporting
+Similarly to the “single queue model”, In addition to reporting
 completions for descriptors marked as such by SW (RS bit setting),
 occasionally (based on a periodic timer), Device will report a
 completion for the last descriptor processed (in case completion was not
 already reported to this descriptor due to RS bit setting).
 
-For this model , the “TX head” field in PCE holds the TX queue offset of
+For this model, the “TX head” field in PCE holds the TX queue offset of
 the descriptor that follows the RS marked descriptor.
 
 ### Out of Order Split Queue Model
@@ -2320,7 +2320,7 @@ Device and read by SW (TX packet completion).
 
 For both queue models the read descriptor holds the buffer pointers,
 offload parameters and metadata to downstream blocks.  
-Specifically, for the “out of order, split queue model” model, the read
+Specifically, for the “out of order split queue model” model, the read
 descriptor also holds the unique packet identifier (sent as is to packet
 completion) used for SW to associate the submitted packet with the
 completed packet.
@@ -2375,7 +2375,7 @@ Single Queue and free for the other queue models.
 | 9         | WIP                                                                           |
 | 10        | Reserved for OEM                                                              |
 | 11        | Free                                                                          |
-| 12        | TX Data Descriptor for Out of order, split queue model.                       |
+| 12        | TX Data Descriptor for Out of order split queue model.                       |
 | 13-14     | Free                                                                          |
 | 15        | Free (Except for In-order Single Queue where DTYPE is reserved for OEM)       |
 | 16-18     | Reserved for OEM                                                              |
@@ -2723,8 +2723,7 @@ set.</p>
 
 #### TX Data Descriptor - DTYPE = 0x0C
 
-This is the data descriptor used when a queue operates in “Out of order,
-split queue model.”  
+This is the data descriptor used when a queue operates in “Out of order split queue model.”  
   
 ![Tx Data Descriptor DTYPE = 0x0C](Diagrams/tx_data_desc_dtype0xc.png)
 
@@ -2910,7 +2909,7 @@ larger than zero.</th>
 <th>14b</th>
 <th>When the TSO flag in the CMD field is set, the MSS field defines the
 Maximum Segment Size of the packet’s payload in the TSO (excluding the
-L2, L3 and L4 headers). In case of tunneling, the MSS relates to the
+L2, L3, and L4 headers). In case of tunneling, the MSS relates to the
 inner payload. The MSS should not be set to a lower value than
 MIN_LSO_MSS. It also must follow the rule declared in Table Handling
 Malicious Drivers on Data Queues.</th>
@@ -2981,7 +2980,7 @@ larger than</p>
 <th>14b</th>
 <th>When the TSO flag in the CMD field is set, the MSS field defines the
 Maximum Segment Size of the packet’s payload in the TSO (excluding the
-L2, L3 and L4 headers). In case of tunneling, the MSS relates to the
+L2, L3, and L4 headers). In case of tunneling, the MSS relates to the
 inner payload. The MSS should not be set to a lower value than
 MIN_LSO_MSS. It also must follow the rule declared in Table Handling
 Malicious Drivers on Data Queues.</th>
@@ -3093,7 +3092,7 @@ violation of those rules might be detected as malicious driver behavior.
 
 * Device executes L3/L4 checksum for packet checksums according to feature negotiation. When negotiated, Device calculates checksum for the relevant layer without SW activation (through descriptor.) The only exception is of the inner L4 checksum calculation that is executed when one of the conditions below is true
 
-  1.  Base mode data descriptor - when L4T is set to UDP ,TCP or SCTP or when IIPT is set to to "IPv4 packet with IP checksum offload "
+  1.  Base mode data descriptor - when L4T is set to UDP, TCP, or SCTP or when IIPT is set to to "IPv4 packet with IP checksum offload "
   2.  CS_EN is set to 1.
 
   Note that for for case #a and #b the most inner header checksum is calculated using the offsets as parsed by the Device parser. The *max_tx_hdr_generic_offloads* negotiated capability defines the maximal header length supported by the device for non-generic checksum/CRC offloads.
@@ -3144,7 +3143,7 @@ Device may write any value to the Other Descriptors fields.
 ### TX Completion Descriptor Format  
 
 The text below describes the TX completion element written to the
-completion queue when a queue operates in “Out of order, split queue” or
+completion queue when a queue operates in “Out of order split queue” or
 in “in order split queue” models.
 
 As a completion queue setting, the TX completion element length can be
@@ -3181,19 +3180,19 @@ From the SW point of view, this completion is similar to a “Regular
 Packet completion” (Completion entry type 2) and should be treated the
 same.</p>
 <p>1:  Regular packet completion for a packet sent on the exception path
-(Relevant only when the queue operates in "out of order ,split queue"
+(Relevant only when the queue operates in "out of order split queue"
 model).<br />
 <br />
 2: Regular Packet completion.</p>
 <p>TX packet completion for a packet that its RS bit set in the last TX
-descriptor ( when the queue operates in "on of order , split queue" or
+descriptor ( when the queue operates in "on of order split queue" or
 in “in order single queue” models) or for every packet (when the queue
 operates in "out of order split queue" model ).<br />
 <br />
 3: reserved.</p>
 <p>4: Descriptor fetch completion for a packet that has its RE bit set
 in the last TX descriptor( relevant only when the queue operates in "out
-of order , split queue" model ).<br />
+of order split queue" model ).<br />
 <br />
 5: reserved.</p>
 <p>6: "Buffer de allocate" markers.</p>
@@ -3222,16 +3221,16 @@ processed.</th>
 <tr class="odd">
 <th>Completion tag/TX head</th>
 <th>31:16</th>
-<th><p>For completion types 0 and 2 , this field points to TX queue
+<th><p>For completion types 0 and 2, this field points to TX queue
 offset of the descriptor that follows the last descriptor of the
 completed packet.</p>
 <p>Note the SW reaction should be the same for completion types 0 and
 2</p>
-<p>For completion type 1 , this field describes the Completion tag of
+<p>For completion type 1, this field describes the Completion tag of
 the packet or LSO.</p>
-<p>For completion type 4 , this field points to the TX queue offset of
+<p>For completion type 4, this field points to the TX queue offset of
 the descriptor that follows the RE marked descriptor.</p>
-<p>For completion type 6 , this field points to the TX queue offset of
+<p>For completion type 6, this field points to the TX queue offset of
 the last descriptor that its buffer should be deallocated .</p></th>
 </tr>
 </thead>
@@ -3280,8 +3279,8 @@ is set to zero.</p></th>
 
 <span class="mark">Unlike the “in order single queue model” which
 implements a descriptor done (DD) bit, for “in order split queue” and
-“out of order split queue” models (in which completion queue is used)
-,software identifies new completion queue entries by comparing the
+“out of order split queue” models (in which completion queue is used), 
+software identifies new completion queue entries by comparing the
 generation bit. Hardware toggles the generation bit on every wraparound
 on the completion queue. Using this method, software can determine the
 old entries from the new ones by looking for mismatches on the
@@ -3351,7 +3350,7 @@ trigger an interrupt.
 Each transmit queue is a potential interrupt cause client. The following events of the queue are considered as transmit events that can trigger an interrupt:
 
 * In case a packet generates a completion, when packet completion is written the completion queue (split queue model) or when packet descriptor is written to the descriptor queue (single queue model).
-* In case a packet did not generate a completion (in order queue model, sparse RS bit setting), when packet processing is completed by the device.
+* In case a packet did not generate a completion (in order queue model sparse RS bit setting), when packet processing is completed by the device.
 
 When an interrupt is issued, SW should assume that the descriptor/completion of the latest packet processed by the device for that queue was written to the descriptor/completion queue regardless of if the packet generated a completion or not. (Before an interrupt is issued, the device writes the descriptor/completion of the latest packet processed for the queue).
 
@@ -3427,7 +3426,7 @@ As an example, assume a vector has only 1 active ITR:
 Using multiple ITRs per vector is useful to support different throttling
 rates for different cause clients assigned to the same vector.
 
-In case both cause clients are active , the interrupt throttling rate is
+In case both cause clients are active, the interrupt throttling rate is
 done according to the ITR with the higher rate but in case only one
 cause client~~s~~ is active at a certain time, the throttling
 rate is done according to its associated ITR rate.
@@ -3580,7 +3579,7 @@ following options:
 Additionally:
 
 - The intervals cannot be read through in the GLINT_DYN_CTL registers.
-- By default ,changing the ITR interval through this interface value causes the timer to expire which triggers an immediate interrupt in case there are pending causes.
+- By default, changing the ITR interval through this interface value causes the timer to expire which triggers an immediate interrupt in case there are pending causes.
 
 ## Miscellaneous SW Operations
 
@@ -3675,7 +3674,7 @@ negotiation.
 
 At Initialization time, the SW sets up a mailbox queue pair by programming the mailbox queues registers such as Base Address, Length, Head and Tail pointers. Once these are programmed, the driver must enable the Mailbox queue as part of the length (xF_AxQLEN) registers.
 
-As part of this spec the device and the driver use Descriptor writeback (similar to the in-order, single-queue model described above) for mailbox queue completion.
+As part of this spec the device and the driver use Descriptor writeback (similar to the in-order single-queue model described above) for mailbox queue completion.
 
 The first message that is posted on the mailbox queue using virtchannel commands is VIRTCHNL_OP_GET_VERSION ().
 
@@ -3689,7 +3688,7 @@ The purpose of this command is to negotiate version info for the virtual channel
 
 Driver posts its version number and CP responds with its version number in the same format, along with a return code.
 
-If there is a major version mismatch, then the driver falls to to the lowest common ,major version which is version 2.0 as the CP is assumed to always support
+If there is a major version mismatch, then the driver falls to to the lowest common, major version which is version 2.0 as the CP is assumed to always support
 
 If there is a minor version mismatch, then the driver can operate but should add a warning to the system log. CP will not respond with an error even in case of versions mismatch.
 
@@ -4923,7 +4922,7 @@ supported by Device
 
 * vPort RX Default Queues must be set upon execution of the
   OP_CREATE_VPORT command. The lowest RX Queue index must be used for
-  all three engines (LAN, RDMA and CPE).
+  all three engines (LAN, RDMA, and CPE).
 
 * OP_DISABLE_VPORT and OP_DESTROY_VPORT commands can be issued even when
   all or some of vPort associated queues are enabled, including TX,
@@ -5064,7 +5063,7 @@ __le16 num_queue_groups;
 
 u8 pad[2];
 
-/* IN, IDs & types of Queue Groups to delete */
+/* IN, IDs, & types of Queue Groups to delete */
 
 struct virtchnl2_queue_group_id qg_ids[1];
 
@@ -7501,9 +7500,9 @@ queue descriptor fetch stride cross).</p>
 
 | **Capability**                       | **SW Parameter**                       | **Possible Values** | **Default Value** |
 |--------------------------------------|----------------------------------------|---------------------|-------------------|
-| In order split, TX queue model.     | VIRTCHNL2_TXQ_MODEL_IN_ORDER_SPLIT     | 0,1                 | 1                 |
-| In order single, TX queue model.    | VIRTCHNL2_TXQ_MODEL_IN_ORDER_SINGLE    | 0,1                 | 1                 |
-| Out of order split, TX queue model. | VIRTCHNL2_TXQ_MODEL_OUT_OF_ORDER_SPLIT | 0,1                 | 1                 |
+| In order split TX queue model.       | VIRTCHNL2_TXQ_MODEL_IN_ORDER_SPLIT     | 0,1                 | 1                 |
+| In order single TX queue model.      | VIRTCHNL2_TXQ_MODEL_IN_ORDER_SINGLE    | 0,1                 | 1                 |
+| Out of order split TX queue model.   | VIRTCHNL2_TXQ_MODEL_OUT_OF_ORDER_SPLIT | 0,1                 | 1                 |
 
 ### TX Descriptor Capabilities
 
@@ -7787,7 +7786,7 @@ VIRTCHNL2_CAP_RX_CSUM_L4_IPV6_SCTP_IN1</em></th>
 </tr>
 <tr class="odd">
 <th><p>RX checksum support for 2<sup>nd</sup> inner tunnel.</p>
-<p>In case the packet parser supports more than 2 tunnels , this
+<p>In case the packet parser supports more than 2 tunnels, this
 capability represents the 2<sup>nd</sup> tunnel and the following
 ones.</p></th>
 <th><em>VIRTCHNL2_CAP_RX_CSUM_L3_IPV4_IN2
@@ -7831,7 +7830,7 @@ VIRTCHNL2_CAP_TX_CSUM_L4_IPV6_SCTP_IN1</em></p>
 </tr>
 <tr class="header">
 <th><p>TX checksum support for 2<sup>nd</sup> inner tunnel.</p>
-<p>In case packet passer supports more than 2 tunnels , this capability
+<p>In case packet passer supports more than 2 tunnels, this capability
 represents the 2<sup>nd</sup> tunnel and the following ones.</p>
 <p>Note: Those capabilities are relevant only for an SSO. For LSO the
 packet checksums must be calculated by Device.</p></th>
