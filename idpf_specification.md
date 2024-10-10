@@ -31,7 +31,7 @@ None of the standard interfaces available in the market provide for all these ne
 
 ## IDPF Network Function Device (“Device”)
 
-This is an abstraction of a physical or emulated Network PCIE Device as seen by the driver. It is modeled as having internally a **data path** component that carries out Packet handling and a **control plane** component that is used to configure and monitor the operations of the data-path.  An IDPF Device has the same interface whether used as a Physical Function (PF) PCIe device, a Virtual Function (VF) device (when virtualization is used) , or a composed PCIe entity. It is also Operating-system agnostic, and does not impose assumptions on the implementation of conformant Devices.
+This is an abstraction of a physical or emulated Network PCIE Device as seen by the driver. It is modeled as having internally a **data path** component that carries out Packet handling and a **control plane** component that is used to configure and monitor the operations of the data-path.  An IDPF Device has the same interface whether used as a Physical Function (PF) PCIe device a Virtual Function (VF) device (when virtualization is used) , or a composed PCIe entity. It is also Operating-system agnostic, and does not impose assumptions on the implementation of conformant Devices.
 
 ![Figure 1: Network Function Device Overview](Diagrams/network_function_device_overview.svg)
 
@@ -321,7 +321,7 @@ This is the TX descriptor view, after it was processed and sent by the device, w
 
 ### RX Descriptor Command Submit Format
 
-The driver must advertise empty RX descriptors into Mailbox RX queues,potentially including free 4KB buffers. During free descriptor preparation, the driver will clear any unused fields (including unused Flags) and set data pointers and data length to a mapped DMA pointer, see table below.
+The driver must advertise empty RX descriptors into Mailbox RX queues, potentially including free 4KB buffers. During free descriptor preparation, the driver will clear any unused fields (including unused Flags) and set data pointers and data length to a mapped DMA pointer, see table below.
 
 | Name | Bytes.Bits | Description | 
 | ---- | ---------- | ----------- |
@@ -2107,7 +2107,7 @@ format.</p></th>
 
 ##### 
 
-#### Flex RX Descriptors Notes
+#### Flex RX Descriptors 
 
 The differences in the usage of flex descriptor formats between the
 single queue and split queue models are as follows:
@@ -2526,7 +2526,7 @@ TSO message.</th>
 of the transmit descriptor and its data buffer.</p>
 <p>Completion is reported using the TX WriteBack
 Descriptor.</p>
-<p>Notes:</p>
+<p>**Notes:**</p>
 <ul>
 <li>
 <p>SW must keep a minimal gap of IECM_TX_RS_MIN_GAP descriptors between
@@ -2596,7 +2596,7 @@ Summary</u>.</p></th>
 <p>When theL4T is set to other values than 00b, the L4LEN must be
 defined as well. When set to UDP or TCP, the hardware inserts the L4
 checksum and when set to SCTP, the hardware inserts the SCTP CRC.</p>
-<p>Notes:</p>
+<p>**Notes:**</p>
 <p>Requesting TCP or UDP offload for a packet which was padded by
 Software, will result in wrong Csum calculation.</p>
 <p>See general comment regarding checksum calculation at<u> </u><u>TX</u>
@@ -2788,7 +2788,7 @@ TSO message.</th>
 completions arrive at the device (Before it sends the DMA data
 request).</p>
 <p>Completion is reported through the Completion queue.</p>
-<p><strong>Notes:</strong></p>
+<p><strong>**Notes:**</strong></p>
 <p>The RE flag can be set only on the last Transmit Data Descriptor of a
 message (i.e., a packet or TSO).</p>
 <p>SW must keep a minimal gap of IECM_TX_SPLITQ_RE_MIN_GAP descriptors
@@ -3202,7 +3202,7 @@ field.</p>
 <p>This completion is used in live migration flows to de-allocate TX
 packet buffers of the lost packets (the ones that were not transmitted
 on the source and are not transmitted on the destination).</p>
-<p>Note: packet is referred to as an SSO (Single Send offload) packet or
+<p>**Note:** packet is referred to as an SSO (Single Send offload) packet or
 as the last segment of an LSO packet.</p></th>
 </tr>
 <tr class="odd">
@@ -3820,11 +3820,11 @@ VIRTCHNL_OP_CREATE_VPORT</th>
 <th>VIRTCHNL2_OP_DESTROY_VPORT</th>
 <th>Yes</th>
 <th><p>Deallocation of all resources associated with the VPORT.</p>
-<p>Note: There is no vPort reset cmd, disable and destroy stands for
+<p>**Note:** There is no vPort reset cmd, disable and destroy stands for
 reset.</p></th>
 <th>All Functions Drivers</th>
 <th>Shall be sent only if VIRTCHNL_OP_CREATE_VPORT is successful.<br />
-Note: This cmd can be sent even if VIRTCHNL_OP_DISABLE_VPORT was not
+***Note:*** This cmd can be sent even if VIRTCHNL_OP_DISABLE_VPORT was not
 sent. In this case, the VIRTCHNL_OP_DESTROY_VPORT disables the VPORT and
 deallocates the resources.</th>
 </tr>
@@ -3849,11 +3849,11 @@ VPORT = Queue group =&gt; after enable at least one queue.</p></th>
 <th><p>Disable VPORT.<br />
 This cmd can be sent even if VIRTCHNL_OP_DISABLE_QUEUES_V2 was not
 sent..</p>
-<p>Note: There is not vPort reset cmd, disable and destroy stands for
+<p>**Note:** There is not vPort reset cmd, disable and destroy stands for
 reset.</p></th>
 <th>All Functions Drivers</th>
 <th>Shall be sent only if VIRTCHNL_OP_ENABLE_VPORT is successful.<br />
-Note: This cmd can be sent even if VIRTCHNL_OP_DISABLE_QUEUES_V2 was not
+**Note:** This cmd can be sent even if VIRTCHNL_OP_DISABLE_QUEUES_V2 was not
 sent. In this case, the VIRTCHNL_OP_DISABLE_QUEUES_V2 is automatically
 executed.</th>
 </tr>
@@ -7534,7 +7534,7 @@ queue descriptor fetch stride cross).</p>
 </tr>
 <tr class="odd">
 <th><p>Max data buffers per SSO/LSO packet.</p>
-<p>Note: When equals to 18 SW can avoid any calculations or check for
+<p>**Note:** When equals to 18 SW can avoid any calculations or check for
 linearization for Linux.</p></th>
 <th><em>max_sg_bufs_per_tx_pkt</em></th>
 <th>1 to 18</th>
@@ -7551,14 +7551,14 @@ first bytes of payload)</p></th>
 </tr>
 <tr class="odd">
 <th><p>Min spacing between 2 RS marked descriptors<em>.</em></p>
-<p>Note: this capability is a queue level capability<em>.</em></p></th>
+<p>**Note:** this capability is a queue level capability<em>.</em></p></th>
 <th>IECM_TX_RS_MIN_GAP</th>
 <th></th>
 <th>0</th>
 </tr>
 <tr class="header">
 <th><p>Min spacing between 2 RE marked descriptors.</p>
-<p>Note: this capability is a queue level capability.</p></th>
+<p>**Note:** this capability is a queue level capability.</p></th>
 <th>IECM_TX_SPLITQ_RE_MIN_GAP</th>
 <th></th>
 <th>32</th>
@@ -7627,8 +7627,8 @@ done by the device).</th>
 <tr class="header">
 <th><p>Max TX packet size as sent by the host driver (excluding any
 expansion done by the device).</p>
-<p>Note: Device is obligated to check the max_mtu on the TX path. On
-the RX path ,the device is not required to check the max_mtu which means
+<p>**Note:** Device is obligated to check the max_mtu on the TX path. On
+the RX path, the device is not required to check the max_mtu which means
 that host SW can accept packets bigger than max_mtu.</p></th>
 <th><em><strong>max_mtu</strong></em></th>
 <th></th>
@@ -7650,7 +7650,7 @@ that.</p></th>
 <p>Device does not support doing a generic offload (i.e. checksum field
 , LSO incremental field) to a field located deeper in the packet
 header.</p>
-<p>Note: Generic offload is an offload that is executed using offsets
+<p>**Note:** Generic offload is an offload that is executed using offsets
 from the TX descriptor.</p></th>
 <th><p><em><strong>max_tx_hdr_generic_offloads</strong></em></p>
 <p><mark></mark></p></th>
@@ -7662,7 +7662,7 @@ from the TX descriptor.</p></th>
 (excluding any expansion done by the device).</p>
 <p>Device does not support calculating checksum/CRC to a field located
 deeper in the packet header.</p>
-<p>Note: Non generic checksum offload is a checksum offload that is
+<p>**Note:** Non generic checksum offload is a checksum offload that is
 executed using offsets from the Device parser.</p></th>
 <th><strong>max_tx_hdr_HWparse_csum</strong>
 <p><mark></mark></p></th>
@@ -7801,7 +7801,7 @@ VIRTCHNL2_CAP_RX_CSUM_L4_IPV6_SCTP_IN2</em></th>
 </tr>
 <tr class="header">
 <th><p>TX checksum support for most inner headers.</p>
-<p>Note: Those capabilities are relevant only for an SSO. For LSO the
+<p>**Note:** Those capabilities are relevant only for an SSO. For LSO the
 packet checksums must be calculated by Device.</p></th>
 <th><em>VIRTCHNL2_CAP_TX_CSUM_L3_IPV4_IN0
 VIRTCHNL2_CAP_TX_CSUM_L4_IPV4_TCP_IN0
@@ -7815,7 +7815,7 @@ VIRTCHNL2_CAP_TX_CSUM_L4_IPV6_SCTP_IN0</em></th>
 </tr>
 <tr class="odd">
 <th><p>TX checksum support for 1<sup>st</sup> inner tunnel.</p>
-<p>Note: Those capabilities are relevant only for an SSO. For LSO the
+<p>**Note:** Those capabilities are relevant only for an SSO. For LSO the
 packet checksums must be calculated by Device.</p></th>
 <th><p><em>VIRTCHNL2_CAP_TX_CSUM_L3_IPV4_IN1
 VIRTCHNL2_CAP_TX_CSUM_L4_IPV4_TCP_IN1<br />
@@ -7832,7 +7832,7 @@ VIRTCHNL2_CAP_TX_CSUM_L4_IPV6_SCTP_IN1</em></p>
 <th><p>TX checksum support for 2<sup>nd</sup> inner tunnel.</p>
 <p>In case packet passer supports more than 2 tunnels, this capability
 represents the 2<sup>nd</sup> tunnel and the following ones.</p>
-<p>Note: Those capabilities are relevant only for an SSO. For LSO the
+<p>**Note:** Those capabilities are relevant only for an SSO. For LSO the
 packet checksums must be calculated by Device.</p></th>
 <th><em>VIRTCHNL2_CAP_TX_CSUM_L3_IPV4_IN2
 VIRTCHNL2_CAP_TX_CSUM_L4_IPV4_TCP_IN2<br />
@@ -9308,7 +9308,7 @@ VIRTCHNL2_CHECK_STRUCT_VAR_LEN(120, virtchnl2_queue_group_info, chunks.chunks);
  * groups and queues assigned followed by num_queue_groups and groups of
  * virtchnl2_queue_group_info and virtchnl2_queue_chunk structures.
 #ifdef FLEX_ARRAY_SUPPORT
- * (Note: There is no specific field for the queue group info but are added at
+ * (**Note:** There is no specific field for the queue group info but are added at
  * the end of the add queue groups message. Receiver of this message is expected
  * to extract the queue group info accordingly. Reason for doing this is because
  * compiler doesn't allow nested flexible array fields).
@@ -9625,7 +9625,7 @@ VIRTCHNL2_CHECK_STRUCT_VAR_LEN(8, virtchnl2_ptype, proto_id);
  * 'start_ptype_id', 'num_ptypes', and the array of ptype (virtchnl2_ptype) that
  * are added at the end of the 'virtchnl2_get_ptype_info' message.
 #ifdef FLEX_ARRAY_SUPPORT
- * (Note: There is no specific field for the ptypes but are added at the end of
+ * (**Note:** There is no specific field for the ptypes but are added at the end of
  * the ptype info message. PF/VF is expected to extract the ptypes accordingly.
  * Reason for doing this is because compiler doesn't allow nested flexible
  * array fields).
@@ -10722,7 +10722,7 @@ enum virtchnl2_rx_desc_id_bitmasks {
 /**
  * VIRTCHNL2_RX_FLEX_DESC_ADV_STATUS_ERROR_0_QW1_BITS
  * For splitq virtchnl2_rx_flex_desc_adv
- * Note: These are predefined bit offsets
+ * **Note:** These are predefined bit offsets
  */
 enum virtchl2_rx_flex_desc_adv_status_error_0_qw1_bits {
 	VIRTCHNL2_RX_FLEX_DESC_ADV_STATUS0_DD_S,
@@ -10738,7 +10738,7 @@ enum virtchl2_rx_flex_desc_adv_status_error_0_qw1_bits {
 /**
  * VIRTCHNL2_RX_FLEX_DESC_ADV_STATUS_ERROR_0_QW0_BITS
  * For splitq virtchnl2_rx_flex_desc_adv
- * Note: These are predefined bit offsets
+ * **Note:** These are predefined bit offsets
  */
 enum virtchnl2_rx_flex_desc_adv_status_error_0_qw0_bits {
 	VIRTCHNL2_RX_FLEX_DESC_ADV_STATUS0_LPBK_S,
@@ -10756,7 +10756,7 @@ enum virtchnl2_rx_flex_desc_adv_status_error_0_qw0_bits {
 /**
  * VIRTCHNL2_RX_FLEX_DESC_ADV_STATUS_ERROR_1_BITS
  * For splitq virtchnl2_rx_flex_desc_adv
- * Note: These are predefined bit offsets
+ * **Note:** These are predefined bit offsets
  */
 enum virtchnl2_rx_flex_desc_adv_status_error_1_bits {
 	VIRTCHNL2_RX_FLEX_DESC_ADV_STATUS1_RSVD_S		= 0,
@@ -10784,7 +10784,7 @@ enum virtchnl2_rx_flex_desc_adv_status_error_1_bits {
 /**
  * VIRTCHNL2_RX_FLEX_DESC_STATUS_ERROR_0_BITS
  * For singleq (flex) virtchnl2_rx_flex_desc
- * Note: These are predefined bit offsets
+ * **Note:** These are predefined bit offsets
  */
 enum virtchnl2_rx_flex_desc_status_error_0_bits {
 	VIRTCHNL2_RX_FLEX_DESC_STATUS0_DD_S,
@@ -10810,7 +10810,7 @@ enum virtchnl2_rx_flex_desc_status_error_0_bits {
 /**
  * VIRTCHNL2_RX_FLEX_DESC_STATUS_ERROR_1_BITS
  * For singleq (flex) virtchnl2_rx_flex_desc
- * Note: These are predefined bit offsets
+ * **Note:** These are predefined bit offsets
  */
 enum virtchnl2_rx_flex_desc_status_error_1_bits {
 	VIRTCHNL2_RX_FLEX_DESC_STATUS1_CPM_S			= 0,
@@ -10848,7 +10848,7 @@ enum virtchnl2_rx_flex_desc_status_error_1_bits {
 /**
  * VIRTCHNL2_RX_BASE_DESC_STATUS_BITS
  * For singleq (base) virtchnl2_rx_base_desc
- * Note: These are predefined bit offsets
+ * **Note:** These are predefined bit offsets
  */
 enum virtchnl2_rx_base_desc_status_bits {
 	VIRTCHNL2_RX_BASE_DESC_STATUS_DD_S		= 0,
@@ -10871,7 +10871,7 @@ enum virtchnl2_rx_base_desc_status_bits {
 /**
  * VIRTCHNL2_RX_BASE_DESC_EXT_STATUS_BITS
  * For singleq (base) virtchnl2_rx_base_desc
- * Note: These are predefined bit offsets
+ * **Note:** These are predefined bit offsets
  */
 enum virtcnl2_rx_base_desc_status_bits {
 	VIRTCHNL2_RX_BASE_DESC_EXT_STATUS_L2TAG2P_S,
@@ -10880,7 +10880,7 @@ enum virtcnl2_rx_base_desc_status_bits {
 /**
  * VIRTCHNL2_RX_BASE_DESC_ERROR_BITS
  * For singleq (base) virtchnl2_rx_base_desc
- * Note: These are predefined bit offsets
+ * **Note:** These are predefined bit offsets
  */
 enum virtchnl2_rx_base_desc_error_bits {
 	VIRTCHNL2_RX_BASE_DESC_ERROR_RXE_S		= 0,
@@ -10897,7 +10897,7 @@ enum virtchnl2_rx_base_desc_error_bits {
 /**
  * VIRTCHNL2_RX_BASE_DESC_FLTSTAT_VALUES
  * For singleq (base) virtchnl2_rx_base_desc
- * Note: These are predefined bit offsets
+ * **Note:** These are predefined bit offsets
  */
 enum virtchnl2_rx_base_desc_flstat_values {
 	VIRTCHNL2_RX_BASE_DESC_FLTSTAT_NO_DATA,
@@ -11410,7 +11410,7 @@ union virtchnl2_rx_desc {
 
 #endif /* _VIRTCHNL_LAN_DESC_H_ */
 ```
-# Appendix : Linux RDMA
+# Appendix : Linux\* RDMA
 
 ## North Side Interfaces and Flows for Linux: 
 This section is not part of the main spec and it is just an example implementation detail referred from the Linux support for RDMA driver.
